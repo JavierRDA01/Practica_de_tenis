@@ -7,98 +7,66 @@ using namespace std;
 
 const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
+const int LIM_SUP_VEL = 3;
+const int LIM_SUP_HAB = 3;
+const int ANCHO_PISTA = 7;
+int posicion_bola = 4;
+int posicion_tenista = 4;
 
-void marcador(int PUN_JUG_1, int PUN_JUG_2, string jugador1, string jugador2, bool b) {
-	if (PUN_JUG_1 == 0) {
-		if (PUN_JUG_2 == 0) {
-			cout << "00 00";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 1) {
-			cout << "00 15";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 2) {
-			cout << "00 30";
-			b = false;
-		}
-		else if (PUN_JUG_2== 3) {
-			cout << "00 40";
-			b = false;
-		}
+void introducirDato(string jugador1, string jugador2, int velocidad, int habilidad) {
+	cout << "Introduce el nombre del jugador 1: ";
+	cin >> jugador1;
+	cout << "Introduce el nombre del jugador 2: ";
+	cin >> jugador2;
+	cout << "Introduce la velocidad del jugador (Intervalo 1-3): ";
+	cin >> velocidad;
+	cout << "Introduce la habilidad del jugador (Intervalo 1-3): ";
+	cin >> habilidad;
+	if (habilidad >= LIM_INF_HAB && habilidad <= LIM_SUP_HAB) {
+		cout << "Cargando...";
 	}
-	else if (PUN_JUG_1 == 1) {
-		if (PUN_JUG_2 == 0) {
-			cout << "15 00";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 1) {
-			cout << "15 15";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 2) {
-			cout << "15 30";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 3) {
-			cout << "15 40";
-			b = false;
-		}
+	else if (velocidad <= LIM_INF_VEL && velocidad <= LIM_SUP_VEL) {
+		cout << "Cargando...";
 	}
-	else if (PUN_JUG_1 == 2) {
-		if (PUN_JUG_2 == 0) {
-			cout << "30 00";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 1) {
-			cout << "30 15";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 2) {
-			cout << "30 30";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 3) {
-			cout << "30 40";
-			b = false;
-		}
+	else {
+		cout << "Valores introducidos incorrectos, pruebe otra vez" << endl;
 	}
-	else if (PUN_JUG_1 == 3) {
-		if (PUN_JUG_2 == 0) {
-			cout << "40 00";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 1) {
-			cout << "40 15";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 2) {
-			cout << "40 30";
-			b = false;
-		}
-		else if (PUN_JUG_2 == 3) {
-			cout << "40 40";
-			b = false;
-		}
-	}
-	else if (PUN_JUG_1 == 4 && PUN_JUG_2 == 3) {
-		cout << "[Ventaja] 40";
-		b = false;
-		}
-	else if (PUN_JUG_1 == 3 && PUN_JUG_2 == 4) {
-		cout << "40 [Ventaja]";
-		b = false;
-	}
-	else if (PUN_JUG_1 == 5 || (PUN_JUG_1 == 4 && PUN_JUG_2 < 3)){
-		cout << "Gana " << jugador1;
-		b = true;
-	}
-	else if (PUN_JUG_2 == 5 || (PUN_JUG_2 == 4 && PUN_JUG_1 < 3)) {
-		cout << "Gana " << jugador2;
-		b = true;
-	}
+
 }
 
+string marcador(int puntuacion) {
+	if (puntuacion == 0) {
+		cout << "00";
+	}
+	else if (puntuacion == 1) {
+		cout << "15";
+	}
+	else if (puntuacion == 2) {
+		cout << "30";
+	}
+	else if (puntuacion == 3) {
+		cout << "40";
+	}
+	else if (puntuacion == 4) {
+		cout << "[Ventaja]";
+	}
+}
+int golpeoBola(int posicion_tenista, int habilidad) {
+	int absoluto, posicion_randm, acierto;
+	double probabilidad_exito;
+	acierto = rand() % 100;
+	posicion_randm = rand() % (ANCHO_PISTA - posicion_tenista);
+	absoluto = abs(posicion_tenista - habilidad);
+	if (posicion_randm > habilidad) {
+		probabilidad_exito = (100 - ((posicion_randm - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100));
+		if (acierto < probabilidad_exito) {
+			cout << "Acierto";
+		}
+		else {
+			cout << "Error";
+		}
+	}
+}
 void elegirSaque(string jugador1, string jugador2) {
 	int saque;
 	saque = rand() % 2;
@@ -110,38 +78,34 @@ void elegirSaque(string jugador1, string jugador2) {
 	}
 }
 
-void servicio(string jugador1, string jugador2) {
-	int serv;
-
+int correTenista(int posicion_tenista, int velocidad, int posicion_bola) {
+	int absoluto;
+	absoluto = abs(posicion_bola - posicion_tenista);
+	if (velocidad >= absoluto) {
+		posicion_bola = posicion_tenista;
+		return posicion_tenista, posicion_bola;
+	}
+	else {
+		if (posicion_bola < posicion_tenista) {
+			posicion_tenista = posicion_tenista - velocidad;
+			return posicion_tenista, posicion_bola;
+		}
+		else if (posicion_bola > posicion_tenista) {
+			posicion_tenista = posicion_tenista + velocidad;
+			return posicion_tenista, posicion_bola;
+		}
+	}
 }
 int main() {
-	int LIM_SUP_VEL, LIM_SUP_HAB, PUN_JUG_1, PUN_JUG_2;
+	int habilidad, velocidad, puntuacion, posicion_tenista, posicion_bola;
 	string jugador1, jugador2;
-	bool b = false;
 	srand(time(NULL));
 	system("chcp 1252");
 	system("cls");
-	cout << "Introduce el nombre del jugador 1: ";
-	cin >> jugador1;
-	cout << "Introduce el nombre del jugador 2: ";
-	cin >> jugador2;
-	cout << "Introduce la velocidad del jugador (Intervalo 1-3): ";
-	cin >> LIM_SUP_VEL;
-	cout << "Introduce la habilidad del jugador (Intervalo 1-3): ";
-	cin >> LIM_SUP_HAB;
-	if (LIM_SUP_VEL <= 3 && LIM_SUP_VEL >= 1) {
-		cout << "Cargando...";
-	}
-	else if (LIM_SUP_HAB <= 3 || LIM_SUP_HAB >= 1) {
-		cout << "Cargando...";
-	}
-	else {
-		cout << "Valores introducidos incorrectos, pruebe otra vez" << endl;
-	}
+	introducirDato(jugador1, jugador2, habilidad, velocidad);
 	elegirSaque(jugador1, jugador2);
-	marcador(PUN_JUG_1, PUN_JUG_2, jugador1, jugador2, b);
-	while (b == true) {
-		marcador(PUN_JUG_1, PUN_JUG_2, jugador1, jugador2, b);
-	}
+	golpeoBola(habilidad, posicion_tenista);
+	correTenista(posicion_tenista, posicion_bola, velocidad);
+	marcador(puntuacion);
 	return 0;
 }
