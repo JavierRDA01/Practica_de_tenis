@@ -88,15 +88,26 @@ int golpeoBola(int posicion_tenista, int habilidad) {
 	}
 }
 void elegirSaque(string jugador1, string jugador2) {
-	int saque;
-	saque = rand() % 2;
-	if (saque == 0) {
+
+	int num;
+
+	srand(time(NULL));
+
+	num = rand() % 100;
+
+	if (num <= 50) {
+
 		cout << "Saca " << jugador1;
+
 	}
-	else if (saque == 1) {
-		cout << "Saca " << jugador2;
+
+	else{
+
+		cout << "Saca " <<jugador2;
 	}
+
 }
+
 
 int correTenista(int posicion_tenista, int velocidad, int posicion_bola) {
 	int absoluto;
@@ -142,6 +153,8 @@ int main() {
 	}
 	else {
 		cout << "Valores introducidos incorrectos, pruebe otra vez" << endl;
+		
+		exit(1);
 	}
 	elegirSaque(jugador1, jugador2);
 	golpeoBola(habilidad, posicion_tenista);
