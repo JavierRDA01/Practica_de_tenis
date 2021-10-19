@@ -14,37 +14,39 @@ int posicion_bola = 4;
 int posicion_tenista = 4;
 
 
-string marcador(int puntuacion_jug_1, int puntuacion_jug_2) {
+void marcador(int puntuacion_jug_1, int puntuacion_jug_2) {
+	string puntuacion1, puntuacion2;
 	if (puntuacion_jug_1 == 0) {
-		cout << "00";
+		puntuacion1 =  "00";
 	}
 	else if (puntuacion_jug_1 == 1) {
-		cout << "15";
+		puntuacion1 = "15";
 	}
 	else if (puntuacion_jug_1 == 2) {
-		cout << "30";
+		puntuacion1 = "30";
 	}
 	else if (puntuacion_jug_1 == 3) {
-		cout << "40";
+		puntuacion1 = "40";
 	}
 	else if (puntuacion_jug_1 == 4) {
-		cout << "[Ventaja]";
+		puntuacion1 = "[Ventaja]";
 	}
 	if (puntuacion_jug_2 == 0) {
-		cout << "00";
+		puntuacion2 = "00";
 	}
 	else if (puntuacion_jug_2 == 1) {
-		cout << "15";
+		puntuacion2 = "15";
 	}
 	else if (puntuacion_jug_2 == 2) {
-		cout << "30";
+		puntuacion2 = "30";
 	}
 	else if (puntuacion_jug_2 == 3) {
-		cout << "40";
+		puntuacion2 = "40";
 	}
 	else if (puntuacion_jug_2 == 4) {
-		cout << "[Ventaja]";
+		puntuacion2 = "[Ventaja]";
 	}
+	cout << puntuacion1 << "||" << puntuacion2;
 }
 void elegirGanador(string jugador1, string jugador2, int puntuacion_jug_1, int puntuacion_jug_2) {
 	int eleccion;
@@ -53,34 +55,29 @@ void elegirGanador(string jugador1, string jugador2, int puntuacion_jug_1, int p
 		if (eleccion == 1) {
 			cout << "Gana " << jugador1 << endl;
 			puntuacion_jug_1++;
-			cout << puntuacion_jug_1 << "||" << puntuacion_jug_2 << endl;
 		}
 		else if (eleccion == 2) {
 			cout << "Gana " << jugador2 << endl;
 			puntuacion_jug_2++;
-			cout << puntuacion_jug_1 << "||" << puntuacion_jug_2 << endl;
 		}
 		else if (eleccion == 0) {
 			cout << "No gana nadie" << endl;
-			cout << puntuacion_jug_1 << "||" << puntuacion_jug_2 << endl;
 		}
 	}
 }
 int golpeoBola(int posicion_tenista, int habilidad) {
 	int absoluto, posicion_randm, acierto;
 	double probabilidad_exito;
-	acierto = rand() % 100;
-	posicion_randm = rand() % (ANCHO_PISTA - posicion_tenista);
-	absoluto = abs(posicion_tenista - habilidad);
-	if (posicion_randm > habilidad) {
-		probabilidad_exito = (100 - ((posicion_randm - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100));
+	acierto = rand() % 100; // número aleatorio 0 - 100 
+	posicion_randm = rand() % (ANCHO_PISTA + 1); // posición destino de la bola
+	absoluto = abs(posicion_randm - posicion_tenista); // indica la distancia entre la posición del jugador que golpea y la posición destino de la bola
+	if (absoluto > habilidad) { // Si la distancia es mayor que la habilidad, entonces habrá un porcentaje de acierto
+		probabilidad_exito = (100 - ((posicion_randm - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100)); // porcentaje de acierto
 		if (acierto < probabilidad_exito) {
 			cout << "Acierto";
-			return 0;
 		}
 		else {
 			cout << "Error";
-			return 0;
 		}
 	}
 	else {
@@ -88,24 +85,17 @@ int golpeoBola(int posicion_tenista, int habilidad) {
 	}
 }
 void elegirSaque(string jugador1, string jugador2) {
-
-	int num;
-
+	int num, saque;
 	srand(time(NULL));
-
 	num = rand() % 100;
-
 	if (num <= 50) {
-
 		cout << "Saca " << jugador1;
-
+		saque = 0;
 	}
-
-	else{
-
-		cout << "Saca " <<jugador2;
+	else {
+		cout << "Saca " << jugador2;
+		saque = 1;
 	}
-
 }
 
 
@@ -153,7 +143,7 @@ int main() {
 	}
 	else {
 		cout << "Valores introducidos incorrectos, pruebe otra vez" << endl;
-		
+
 		exit(1);
 	}
 	elegirSaque(jugador1, jugador2);
