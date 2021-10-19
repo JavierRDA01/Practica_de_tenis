@@ -65,14 +65,16 @@ void elegirGanador(string jugador1, string jugador2, int puntuacion_jug_1, int p
 		}
 	}
 }
-int golpeoBola(int posicion_tenista, int habilidad) {
-	int absoluto, posicion_randm, acierto;
+
+int golpeoBola(int posicion_tenista1, int posicion_tenista2, int habilidad, int posicion_bola, int velocidad) {
+	int absoluto, acierto;
 	double probabilidad_exito;
 	acierto = rand() % 100; // número aleatorio 0 - 100 
-	posicion_randm = rand() % (ANCHO_PISTA + 1); // posición destino de la bola
-	absoluto = abs(posicion_randm - posicion_tenista); // indica la distancia entre la posición del jugador que golpea y la posición destino de la bola
-	if (absoluto > habilidad) { // Si la distancia es mayor que la habilidad, entonces habrá un porcentaje de acierto
-		probabilidad_exito = (100 - ((posicion_randm - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100)); // porcentaje de acierto
+	posicion_bola = rand() % (ANCHO_PISTA + 1); posición destino de la bola
+	absoluto = abs(posicion_tenista - habilidad);  // indica la distancia entre la posición del jugador que golpea y la posición destino de la bola
+
+if (posicion_bola > habilidad) { // Si la distancia es mayor que la habilidad, entonces habrá un porcentaje de acierto
+		probabilidad_exito = (100 - ((posicion_bola - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100));
 		if (acierto < probabilidad_exito) {
 			cout << "Acierto";
 		}
@@ -80,10 +82,56 @@ int golpeoBola(int posicion_tenista, int habilidad) {
 			cout << "Error";
 		}
 	}
-	else {
-		return 0;
-	}
+
+if (posicion_bola > ANCHO_PISTA) { // en caso de que la bola de salga del campo
+
+	cout << "punto para el receptor";
+
 }
+if (posicion_bola = posicion_tenista1) {
+
+	
+
+	else if (posicion_tenista != posicion_bola) {
+
+		correTenista(posicion_tenista, posicion_bola, velocidad);
+	}
+
+	posicion_tenista = posicion_bola - velocidad;
+
+	cout << "punto para el que golpeo";
+
+
+	else if{
+
+		if (posicion_tenista = posicion_bola) {
+
+			posicion_tenista = posicion_bola
+		}
+
+}
+
+	else(posicion_tenista2 = posicion_bola) {
+
+else if (posicion_tenista != posicion_bola) {
+
+	correTenista(posicion_tenista, posicion_bola, velocidad);
+}
+
+posicion_tenista = posicion_bola - velocidad;
+
+cout << "punto para el que golpeo";
+
+
+else if{
+
+	if (posicion_tenista = posicion_bola) {
+
+		posicion_tenista = posicion_bola
+	}
+
+}
+
 void elegirSaque(string jugador1, string jugador2) {
 	int num, saque;
 	srand(time(NULL));
