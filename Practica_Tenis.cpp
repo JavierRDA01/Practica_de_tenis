@@ -88,48 +88,35 @@ if (posicion_bola > ANCHO_PISTA) { // en caso de que la bola de salga del campo
 	cout << "punto para el receptor";
 
 }
-if (posicion_bola = posicion_tenista1) {
+	if (posicion_bola = posicion_tenista1) { // en el caso en el que el jugador1 hay allegado a golpear la bola
 
-	
+		posicion_tenista1 = posicion_bola;
+	}
 
-	else if (posicion_tenista != posicion_bola) {
+	else if (posicion_bola = posicion_tenista2) {
+
+		posicion_tenista2 = posicion_bola;
+	}
+
+
+
+	else if (posicion_tenista1 != posicion_bola) {
 
 		correTenista(posicion_tenista, posicion_bola, velocidad);
+
+		posicion_tenista1 = posicion_bola - velocidad;
+
+		cout << "punto para el que golpeo";
 	}
 
-	posicion_tenista = posicion_bola - velocidad;
+	else if (posicion_tenista2 != posicion_bola) {
 
-	cout << "punto para el que golpeo";
+		correTenista(posicion_tenista, posicion_bola, velocidad);
 
+		posicion_tenista2 = posicion_bola - velocidad;
 
-	else if{
-
-		if (posicion_tenista = posicion_bola) {
-
-			posicion_tenista = posicion_bola
-		}
-
-}
-
-	else(posicion_tenista2 = posicion_bola) {
-
-else if (posicion_tenista != posicion_bola) {
-
-	correTenista(posicion_tenista, posicion_bola, velocidad);
-}
-
-posicion_tenista = posicion_bola - velocidad;
-
-cout << "punto para el que golpeo";
-
-
-else if{
-
-	if (posicion_tenista = posicion_bola) {
-
-		posicion_tenista = posicion_bola
+		cout << "punto para el que golpeo";
 	}
-
 }
 
 void elegirSaque(string jugador1, string jugador2) {
