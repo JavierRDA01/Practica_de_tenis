@@ -253,7 +253,7 @@ int main() {
 
 	else {
 
-		cout << " sca jugador 2: ";
+		cout << " saca jugador 2: ";
 
 	}
 	int cambioFilaBola(int fila_bola) {
