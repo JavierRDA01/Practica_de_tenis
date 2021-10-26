@@ -8,48 +8,39 @@ using namespace std;
 
 int partido(int posicionJug1, int posicionJug2, int posicionBola) {
 	if (golpeoBola() == 0) {
-		
+
 	}
 }
 
 
-int golpeoBola(int posicion_tenista, int habilidad, int posicion_bola) {
+int golpeoBola(int posicion_tenista, int habilidad, int ANCHO_PISTA, int LIM_INF_HAB) {
 	int absoluto, posicion_randm, acierto;
 	double probabilidad_exito;
 	acierto = rand() % 100; // número aleatorio 0 - 100 
+	 // indica la distancia entre la posición del jugador que golpea y la posición destino de la bola
 	posicion_randm = rand() % (ANCHO_PISTA + 1); // posición destino de la bola
-	absoluto = abs(posicion_randm - posicion_tenista); // indica la distancia entre la posición del jugador que golpea y la posición destino de la bola
-	if (absoluto > habilidad) { // Si la distancia es mayor que la habilidad, entonces habrá un porcentaje de acierto
-		probabilidad_exito = (100 - ((posicion_randm - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100)); // porcentaje de acierto
-		if (acierto < probabilidad_exito) {
-			posicion_bola = posicion_randm;
-			return 0;
-		}
-		else {
-			return 1;
-		}
-	}
-	else {
-		posicion_bola = posicion_randm;
-		return 0;
-	}
+	absoluto = abs(posicion_randm - posicion_tenista);
+	return probabilidad_exito = (100 - ((posicion_randm - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100)); // porcentaje de acierto
+
 }
-void elegirSaque(string jugador1, string jugador2) {
+
+
+int elegirSaque(string jugador1, string jugador2) {
 	int num, saque;
 	srand(time(NULL));
 	num = rand() % 2;
 	if (num == 0) {
 		cout << "Saca " << jugador1;
-		saque = 0;
+		return 0;
 	}
-	else if (num == 1){
+	else if (num == 1) {
 		cout << "Saca " << jugador2;
-		saque = 1;
+		return 1;
 	}
 }
 
 
-int correJugador1(int posicionJugador1, int velocidad, int posicion_bola) {
+int correTenista(int posicionJugador1, int velocidad, int posicion_bola) {
 	int absoluto;
 	absoluto = abs(posicion_bola - posicionJugador1);
 	if (velocidad >= absoluto) {
@@ -168,6 +159,17 @@ bool juegoEstaTerminado(int puntuacion1, int puntuacion2)
 		return false;
 	}
 }
+int cambiarJugador1() {
+	//if (elegirSaque() == 0) {
+		//return elegirSaque() == 1;
+
+	//}
+}
+int cambiarJugador2() {
+	//if (elegirSaque() == 1) {
+		//return elegirSaque() == 0;
+	//}
+}
 int main() {
 	bool juegoTerminado = false;
 	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
@@ -176,6 +178,9 @@ int main() {
 	int ANCHO_PISTA = 7;
 	int posicionBola = 4, posicionJugador1 = 4, posicionJugador2 = 4;
 	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2;
+	int acierto = rand() % 100, posicion_randm = rand() % (ANCHO_PISTA + 1);
+
+
 	string nombreJugador1, nombreJugador2;
 	srand(time(NULL));
 	system("chcp 1252");
@@ -197,25 +202,38 @@ int main() {
 
 	string breakTest;
 
+	absoluto = abs(posicion_randm - posicion_tenista);
+
 	while (!juegoTerminado)
 	{
-		//elegirGanador();//Devuelve 1 o 2
-		if (elegirGanador() == 1)
-		{
-			puntuacionJugador1++;
-		}
-		else
-		{
-			puntuacionJugador2++;
-		}
+		if(){
+			if (golpeoBola() <= acierto) {
+				posicionBola == posicionJugador1;
+			}
+			//elegirGanador();//Devuelve 1 o 2
+			else {
+				if (elegirGanador() == 1)
+				{
+					puntuacionJugador1++;
+				}
+				else if (elegirGanador() == 2)
+				{
+					puntuacionJugador2++;
+				}
+				else {
+					cout << ";";
+				}
+				if (golpeoBola() == 1) {
 
-		//Controlar deuce
-		if (puntuacionJugador1 == 4 && puntuacionJugador2 == 4)
-		{
-			puntuacionJugador1 = 3;
-			puntuacionJugador2 = 3;
+				}
+				//Controlar deuce
+				if (puntuacionJugador1 == 4 && puntuacionJugador2 == 4)
+				{
+					puntuacionJugador1 = 3;
+					puntuacionJugador2 = 3;
+				}
+			}
 		}
-
 		mostrarMarcadorActual(puntuacionJugador1, puntuacionJugador2);
 		juegoTerminado = juegoEstaTerminado(puntuacionJugador1, puntuacionJugador2);
 		if (juegoTerminado == true)
@@ -225,6 +243,55 @@ int main() {
 			juegoTerminado = false;
 		}
 		cin >> breakTest;
+	}
+
+
+	if (elegirSaque() == 0) {
+
+		cout << " saca Jugador 1: "; 
+	}
+
+	else {
+
+		cout << " sca jugador 2: ";
+
+	}
+	int cambioFilaBola(int fila_bola) {
+		if (fila_bola == 1) {
+			fila_bola == 0;
+			return fila_bola;
+		}
+		else if (fila_bola == 0) {
+			fila_bola == 1;
+			return fila_bola;
+		}
+	}
+
+	if (elegirSaque() == 0) {
+
+		fila_bola == 1;
+	}
+	else if (elegirSaque() == 1) {
+		fila_bola == 2;
+	}
+
+
+	while (!juegoTerminado) {
+
+		
+		if (golpeoBola() == 1) {
+
+			cout << " punto para: " << nombreJugador1;
+		}
+
+		if (golpeoBola() == 0) {
+
+			cout << " golpea: " << nombreJugador2;
+		}
+
+
+
+
 	}
 
 	cout << "El juego esta acabado" << endl;
