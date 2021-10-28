@@ -121,6 +121,27 @@ int main() {
 	cin >> nombreJugador1;
 	cout << "Introduce el nombre del jugador 2: ";
 	cin >> nombreJugador2;
+	
+	if (habilidadJugador1 > 3 ||habilidadJugador1 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
+	else if (habilidadJugador2 > 3 || habilidadJugador2 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
+	else if (velocidadJugador1 > 3 || velocidadJugador1 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
+	else if (velocidadJugador2 > 3 || velocidadJugador2 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
 	//cout << "Gana " << nombreJugador2 << endl;
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
