@@ -121,6 +121,14 @@ int main() {
 	cin >> nombreJugador1;
 	cout << "Introduce el nombre del jugador 2: ";
 	cin >> nombreJugador2;
+	cout << "Introduce la velocidad del jugador 1 (Intervalo 1-3): ";
+	cin >> velocidadJugador1;
+	cout << "Introduce la habilidad del jugador 1 (Intervalo 1-3): ";
+	cin >> habilidadJugador1;
+	cout << "Introduce la velocidad del jugador 2 (Intervalo 1-3): ";
+	cin >> velocidadJugador2;
+	cout << "Introduce la habilidad del jugador 2 (Intervalo 1-3): ";
+	cin >> habilidadJugador2;
 	
 	if (habilidadJugador1 > 3 ||habilidadJugador1 < 1) {
 
