@@ -58,13 +58,16 @@ void mostrarMarcadorActual(int puntuacionJugador1, int puntuacionJugador2)
 }
 
 int elegirGanador() {
+
+	int eleccion;
+	eleccion = rand() % 3;
 	while (true) {
 		if (eleccion == 1) {
-			cout << "Gana el punto el jugador 1" << endl;
+			cout << "Gana jugador 1" << endl;
 			return 1;
 		}
 		else if (eleccion == 2) {
-			cout << "Gana el punto el jugador 2" << endl;
+			cout << "Gana jugador 2" << endl;
 			return 2;
 		}
 		else {
@@ -73,6 +76,7 @@ int elegirGanador() {
 		}
 	}
 }
+
 bool juegoEstaTerminado(int puntuacion1, int puntuacion2)
 {
 	//El juego se da por terminado si:
@@ -81,12 +85,12 @@ bool juegoEstaTerminado(int puntuacion1, int puntuacion2)
 
 	if (puntuacion1 == 4 && puntuacion2 <= 2)//Jugador 1 gana
 	{
-		cout << "Gana el juego el jugador 1" << endl;
+		cout << "Gana jugador 1" << endl;
 		return true;
 	}
 	else if (puntuacion2 == 4 && puntuacion1 <= 2)//Jugador 2 gana
 	{
-		cout << "Gana el juego el jugador 2" << endl;
+		cout << "Gana jugador 2" << endl;
 		return true;
 	}
 	else if (puntuacion1 == 5)//Jugador 1 gana en ventaja
@@ -109,13 +113,6 @@ bool juegoEstaTerminado(int puntuacion1, int puntuacion2)
 int main() {
 	bool juegoTerminado = false;
 	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
-	int LIM_INF_VEL = 1, LIM_INF_HAB = 1;
-	int LIM_SUP_VEL = 3, LIM_SUP_HAB = 3;
-	int ANCHO_PISTA = 7;
-	int posicionBola = 4, filaBola = 0, posicionJugador1 = 4, posicionJugador2 = 4;
-	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2;
-
-
 	string nombreJugador1, nombreJugador2;
 	srand(time(NULL));
 	system("chcp 1252");
@@ -124,35 +121,30 @@ int main() {
 	cin >> nombreJugador1;
 	cout << "Introduce el nombre del jugador 2: ";
 	cin >> nombreJugador2;
-	cout << "Introduce la velocidad del jugador 1 (Intervalo 1-3): ";
-	cin >> velocidadJugador1;
-	cout << "Introduce la habilidad del jugador 1 (Intervalo 1-3): ";
-	cin >> habilidadJugador1;
-	cout << "Introduce la velocidad del jugador 2 (Intervalo 1-3): ";
-	cin >> velocidadJugador2;
-	cout << "Introduce la habilidad del jugador 2 (Intervalo 1-3): ";
-	cin >> habilidadJugador2;
 	//cout << "Gana " << nombreJugador2 << endl;
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
 	string breakTest;
 
-	while (!juegoTerminado) {
+	while (!juegoTerminado)
+	{
 		//elegirGanador();//Devuelve 1 o 2
 		if (elegirGanador() == 1)
 		{
 			puntuacionJugador1++;
 		}
-		else if (elegirGanador() == 2)
+		else
 		{
 			puntuacionJugador2++;
 		}
+
 		//Controlar deuce
 		if (puntuacionJugador1 == 4 && puntuacionJugador2 == 4)
 		{
 			puntuacionJugador1 = 3;
 			puntuacionJugador2 = 3;
 		}
+
 		mostrarMarcadorActual(puntuacionJugador1, puntuacionJugador2);
 		juegoTerminado = juegoEstaTerminado(puntuacionJugador1, puntuacionJugador2);
 		if (juegoTerminado == true)
@@ -160,10 +152,10 @@ int main() {
 			puntuacionJugador1 = 0;
 			puntuacionJugador2 = 0;
 			juegoTerminado = false;
-			exit(1);
-			system("pause");
-
 		}
 		cin >> breakTest;
 	}
+
+	cout << "El juego esta acabado" << endl;
+	return 0;
 }
