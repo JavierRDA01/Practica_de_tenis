@@ -8,7 +8,7 @@ using namespace std;
 
 int partido(int posicionJug1, int posicionJug2, int posicionBola) {
 	if (golpeoBola() == 0) {
-		
+
 	}
 }
 
@@ -42,7 +42,7 @@ void elegirSaque(string jugador1, string jugador2) {
 		cout << "Saca " << jugador1;
 		saque = 0;
 	}
-	else if (num == 1){
+	else if (num == 1) {
 		cout << "Saca " << jugador2;
 		saque = 1;
 	}
@@ -194,6 +194,29 @@ int main() {
 	cin >> velocidadJugador2;
 	cout << "Introduce la habilidad del jugador 2 (Intervalo 1-3): ";
 	cin >> habilidadJugador2;
+	
+
+	if (habilidadJugador1 > 3 || habilidadJugador1 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
+	else if (habilidadJugador2 > 3 || habilidadJugador2 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
+	else if (velocidadJugador1 > 3 || velocidadJugador1 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
+	else if (velocidadJugador2 > 3 || velocidadJugador2 < 1) {
+
+		cout << "introduzca numeros entre el 1 y 3";
+		exit(1);
+	}
+
 	//cout << "Gana " << nombreJugador2 << endl;
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
@@ -225,6 +248,7 @@ int main() {
 			puntuacionJugador1 = 0;
 			puntuacionJugador2 = 0;
 			juegoTerminado = false;
+			exit(1);
 		}
 		cin >> breakTest;
 	}
