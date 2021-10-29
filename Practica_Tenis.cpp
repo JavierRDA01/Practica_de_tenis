@@ -5,6 +5,7 @@
 using namespace std;
 
 
+
 const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
 const int LIM_SUP_VEL = 3;
@@ -13,54 +14,60 @@ const int ANCHO_PISTA = 7;
 bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = false;
 
+string introducirNombre(string numeroJugador);
+
+int introducirDato(string nombreJugador, int habilidadJugador, int velocidadJugador);
+
+string marcador(int puntuacion);
+
 void mostrarMarcadorActual(int puntuacionJugador1, int puntuacionJugador2);
 
 bool juegoEstaTerminado(int puntuacion1, int puntuacion2);
 
-void introducirDato(string nombreJugador1, string nombreJugador2, int habilidadJugador1, int habilidadJugador2, int velocidadJugador1, int velocidadJugador2);
+int correTenista(int posicion_tenista, int velocidad, int posicionBola);
 
-int correTenista(int posicionTenista, int velocidad, int posicionBola, string nombreJugador);
+int golpeoBola(int posicion_tenista, int habilidad, int posicionBola);
 
-int golpeoBola(int posicion_tenista, int habilidad, int ANCHO_PISTA, int LIM_INF_HAB);
-
-int partido(string nombreJugador1, string nombreJugador2, int ganador, int velocidad, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2, int ANCHO_PISTA);
+int partido(string nombreJugador1, string nombreJugador2, int ganador, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int habilidadJugador2);
 
 int main()
 {
 
-	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, velocidad;
-	int puntuacionJugador1 = 0, puntuacionJugador2 = 0, ganador = 0, filaBola = 0;
+	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2;
+	int punto = 0, filaBola = 0;
 	string nombreJugador1, nombreJugador2;
 	bool JUEGO_TERMMINADO = false;
+	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
 	int posicionJugador1 = 4;
 	int posicionJugador2 = 4, posicionBola = 4;
-	const int ANCHO_PISTA = 7;
 	srand(time(NULL));
 	system("chcp 1252");
 	system("cls");
 
-	introducirDato(nombreJugador1, nombreJugador2, habilidadJugador1, habilidadJugador2, velocidadJugador1, velocidadJugador2);
+	nombreJugador1 = introducirNombre("1");
+	velocidadJugador1 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
+	habilidadJugador1 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
+	nombreJugador2 = introducirNombre("2");
+	velocidadJugador2 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
+	habilidadJugador2 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
 
 	//cout << "Gana " << nombreJugador2 << endl;
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
 	string breakTest;
 
-
-
-	while (JUEGO_TERMMINADO == false)
+	while (!JUEGO_TERMMINADO)
 	{
-		//elegirGanador();//Devuelve 1 o 2
-		introducirDato(nombreJugador1, nombreJugador2, habilidadJugador1, habilidadJugador2, velocidadJugador1, velocidadJugador2);
-		ganador = partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA);
+		punto = partido(nombreJugador1, nombreJugador2, punto, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, habilidadJugador2);
 
-		if (partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA) == 1)
+		if (punto == 1)
 		{
+			punto == 0;
 			puntuacionJugador1++;
 		}
-
-		else if (partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA) == 2)
+		else if (punto == 2)
 		{
+			punto == 0;
 			puntuacionJugador2++;
 		}
 
@@ -79,14 +86,58 @@ int main()
 			puntuacionJugador2 = 0;
 			JUEGO_TERMMINADO = false;
 		}
-		partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA);
 		cin >> breakTest;
 	}
-
-
 	cout << "El juego esta acabado" << endl;
+	return 0;
 }
 
+string introducirNombre(string numeroJugador)
+{
+	string nombreJugador;
+	cout << "Introduce el nombre del jugador: " << numeroJugador;
+	cin >> nombreJugador;
+	return nombreJugador;
+}
+int introducirDato(string tipoDato, int limiteInferior, int limiteSuperior)
+{
+	int datoNumerico;
+	cout << "Introduce su " << tipoDato << "(Intervalo (" << limiteInferior << " - " << limiteSuperior << ")";
+	cin >> datoNumerico;
+	while (datoNumerico <= limiteSuperior && datoNumerico >= limiteInferior) 
+	{
+		cout << "Datos introducidos incorrectamente, vuelva a introducir los datos entre los valores " << limiteInferior << " y " << limiteSuperior;
+		cin >> datoNumerico;
+	}
+	return datoNumerico;
+}
+
+string marcador(int puntuacion)
+{
+	if (puntuacion == 0)
+	{
+		return "00";
+	}
+	else if (puntuacion == 1)
+	{
+		return "15";
+	}
+	else if (puntuacion == 2)
+	{
+		return "30";
+	}
+	else if (puntuacion == 3)
+	{
+		return "40";
+	}
+	else if (puntuacion == 4)
+	{
+		return "[Ventaja]";
+	}
+	else {
+		return"";
+	}
+}
 void mostrarMarcadorActual(int puntuacionJugador1, int puntuacionJugador2)
 {
 	string marcadorJugador1, marcadorJugador2;
@@ -97,39 +148,21 @@ void mostrarMarcadorActual(int puntuacionJugador1, int puntuacionJugador2)
 		return;
 	}
 
-	if (puntuacionJugador1 == 0) {
-		marcadorJugador1 = "00";
-	}
-	else if (puntuacionJugador1 == 1) {
-		marcadorJugador1 = "15";
-	}
-	else if (puntuacionJugador1 == 2) {
-		marcadorJugador1 = "30";
-	}
-	else if (puntuacionJugador1 == 3) {
-		marcadorJugador1 = "40";
+	if (puntuacionJugador1 >= 0 && puntuacionJugador1 <= 3) {
+		marcadorJugador1 = marcador(puntuacionJugador1);
 	}
 	else if (puntuacionJugador1 == 4 && puntuacionJugador2 > 2) {
-		marcadorJugador1 = "[Ventaja]";
+		marcadorJugador1 = marcador(puntuacionJugador1);
 	}
 	else {
 		marcadorJugador1 = "[Punto]";
 	}
 
-	if (puntuacionJugador2 == 0) {
-		marcadorJugador2 = "00";
-	}
-	else if (puntuacionJugador2 == 1) {
-		marcadorJugador2 = "15";
-	}
-	else if (puntuacionJugador2 == 2) {
-		marcadorJugador2 = "30";
-	}
-	else if (puntuacionJugador2 == 3) {
-		marcadorJugador2 = "40";
+	if (puntuacionJugador2 >= 0 && puntuacionJugador2 <= 3) {
+		marcadorJugador2 = marcador(puntuacionJugador2);
 	}
 	else if (puntuacionJugador2 == 4 && puntuacionJugador1 > 2) {
-		marcadorJugador2 = "[Ventaja]";
+		marcadorJugador2 = marcador(puntuacionJugador2);
 	}
 	else
 	{
@@ -172,42 +205,7 @@ bool juegoEstaTerminado(int puntuacion1, int puntuacion2)
 	}
 }
 
-void introducirDato(string nombreJugador1, string nombreJugador2, int habilidadJugador1, int habilidadJugador2, int velocidadJugador1, int velocidadJugador2) {
-	cout << "Introduce el nombre del jugador 1: ";
-	cin >> nombreJugador1;
-	cout << "Introduce el nombre del jugador 2: ";
-	cin >> nombreJugador2;
-	cout << "Introduce la velocidad del jugador 1 (Intervalo 1-3): ";
-	cin >> velocidadJugador1;
-	cout << "Introduce la habilidad del jugador 1 (Intervalo 1-3): ";
-	cin >> habilidadJugador1;
-	cout << "Introduce la velocidad del jugador 2 (Intervalo 1-3): ";
-	cin >> velocidadJugador2;
-	cout << "Introduce la habilidad del jugador 2 (Intervalo 1-3): ";
-	cin >> habilidadJugador2;
 
-	if (habilidadJugador1 > 3 || habilidadJugador1 < 1) {
-
-		cout << "introduzca numeros entre el 1 y 3";
-		exit(1);
-	}
-	else if (habilidadJugador2 > 3 || habilidadJugador2 < 1) {
-
-		cout << "introduzca numeros entre el 1 y 3";
-		exit(1);
-	}
-	else if (velocidadJugador1 > 3 || velocidadJugador1 < 1) {
-
-		cout << "introduzca numeros entre el 1 y 3";
-		exit(1);
-	}
-	else if (velocidadJugador2 > 3 || velocidadJugador2 < 1) {
-
-		cout << "introduzca numeros entre el 1 y 3";
-		exit(1);
-	}
-
-}
 
 int correTenista(int posicionTenista, int velocidad, int posicionBola, string nombreJugador)
 {
@@ -260,42 +258,35 @@ int golpeoBola(int posicion_tenista, int habilidad, int ANCHO_PISTA, int LIM_INF
 		probabilidadExito = (100 - ((posicionDestino - habilidad) / ((ANCHO_PISTA - 1) - LIM_INF_HAB) * 100)); // porcentaje de acierto
 		if (acierto <= probabilidadExito)
 		{
+			cout << "Y lanza la bola a " << posicionDestino << endl;
 			return posicionDestino;
 		}
 		else if (acierto > probabilidadExito)
 		{
-			if (desvio == 0) 
+			if (desvio == 0)
 			{
+				cout << "Y lanza la bola a " << posicionDestino << " pero se desvía a la derecha" << endl;
 				return posicionDestino + 1; // Desvío a la derecha
 			}
-			else if (desvio == 1) 
+			else if (desvio == 1)
 			{
+				cout << "Y lanza la bola a " << posicionDestino << " pero se desvía a la izquierda" << endl;
 				return posicionDestino - 1; // Desvío a la izquierda
-			}
 			}
 		}
 	}
+}
 
-int partido(string nombreJugador1, string nombreJugador2, int ganador,int velocidad, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2, int ANCHO_PISTA) //Funcion que devuelva quien es el ganador del punto
+
+int partido(string nombreJugador1, string nombreJugador2, int punto, int velocidad, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2, int ANCHO_PISTA) //Funcion que devuelva quien es el ganador del punto
 {
-	int posicion_tenista, habilidad, velocidad1, posicion_jugador;
-	const int LIM_INF_HAB = 1;
-	while (ganador != 1 || ganador != 2) //Bucle que se ejecuta hasta que haya un ganador del punto
+	while (punto != 1 && punto != 2) //Bucle que se ejecuta hasta que haya un ganador del punto
 	{
 		if (filaBola == 1)// En el caso de que la bola la empiece jugando el jugador1
 		{
 			cout << "Saca " << nombreJugador1 << endl;
-			posicionBola = golpeoBola( posicion_tenista,  habilidad,  ANCHO_PISTA,  LIM_INF_HAB); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+			posicionBola = golpeoBola(posicionJugador1, habilidadJugador1, posicionBola); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 
-			if (posicionJugador2 < posicionBola) {
-				posicionJugador2 = posicionJugador2 + velocidad;
-				ganador = 2;
-
-			}
-			else if (posicionJugador2 > posicionBola) {
-				posicionJugador2 = posicionJugador2 - velocidad;
-				ganador = 2;
-			}
 			if (posicionBola <= 0 || posicionBola >= (ANCHO_PISTA + 1)) //Si la bola sale fuera será punto para el jugador 2
 			{
 				cout << "Bola fuera" << endl;
@@ -304,48 +295,33 @@ int partido(string nombreJugador1, string nombreJugador2, int ganador,int veloci
 			else if (posicionBola > 0 && posicionBola < (ANCHO_PISTA + 1)) //Si la bola cae dentro del campo vemos si sigue el juego
 			{
 				posicionJugador2 = correTenista(posicionJugador2, velocidadJugador2, posicionBola, nombreJugador2); //La posición del Jugador2 viene dada por la función correTenista
-					if (posicionJugador2 = posicionBola) {
-
-					}
-					else if (filaBola == 2) {
-						cout << "Saca " << nombreJugador2 << endl;
-						posicionBola = golpeoBola(posicion_tenista, habilidad, ANCHO_PISTA, LIM_INF_HAB);
-							filaBola = 2; //Si el jugador 2 llega a la bola significa que el jugador 2 pasa a golpear 
-
-							if (posicionBola <= 0 || posicionBola >= (ANCHO_PISTA + 1)) {
-								cout << "Bola fuera" << endl;
-								return 1;
-							}
-							else if (posicionBola > 0 || posicionBola < (ANCHO_PISTA + 1)) {
-								posicionJugador1 = correTenista(posicionJugador1, velocidad1, posicion_jugador, nombreJugador1);
-									if (posicionJugador1 = posicionBola) {
-
-										filaBola = 1;
-
-									}
-									else if (posicionJugador1 != posicionBola) {
-
-										if (posicionJugador1 < posicionBola) {
-											posicionJugador1 = posicionJugador1 + velocidad;
-												ganador = 1;
-
-										}
-										else if (posicionJugador1 > posicionBola) {
-											posicionJugador1 = posicionJugador1 - velocidad;
-											ganador = 1;
-										}
-
-									}
-
-							}
-
-							else if (posicionJugador2 != posicionBola) {
-								return 1; //Si el jugador no llega a la bola es punto para el otro Jugador1
-							}
-					}
+				if (posicionJugador2 = posicionBola) {
+					cout << nombreJugador2 << " llega a la bola" << endl;
+					filaBola == 2;
+				}
 			}
-				
+		}
+		else if (filaBola == 2)
+		{
+			cout << "Saca " << nombreJugador1 << endl;
+			posicionBola = golpeoBola(posicionJugador2, habilidadJugador2, posicionBola);
 
+			if (posicionBola <= 0 || posicionBola >= (ANCHO_PISTA + 1)) //Si la bola sale fuera será punto para el jugador 2
+			{
+				cout << "Bola fuera" << endl;
+				return 1;
+			}
+			else if (posicionBola > 0 && posicionBola < (ANCHO_PISTA + 1)) //Si la bola cae dentro del campo vemos si sigue el juego
+			{
+				posicionJugador1 = correTenista(posicionJugador2, velocidadJugador2, posicionBola, nombreJugador2); //La posición del Jugador2 viene dada por la función correTenista
+				if (posicionJugador2 = posicionBola) {
+					cout << nombreJugador2 << " llega a la bola" << endl;
+					filaBola == 1;
+				}
+				else if (posicionJugador2 != posicionBola) {
+					return 2;
 			}
 		}
 	}
+}
+	
