@@ -5,7 +5,6 @@
 using namespace std;
 
 
-
 const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
 const int LIM_SUP_VEL = 3;
@@ -14,30 +13,28 @@ const int ANCHO_PISTA = 7;
 bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = false;
 
-int elegirGanador();
-
 void mostrarMarcadorActual(int puntuacionJugador1, int puntuacionJugador2);
 
 bool juegoEstaTerminado(int puntuacion1, int puntuacion2);
 
 void introducirDato(string nombreJugador1, string nombreJugador2, int habilidadJugador1, int habilidadJugador2, int velocidadJugador1, int velocidadJugador2);
 
-int correTenista(int posicion_tenista, int velocidad, int posicionBola);
+int correTenista(int posicionTenista, int velocidad, int posicionBola, string nombreJugador);
 
-int golpeoBola(int posicion_tenista, int habilidad, int posicion_bola);
+int golpeoBola(int posicion_tenista, int habilidad, int ANCHO_PISTA, int LIM_INF_HAB);
 
-int partido(string nombreJugador1, string nombreJugador2, int ganador, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int habilidadJugador2);
+int partido(string nombreJugador1, string nombreJugador2, int ganador, int velocidad, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2, int ANCHO_PISTA);
 
 int main()
 {
 
-	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2;
-	int puntuacionJugador1, puntuacionJugador2, ganador = 0, filaBola = 0;
+	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, velocidad;
+	int puntuacionJugador1 = 0, puntuacionJugador2 = 0, ganador = 0, filaBola = 0;
 	string nombreJugador1, nombreJugador2;
 	bool JUEGO_TERMMINADO = false;
-	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
 	int posicionJugador1 = 4;
 	int posicionJugador2 = 4, posicionBola = 4;
+	const int ANCHO_PISTA = 7;
 	srand(time(NULL));
 	system("chcp 1252");
 	system("cls");
@@ -55,22 +52,16 @@ int main()
 	{
 		//elegirGanador();//Devuelve 1 o 2
 		introducirDato(nombreJugador1, nombreJugador2, habilidadJugador1, habilidadJugador2, velocidadJugador1, velocidadJugador2);
-		elegirGanador();
-		ganador = partido(nombreJugador1, nombreJugador2, ganador, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, habilidadJugador2);
+		ganador = partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA);
 
-		if (elegirGanador() == 1)
+		if (partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA) == 1)
 		{
-			if (partido(nombreJugador1, nombreJugador2, ganador, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, habilidadJugador2) == 1)
-			{
-				puntuacionJugador1++;
-			}
+			puntuacionJugador1++;
 		}
-		else
+
+		else if (partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA) == 2)
 		{
-			if (partido(nombreJugador1, nombreJugador2, ganador, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, habilidadJugador2) == 2)
-			{
-				puntuacionJugador2++;
-			}
+			puntuacionJugador2++;
 		}
 
 		//Controlar deuce
@@ -88,7 +79,7 @@ int main()
 			puntuacionJugador2 = 0;
 			JUEGO_TERMMINADO = false;
 		}
-		partido(nombreJugador1, nombreJugador2, ganador, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, habilidadJugador2);
+		partido(nombreJugador1, nombreJugador2, ganador, velocidad, filaBola, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, ANCHO_PISTA);
 		cin >> breakTest;
 	}
 
@@ -285,16 +276,16 @@ int golpeoBola(int posicion_tenista, int habilidad, int ANCHO_PISTA, int LIM_INF
 		}
 	}
 
-
 int partido(string nombreJugador1, string nombreJugador2, int ganador,int velocidad, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2, int ANCHO_PISTA) //Funcion que devuelva quien es el ganador del punto
 {
-	int posicion_tenista, habilidad, posicion_bola, velocidad1, posicion_jugador;
+	int posicion_tenista, habilidad, velocidad1, posicion_jugador;
+	const int LIM_INF_HAB = 1;
 	while (ganador != 1 || ganador != 2) //Bucle que se ejecuta hasta que haya un ganador del punto
 	{
 		if (filaBola == 1)// En el caso de que la bola la empiece jugando el jugador1
 		{
 			cout << "Saca " << nombreJugador1 << endl;
-			posicionBola = golpeoBola(posicion_tenista, habilidad, posicion_bola); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+			posicionBola = golpeoBola( posicion_tenista,  habilidad,  ANCHO_PISTA,  LIM_INF_HAB); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 
 			if (posicionJugador2 < posicionBola) {
 				posicionJugador2 = posicionJugador2 + velocidad;
@@ -318,7 +309,7 @@ int partido(string nombreJugador1, string nombreJugador2, int ganador,int veloci
 					}
 					else if (filaBola == 2) {
 						cout << "Saca " << nombreJugador2 << endl;
-						posicionBola = golpeoBola(posicion_tenista, habilidad, posicion_bola);
+						posicionBola = golpeoBola(posicion_tenista, habilidad, ANCHO_PISTA, LIM_INF_HAB);
 							filaBola = 2; //Si el jugador 2 llega a la bola significa que el jugador 2 pasa a golpear 
 
 							if (posicionBola <= 0 || posicionBola >= (ANCHO_PISTA + 1)) {
@@ -358,4 +349,3 @@ int partido(string nombreJugador1, string nombreJugador2, int ganador,int veloci
 			}
 		}
 	}
-}
