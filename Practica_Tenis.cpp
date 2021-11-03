@@ -43,15 +43,17 @@ int main()
 	srand(time(NULL));
 	system("chcp 1252");
 	system("cls");
+	
+	cout << "¡Bienvenido al simulador de partidos de tenis!" << endl;
 
 	nombreJugador1 = introducirNombre("1");
 	velocidadJugador1 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
 	habilidadJugador1 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
+	
 	nombreJugador2 = introducirNombre("2");
 	velocidadJugador2 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
 	habilidadJugador2 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
 
-	//cout << "Gana " << nombreJugador2 << endl;
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
 	jugadorTurno = elegirSaque(nombreJugador1, nombreJugador2);
@@ -81,17 +83,6 @@ int main()
 		mostrarMarcadorActual(puntuacionJugador1, puntuacionJugador2, nombreJugador1, nombreJugador2);
 		JUEGO_TERMINADO = juegoEstaTerminado(puntuacionJugador1, puntuacionJugador2);
 		cout << "Presione una tecla para continuar... ";
-		/*if (JUEGO_TERMINADO == true)//
-		{
-			puntuacionJugador1 = 0;
-			puntuacionJugador2 = 0;
-			JUEGO_TERMINADO = false;
-		}*/
-
-		/*if (puntuacionJugador1 > puntuacionJugador2)
-			cout << "El jugador " << nombreJugador1 << " gana!";
-		else
-			cout << "El jugador " << nombreJugador2 << " gana!";*/
 
 		cin >> breakTest;
 	}
@@ -236,7 +227,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 	{
 		if (MODO_DEBUG == true)
 		{
-			cout << nombreJugador << " llega sin problemas a la bola" << endl;
+			cout << nombreJugador << " llega sin problemas" << endl;
 		}
 		posicionTenista = posicionBola;
 		return posicionTenista;
@@ -247,7 +238,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 
 			if (MODO_DEBUG == true)
 			{
-				diferenciaCasillas = posicionBola + posicionTenista;
+				diferenciaCasillas = posicionTenista - posicionBola;
 				cout << nombreJugador << " intenta llegar por la derecha pero se queda en la posicion " << posicionTenista << " a " << diferenciaCasillas << " de su objetivo y pierde el punto" << endl;
 			}
 			posicionTenista = posicionTenista - velocidad;
@@ -282,16 +273,16 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 		cout << "Introduzca la posición destino: ";
 		cin >> posicionDestino;
 	}
-	else 
+	else
 	{
 		posicionDestino = rand() % (ANCHO_PISTA + 1); // posición destino de la bola
 	}
 	diferencia = abs(posicionDestino - posicion_tenista); //
 	if (diferencia <= habilidad)
 	{
-		if (MODO_DEBUG == true) 
+		if (MODO_DEBUG == true)
 		{
-			cout << nombreGolpeadorBola << "lanza la bola a " << posicionDestino << endl;
+			cout << nombreGolpeadorBola << " lanza la bola a la posición " << posicionDestino << endl;
 		}
 		return posicionDestino;
 	}
@@ -302,9 +293,9 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 		{
 			if (acierto <= probabilidadExito)
 			{
-				if (MODO_DEBUG == true) 
+				if (MODO_DEBUG == true)
 				{
-					cout << nombreGolpeadorBola << "lanza la bola a " << posicionDestino << endl;
+					cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << endl;
 				}
 				return posicionDestino;
 			}
@@ -312,17 +303,17 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 			{
 				if (desvio == 0)
 				{
-					if (MODO_DEBUG ==true)
+					if (MODO_DEBUG == true)
 					{
-						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la derecha" << endl;
+						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la derecha y acaba en la posición " << posicionDestino + 1 << endl;
 					}
 					return posicionDestino + 1; // Desvío a la derecha
 				}
 				else if (desvio == 1)
 				{
-					if (MODO_DEBUG == true) 
+					if (MODO_DEBUG == true)
 					{
-						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la izquierda" << endl;
+						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la izquierda y acaba en la posicion " << posicionDestino - 1 << endl;
 					}
 					return posicionDestino - 1; // Desvío a la izquierda
 				}
@@ -376,7 +367,7 @@ int partido(string nombreJugador1, string nombreJugador2, int jugadorSaque, int 
 
 		if (posicionBola <= 0 || posicionBola >= (ANCHO_PISTA + 1)) //Si la bola sale fuera será punto para el jugador 2
 		{
-			cout << "Bola fuera" << endl;
+			cout << nombreJugadorActual << " tira la bola fuera de la pista" << endl;
 			if (jugadorTurnoActual == 1)
 			{
 				cout << nombreJugadorContrario << " gana el punto" << endl; //Gana el contrario
