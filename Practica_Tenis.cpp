@@ -1,4 +1,5 @@
 //Rishi Pursnani Mirpuri y Javier Ramírez de Andrés
+//Final de la versión 1
 #include <iostream>
 #include <string>
 #include <time.h>
