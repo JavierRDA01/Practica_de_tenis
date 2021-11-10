@@ -1,4 +1,5 @@
 //Rishi Pursnani Mirpuri y Javier Ramírez de Andrés
+//version 2
 #include <iostream>
 #include <string>
 #include <time.h>
@@ -70,8 +71,6 @@ int main()
 		punto = partido(nombreJugador1, nombreJugador2, jugadorTurno, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2);
 		cout <<endl;
 		
-		
-
 		if (punto == 1)
 		{
 			punto = 0;
@@ -89,6 +88,9 @@ int main()
 			puntuacionJugador1 = 3;
 			puntuacionJugador2 = 3;
 		}
+		
+
+
 		pintarPeloteo(nombreJugador1, nombreJugador2, posicionJugador1, posicionJugador2, posicionBola);
 
 		mostrarMarcadorActual(puntuacionJugador1, puntuacionJugador2, nombreJugador1, nombreJugador2);
@@ -419,60 +421,46 @@ int partido(string nombreJugador1, string nombreJugador2, int jugadorSaque, int 
 	}
 }
 
+
 enum tTenista
 {
 	NADIE, TENISTA1, TENISTA2
 };
 
+tTenista opcion;
+opcion = 2;
+cout << opcion << endl;
+
+
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola)
 {
-	if (elegirSaque(nombreJugador1, nombreJugador2) == 1)
+	
+
+	cout << setw(posicionJugador1 + 1) << nombreJugador1 << endl;
+	cout << "  - - - - - - - " << endl;
+	for (int i = 1; i <= LARGO_PISTA; i++)
 	{
-		cout << setw(posicionJugador1) << nombreJugador1 << endl;
-		cout << "  - - - - - - - " << endl;
-		for (int i = 1; i <= LARGO_PISTA; i++)
+		for (int i = 1; i <= ANCHO_PISTA; i++)
 		{
-			for (int i = 1; i <= ANCHO_PISTA; i++)
-			{
-				cout << setw(2) << "|";
-			}
-			cout << setw(2) << "|" << endl;
+			cout << setw(2) << "|";
 		}
-		cout << "--1-2-3-4-5-6-7--" << endl;
-		for (int i = 1; i <= LARGO_PISTA; i++)
-		{
-			for (int i = 1; i <= ANCHO_PISTA; i++)
-			{
-				cout << setw(2) << "|";
-			}
-			cout << setw(2) << "|" << endl;
-		}
-		cout << "  - - - - - - - " << endl;
+		cout << setw(2) << "|" << endl;
 	}
-	if (elegirSaque(nombreJugador1, nombreJugador2) == 2)
+	cout << "--1-2-3-4-5-6-7--" << endl;
+	for (int i = 1; i <= LARGO_PISTA; i++)
 	{
-		cout << "  - - - - - - - " << endl;
-		for (int i = 1; i <= LARGO_PISTA; i++)
+		for (int i = 1; i <= ANCHO_PISTA; i++)
 		{
-			for (int i = 1; i <= ANCHO_PISTA; i++)
-			{
-				cout << setw(2) << "|";
-			}
-			cout << setw(2) << "|" << endl;
+			cout << setw(2) << "|";
 		}
-		cout << "--1-2-3-4-5-6-7--" << endl;
-		for (int i = 1; i <= LARGO_PISTA; i++)
-		{
-			for (int i = 1; i <= ANCHO_PISTA; i++)
-			{
-				cout << setw(2) << "|";
-			}
-			cout << setw(2) << "|" << endl;
-		}
-		cout << "  - - - - - - - " << endl;
+		cout << setw(2) << "|" << endl;
 	}
-	cout << setw(posicionJugador2) << nombreJugador2 << endl;
+	cout << "  - - - - - - - " << endl;
+	cout << setw(posicionJugador2 + 1) << nombreJugador2 << endl;
+
+	cout << setw(posicionBola)<<"o"<<endl;
 }
+
 
 // posicion = setw(variable)
 
