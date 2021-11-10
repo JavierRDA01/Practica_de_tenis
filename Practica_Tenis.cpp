@@ -1,5 +1,4 @@
 //Rishi Pursnani Mirpuri y Javier Ramírez de Andrés
-//version 2
 #include <iostream>
 #include <string>
 #include <time.h>
@@ -71,7 +70,7 @@ int main()
 		punto = partido(nombreJugador1, nombreJugador2, jugadorTurno, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2);
 		cout <<endl;
 		
-		pintarPeloteo(nombreJugador1,  nombreJugador2,  posicionJugador1,  posicionJugador2, posicionBola);
+		
 
 		if (punto == 1)
 		{
@@ -90,6 +89,7 @@ int main()
 			puntuacionJugador1 = 3;
 			puntuacionJugador2 = 3;
 		}
+		pintarPeloteo(nombreJugador1, nombreJugador2, posicionJugador1, posicionJugador2, posicionBola);
 
 		mostrarMarcadorActual(puntuacionJugador1, puntuacionJugador2, nombreJugador1, nombreJugador2);
 		JUEGO_TERMINADO = juegoEstaTerminado(puntuacionJugador1, puntuacionJugador2);
@@ -426,25 +426,55 @@ enum tTenista
 
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola)
 {
-	for (int i = 1; i <= LARGO_PISTA; i++)
+	if (elegirSaque(nombreJugador1, nombreJugador2) == 1)
 	{
-		for (int i = 1; i <= ANCHO_PISTA; i++)
+		cout << setw(posicionJugador1) << nombreJugador1 << endl;
+		cout << "  - - - - - - - " << endl;
+		for (int i = 1; i <= LARGO_PISTA; i++)
 		{
-			cout << setw(2) << "|";
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+			}
+			cout << setw(2) << "|" << endl;
 		}
-		cout << setw(2) << "|" << endl;
+		cout << "--1-2-3-4-5-6-7--" << endl;
+		for (int i = 1; i <= LARGO_PISTA; i++)
+		{
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+			}
+			cout << setw(2) << "|" << endl;
+		}
+		cout << "  - - - - - - - " << endl;
 	}
-	cout << "-----------------" << endl;
-	for (int i = 1; i <= LARGO_PISTA; i++)
+	if (elegirSaque(nombreJugador1, nombreJugador2) == 2)
 	{
-		for (int i = 1; i <= ANCHO_PISTA; i++)
+		cout << "  - - - - - - - " << endl;
+		for (int i = 1; i <= LARGO_PISTA; i++)
 		{
-			cout << setw(2) << "|";
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+			}
+			cout << setw(2) << "|" << endl;
 		}
-		cout << setw(2) << "|" << endl;
+		cout << "--1-2-3-4-5-6-7--" << endl;
+		for (int i = 1; i <= LARGO_PISTA; i++)
+		{
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+			}
+			cout << setw(2) << "|" << endl;
+		}
+		cout << "  - - - - - - - " << endl;
 	}
-	cout << endl;
+	cout << setw(posicionJugador2) << nombreJugador2 << endl;
 }
+
+// posicion = setw(variable)
 
 void introducirTenista(string& iniciales, int& habilidad, int& velocidad)
 {
