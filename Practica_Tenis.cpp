@@ -1,9 +1,10 @@
 //Rishi Pursnani Mirpuri y Javier Ramírez de Andrés
-//Final de la versión 1
+//version 2
 #include <iostream>
 #include <string>
 #include <time.h>
 #include <stdlib.h>
+#include <iomanip>
 using namespace std;
 
 const int LIM_INF_VEL = 1;
@@ -11,6 +12,8 @@ const int LIM_INF_HAB = 1;
 const int LIM_SUP_VEL = 3;
 const int LIM_SUP_HAB = 3;
 const int ANCHO_PISTA = 7;
+const int LARGO_PISTA = 3;
+const int JUEGOS_SET = 3;
 bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = true;
 
@@ -32,6 +35,10 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeador);
 
 int partido(string nombreJugador1, string nombreJugador2, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2);//Funcion que devuelva quien es el ganador del punto
 
+void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola);
+
+void introducirTenista(string& iniciales, int& habilidad, int& velocidad);
+
 int main()
 {
 	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2;
@@ -44,13 +51,13 @@ int main()
 	srand(time(NULL));
 	system("chcp 1252");
 	system("cls");
-	
+
 	cout << "¡Bienvenido al simulador de partidos de tenis!" << endl;
 
 	nombreJugador1 = introducirNombre("1");
 	velocidadJugador1 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
 	habilidadJugador1 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
-	
+
 	nombreJugador2 = introducirNombre("2");
 	velocidadJugador2 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
 	habilidadJugador2 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
@@ -62,6 +69,9 @@ int main()
 	while (!JUEGO_TERMINADO)
 	{
 		punto = partido(nombreJugador1, nombreJugador2, jugadorTurno, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2);
+		cout <<endl;
+		
+		pintarPeloteo(nombreJugador1,  nombreJugador2,  posicionJugador1,  posicionJugador2, posicionBola);
 
 		if (punto == 1)
 		{
@@ -88,6 +98,7 @@ int main()
 		cin >> breakTest;
 	}
 	cout << "El juego esta acabado" << endl;
+	system("pause");
 	return 0;
 }
 
@@ -98,6 +109,7 @@ string introducirNombre(string numeroJugador)
 	cin >> nombreJugador;
 	return nombreJugador;
 }
+
 int introducirDato(string tipoDato, int limiteInferior, int limiteSuperior)
 {
 	int datoNumerico;
@@ -405,4 +417,38 @@ int partido(string nombreJugador1, string nombreJugador2, int jugadorSaque, int 
 			}
 		}
 	}
+}
+
+enum tTenista
+{
+	NADIE, TENISTA1, TENISTA2
+};
+
+void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola)
+{
+	for (int i = 1; i <= LARGO_PISTA; i++)
+	{
+		for (int i = 1; i <= ANCHO_PISTA; i++)
+		{
+			cout << setw(2) << "|";
+		}
+		cout << setw(2) << "|" << endl;
+	}
+	cout << "-----------------" << endl;
+	for (int i = 1; i <= LARGO_PISTA; i++)
+	{
+		for (int i = 1; i <= ANCHO_PISTA; i++)
+		{
+			cout << setw(2) << "|";
+		}
+		cout << setw(2) << "|" << endl;
+	}
+	cout << endl;
+}
+
+void introducirTenista(string& iniciales, int& habilidad, int& velocidad)
+{
+	cout << "introduzca las iniciales  del Jugador: ";
+	cin >> iniciales;
+	
 }
