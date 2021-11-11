@@ -107,10 +107,11 @@ int main()
 string introducirNombre(string numeroJugador)
 {
 	string nombreJugador;
-	cout << "Introduce el nombre del jugador " << numeroJugador << ": ";
+	cout << "Introduce las iniciales del jugador " << numeroJugador << ": ";
 	cin >> nombreJugador;
 	return nombreJugador;
 }
+
 
 int introducirDato(string tipoDato, int limiteInferior, int limiteSuperior)
 {
@@ -427,16 +428,16 @@ enum tTenista
 	NADIE, TENISTA1, TENISTA2
 };
 
-tTenista opcion;
-opcion = 2;
-cout << opcion << endl;
+//tTenista opcion;
+//opcion = 2;
+//cout << opcion << endl;
 
 
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola)
 {
 	
 
-	cout << setw(posicionJugador1 + 1) << nombreJugador1 << endl;
+	cout << setw(posicionJugador1 ) << nombreJugador1 << endl;
 	cout << "  - - - - - - - " << endl;
 	for (int i = 1; i <= LARGO_PISTA; i++)
 	{
@@ -456,7 +457,7 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 		cout << setw(2) << "|" << endl;
 	}
 	cout << "  - - - - - - - " << endl;
-	cout << setw(posicionJugador2 + 1) << nombreJugador2 << endl;
+	cout << setw(posicionJugador2 ) << nombreJugador2 << endl;
 
 	cout << setw(posicionBola)<<"o"<<endl;
 }
