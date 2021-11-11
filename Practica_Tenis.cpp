@@ -33,17 +33,22 @@ int correTenista(int posicion_tenista, int velocidad, int posicionBola, string n
 
 int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeador);
 
+enum tTenista { NADIE, TENISTA1, TENISTA2 };
+
 int partido(string nombreJugador1, string nombreJugador2, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2);//Funcion que devuelva quien es el ganador del punto
 
-void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola);
+void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola, tTenista bola_jugador);
 
 void introducirTenista(string& iniciales, int& habilidad, int& velocidad);
+
+
 
 int main()
 {
 	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2;
 	int punto = 0, jugadorTurno;
 	string nombreJugador1, nombreJugador2, breakTest;
+	tTenista bola_jugador;
 	bool JUEGO_TERMINADO = false;
 	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
 	int posicionJugador1 = 4;
@@ -66,11 +71,20 @@ int main()
 
 	jugadorTurno = elegirSaque(nombreJugador1, nombreJugador2);
 
+	if (jugadorTurno == 1)
+	{
+		bola_jugador = TENISTA1;
+	}
+	else
+	{
+		bola_jugador = TENISTA2;
+	}
+
 	while (!JUEGO_TERMINADO)
 	{
 		punto = partido(nombreJugador1, nombreJugador2, jugadorTurno, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2);
-		cout <<endl;
-		
+		cout << endl;
+
 		if (punto == 1)
 		{
 			punto = 0;
@@ -88,10 +102,9 @@ int main()
 			puntuacionJugador1 = 3;
 			puntuacionJugador2 = 3;
 		}
+
 		
-
-
-		pintarPeloteo(nombreJugador1, nombreJugador2, posicionJugador1, posicionJugador2, posicionBola);
+		pintarPeloteo(nombreJugador1, nombreJugador2, posicionJugador1, posicionJugador2, posicionBola, bola_jugador);
 
 		mostrarMarcadorActual(puntuacionJugador1, puntuacionJugador2, nombreJugador1, nombreJugador2);
 		JUEGO_TERMINADO = juegoEstaTerminado(puntuacionJugador1, puntuacionJugador2);
@@ -423,43 +436,68 @@ int partido(string nombreJugador1, string nombreJugador2, int jugadorSaque, int 
 }
 
 
-enum tTenista
+
+
+void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola, tTenista bola_jugador)
 {
-	NADIE, TENISTA1, TENISTA2
-};
-
-//tTenista opcion;
-//opcion = 2;
-//cout << opcion << endl;
-
-
-void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola)
-{
-	
-
-	cout << setw(posicionJugador1 ) << nombreJugador1 << endl;
-	cout << "  - - - - - - - " << endl;
-	for (int i = 1; i <= LARGO_PISTA; i++)
+	if (bola_jugador == 1)
 	{
-		for (int i = 1; i <= ANCHO_PISTA; i++)
+		cout << setw(posicionJugador1 * 2 + 2) << nombreJugador1 << endl;
+		cout << "  - - - - - - - " << endl;
+		for (int a = 1; a <= LARGO_PISTA; a++)
 		{
-			cout << setw(2) << "|";
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+				if (i == posicionBola && a == LARGO_PISTA)
+				{
+					cout << setw((posicionBola + 1) - posicionBola) << "o|";
+				}
+			}
+			cout << setw(2) << "|" << endl;
 		}
-		cout << setw(2) << "|" << endl;
-	}
-	cout << "--1-2-3-4-5-6-7--" << endl;
-	for (int i = 1; i <= LARGO_PISTA; i++)
-	{
-		for (int i = 1; i <= ANCHO_PISTA; i++)
+		cout << "--1-2-3-4-5-6-7--" << endl;
+		for (int i = 1; i <= LARGO_PISTA; i++)
 		{
-			cout << setw(2) << "|";
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+			}
+			cout << setw(2) << "|" << endl;
 		}
-		cout << setw(2) << "|" << endl;
+		cout << "  - - - - - - - " << endl;
+		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
+		
 	}
-	cout << "  - - - - - - - " << endl;
-	cout << setw(posicionJugador2 ) << nombreJugador2 << endl;
 
-	cout << setw(posicionBola)<<"o"<<endl;
+	else if (bola_jugador == 2)
+	{
+		cout << setw(posicionJugador1 * 2 + 2) << nombreJugador1 << endl;
+		cout << "  - - - - - - - " << endl;
+		for (int i = 1; i <= LARGO_PISTA; i++)
+		{
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+			}
+			cout << setw(2) << "|" << endl;
+		}
+		cout << "--1-2-3-4-5-6-7--" << endl;
+		for (int a = 1; a <= LARGO_PISTA; a++)
+		{
+			for (int i = 1; i <= ANCHO_PISTA; i++)
+			{
+				cout << setw(2) << "|";
+				if (i == posicionBola && a == LARGO_PISTA)
+				{
+					cout << setw((posicionBola + 1) - posicionBola) << "o|";
+				}
+			}
+			cout << setw(2) << "|" << endl;
+		}
+		cout << "  - - - - - - - " << endl;
+		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
+	}	
 }
 
 
@@ -469,5 +507,5 @@ void introducirTenista(string& iniciales, int& habilidad, int& velocidad)
 {
 	cout << "introduzca las iniciales  del Jugador: ";
 	cin >> iniciales;
-	
+
 }
