@@ -15,7 +15,7 @@ const int ANCHO_PISTA = 7;
 const int LARGO_PISTA = 3;
 const int JUEGOS_SET = 3;
 bool JUEGO_ALEATORIO = false;
-bool MODO_DEBUG = true;
+bool MODO_DEBUG = false;
 
 string introducirNombre(string numeroJugador);
 
@@ -27,7 +27,7 @@ int elegirSaque(string jugador1, string jugador2);
 
 void mostrarMarcadorActual(int puntuacionJugador1, int puntuacionJugador2, string nombreJugador1, string nombreJugador2);
 
-bool juegoEstaTerminado(int puntuacion1, int puntuacion2);
+int juegoEstaTerminado(int puntuacion1, int puntuacion2);
 
 int correTenista(int posicion_tenista, int velocidad, int posicionBola, string nombreJugador);
 
@@ -35,7 +35,11 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeador);
 
 enum tTenista { NADIE, TENISTA1, TENISTA2 };
 
+enum tPuntosJuego { NADA, QUINCE, TREINTA, CUARENTA, VENTAJA };
+
 int partido(string nombreJugador1, string nombreJugador2, int filaBola, int posicionJugador1, int posicionJugador2, int posicionBola, int velocidadJugador1, int habilidadJugador1, int velocidadJugador2, int habilidadJugador2);//Funcion que devuelva quien es el ganador del punto
+
+void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego puntos2, int juegos1, int juegos2, tTenista servicio_para);
 
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola, tTenista bola_jugador);
 
@@ -45,10 +49,12 @@ void introducirTenista(string& iniciales, int& habilidad, int& velocidad);
 
 int main()
 {
-	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2;
+	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, juegos1 = 0, juegos2 = 0;
 	int punto = 0, jugadorTurno;
 	string nombreJugador1, nombreJugador2, breakTest;
 	tTenista bola_jugador;
+	tTenista servicio_para;
+	tPuntosJuego puntos1, puntos2;
 	bool JUEGO_TERMINADO = false;
 	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
 	int posicionJugador1 = 4;
@@ -80,7 +86,16 @@ int main()
 		bola_jugador = TENISTA2;
 	}
 
-	while (!JUEGO_TERMINADO)
+	if (jugadorTurno == 1)
+	{
+		servicio_para = TENISTA1;
+	}
+	else
+	{
+		servicio_para = TENISTA2;
+	}
+
+	while (juegos1 != 3 || juegos2 != 3)
 	{
 		punto = partido(nombreJugador1, nombreJugador2, jugadorTurno, posicionJugador1, posicionJugador2, posicionBola, velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2);
 		cout << endl;
@@ -103,11 +118,81 @@ int main()
 			puntuacionJugador2 = 3;
 		}
 
-		
+		if (puntuacionJugador1 == 0)
+		{
+			puntos1 = NADA;
+		}
+		else if (puntuacionJugador1 == 1)
+		{
+			puntos1 = QUINCE;
+		}
+		else if (puntuacionJugador1 == 2)
+		{
+			puntos1 = TREINTA;
+		}
+		else if (puntuacionJugador1 == 3)
+		{
+			puntos1 = CUARENTA;
+		}
+		else if (puntuacionJugador1 == 4)
+		{
+			puntos1 = VENTAJA;
+		}
+
+		if (puntuacionJugador2 == 0)
+		{
+			puntos2 = NADA;
+		}
+		else if (puntuacionJugador2 == 1)
+		{
+			puntos2 = QUINCE;
+		}
+		else if (puntuacionJugador2 == 2)
+		{
+			puntos2 = TREINTA;
+		}
+		else if (puntuacionJugador2 == 3)
+		{
+			puntos2 = CUARENTA;
+		}
+		else if (puntuacionJugador2 == 4)
+		{
+			puntos2 = VENTAJA;
+		}
+
+		pintarMarcador(nombreJugador1, nombreJugador2, puntos1, puntos2, juegos1, juegos2, servicio_para);
+
 		pintarPeloteo(nombreJugador1, nombreJugador2, posicionJugador1, posicionJugador2, posicionBola, bola_jugador);
 
-		mostrarMarcadorActual(puntuacionJugador1, puntuacionJugador2, nombreJugador1, nombreJugador2);
+		
+
 		JUEGO_TERMINADO = juegoEstaTerminado(puntuacionJugador1, puntuacionJugador2);
+
+		if (JUEGO_TERMINADO == 1)
+		{
+			juegos1++;
+			if (servicio_para == TENISTA1)
+			{
+				servicio_para = TENISTA2;
+			}
+			else
+			{
+				servicio_para = TENISTA1;
+			}
+		}
+		else if (JUEGO_TERMINADO == 2)
+		{
+			juegos2++;
+			if (servicio_para == TENISTA2)
+			{
+				servicio_para = TENISTA1;
+			}
+			else
+			{
+				servicio_para = TENISTA2;
+			}
+		}
+
 		cout << "Presione una tecla para continuar... ";
 
 		cin >> breakTest;
@@ -215,7 +300,7 @@ int elegirSaque(string jugador1, string jugador2)
 	}
 }
 
-bool juegoEstaTerminado(int puntuacion1, int puntuacion2)
+int juegoEstaTerminado(int puntuacion1, int puntuacion2)
 {
 	//El juego se da por terminado si:
 	// Puntuacion de jugador es 4, pero la puntuacion del otro jugador no sea 3
@@ -224,26 +309,26 @@ bool juegoEstaTerminado(int puntuacion1, int puntuacion2)
 	if (puntuacion1 == 4 && puntuacion2 <= 2)//Jugador 1 gana
 	{
 		cout << "Gana jugador 1" << endl;
-		return true;
+		return 1;
 	}
 	else if (puntuacion2 == 4 && puntuacion1 <= 2)//Jugador 2 gana
 	{
 		cout << "Gana jugador 2" << endl;
-		return true;
+		return 2;
 	}
 	else if (puntuacion1 == 5)//Jugador 1 gana en ventaja
 	{
 		cout << "Gana jugador 1 en ventaja" << endl;
-		return true;
+		return 1;
 	}
 	else if (puntuacion2 == 5)//Jugador 2 gana en ventaja
 	{
 		cout << "Gana jugador 2 en ventaja" << endl;
-		return true;
+		return 2;
 	}
 	else
 	{
-		return false;
+		return 0;
 	}
 }
 
@@ -396,7 +481,11 @@ int partido(string nombreJugador1, string nombreJugador2, int jugadorSaque, int 
 
 		if (posicionBola <= 0 || posicionBola >= (ANCHO_PISTA + 1)) //Si la bola sale fuera será punto para el jugador 2
 		{
-			cout << nombreJugadorActual << " tira la bola fuera de la pista" << endl;
+			if (MODO_DEBUG == true)
+			{
+				cout << nombreJugadorActual << " tira la bola fuera de la pista" << endl;
+			}
+			
 			if (jugadorTurnoActual == 1)
 			{
 				cout << nombreJugadorContrario << " gana el punto" << endl; //Gana el contrario
@@ -500,6 +589,21 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 	}	
 }
 
+
+void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego puntos2, int juegos1, int juegos2, tTenista servicio_para)
+{
+
+	if (servicio_para == 1)
+	{
+		cout << setw(5) <<  nombreJugador1<<setw(2) << juegos1 << " : " << puntos1<<"*"<<endl;
+		cout << setw(5) << nombreJugador2<<setw(2) << juegos2 << " : " << puntos2<<endl;
+	}
+	else
+	{
+		cout << setw(5) << nombreJugador1<<setw(2) << juegos1 << " : " << puntos1<<endl;
+		cout << setw(5) << nombreJugador2<<setw(2) << juegos2 << " : " << puntos2<<"*"<<endl;
+	}
+}
 
 // posicion = setw(variable)
 
