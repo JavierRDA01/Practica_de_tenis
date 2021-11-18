@@ -52,13 +52,14 @@ void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego p
 
 string puntosAstring(tPuntosJuego puntuacion);
 
+tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2);
+
 int main()
 {
 	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, juegos1 = 0, juegos2 = 0, habilidad, velocidad;
 	int punto = 0, jugadorTurno;
 	string nombreJugador1, nombreJugador2, breakTest, iniciales;
-	tTenista bola_jugador;
-	tTenista servicio_para;
+	tTenista bola_jugador, servicio_para, ganador_punto;
 	tPuntosJuego puntos1, puntos2, puntuacion;
 	bool JUEGO_TERMINADO = false;
 	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
@@ -69,14 +70,6 @@ int main()
 	system("cls");
 
 	cout << "¡Bienvenido al simulador de partidos de tenis!" << endl;
-
-	//nombreJugador1 = introducirNombre("1");
-	//velocidadJugador1 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
-	//habilidadJugador1 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
-
-	//nombreJugador2 = introducirNombre("2");
-	//velocidadJugador2 = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
-	//habilidadJugador2 = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
 
 	introducirTenista(iniciales, habilidad, velocidad);
 
@@ -91,22 +84,18 @@ int main()
 	servicio_para = TENISTA1;
 	puntos1 = NADA;
 	puntos2 = QUINCE;
+	ganador_punto = TENISTA1;
 
 	jugadorTurno = elegirSaque(nombreJugador1, nombreJugador2);
 	cout << endl;
 
-	pintarMarcador(nombreJugador1, nombreJugador2, puntos1, puntos2, juegos1, juegos2, servicio_para);
-
-	if(JUEGO_ALEATORIO == false)
-	{
-		cout << "elija el destino de la bola";
-		cin >> posicionBola;
-	}
+	
 
 	while (juegos1 - juegos2 != 2 || juegos2 - juegos1 != 2)
 	{
-
-
+		
+		pintarMarcador(nombreJugador1, nombreJugador2, puntos1, puntos2, juegos1, juegos2, servicio_para);
+		actualizarMarcador(ganador_punto, puntos1, puntos2, juegos1, juegos2);
 
 	}
 
@@ -390,6 +379,7 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		{
 			puntos1 = CUARENTA;
 		}
+		return TENISTA1;
 	}
 	else if (ganador_punto == TENISTA2)
 	{
@@ -406,6 +396,7 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		{
 			puntos2 = CUARENTA;
 		}
+		return TENISTA2;
 	}
 	if (puntos1 == CUARENTA && puntos2 == CUARENTA)
 	{
@@ -417,6 +408,7 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		{
 			puntos2 = VENTAJA;
 		}
+		return NADIE;
 	}
 	else
 	{
@@ -427,6 +419,7 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 				puntos1 = NADA;
 				juegos1++;
 			}
+			return TENISTA1;
 		}
 		else
 		{
@@ -435,19 +428,8 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 				puntos2 = NADA;
 				juegos2++;
 			}
+			return TENISTA2;
 		}
-	}
-	if (ganador_punto == TENISTA1)
-	{
-		return TENISTA1;
-	}
-	else if (ganador_punto == TENISTA2)
-	{
-		return TENISTA2;
-	}
-	else if(ganador_punto == NADIE)
-	{
-		return NADIE;
 	}
 }
 
@@ -455,13 +437,20 @@ tTenista lance(tTenista tenista_golpea, string nombre, int habilidad, tConteoGol
 {
 	int habilidadJugador1, velocidadJugador1, velocidadJugador2, habilidadJugador2;
 	string nombreJugador1, nombreJugador2;
+
+	if (JUEGO_ALEATORIO == false)
+	{
+		cout << "elija el destino de la bola";
+		cin >> posicionBola;
+	}
+
 	if (tenista_golpea == TENISTA1)
 	{
 		nombre = nombreJugador1;
 		habilidad = habilidadJugador1;
 		velocidad = velocidadJugador1;
 	}
-	else if(tenista_golpea == TENISTA2)
+	else if (tenista_golpea == TENISTA2)
 	{
 		nombre = nombreJugador1;
 		habilidad = habilidadJugador1;
