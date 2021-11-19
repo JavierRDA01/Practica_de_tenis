@@ -475,5 +475,4 @@ tTenista jugarPunto(tTenista servicio, string nombreJugador1, int habilidadJugad
 	int posicionBola = 4, posicionJugador1 = 4, posicionJugador2 = 4;
 }
 
-
 //tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpes_ganados2)
