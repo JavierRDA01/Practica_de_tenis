@@ -432,29 +432,46 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		}
 	}
 }
-
-tTenista lance(tTenista tenista_golpea, string nombre, int habilidad, tConteoGolpes golpes, int& golpes_ganados, int velocidad, int& pos_recibe, int& posicionBola)
+tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpes_ganados, int velocidad, int& pos_recibe, int& pos_bola)
 {
-	int habilidadJugador1, velocidadJugador1, velocidadJugador2, habilidadJugador2;
-	string nombreJugador1, nombreJugador2;
-
-	if (JUEGO_ALEATORIO == false)
-	{
-		cout << "elija el destino de la bola";
-		cin >> posicionBola;
+	if (tenista_golpea == TENISTA1) {
+		pos_bola = golpeoBola(pos_bola, habilidad, nombreJugador1); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+		if (pos_bola <= 0 || pos_bola >= ANCHO_PISTA + 1) // Si tira la bola fuera
+		{
+			return TENISTA2; //Gana el otro jugador
+		}
+		else
+		{
+			pos_recibe = correTenista(pos_recibe, velocidad, pos_bola, nombreJugador2);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
+			if (pos_recibe == pos_bola)//Si el jugador que recibe llega
+			{
+				return NADIE; //Se sigue el punto
+			}
+			else //El jugador que recibe no llega a la bola
+			{
+				return TENISTA1; //Gana el jugador que golpea
+			}
+		}
 	}
-
-	if (tenista_golpea == TENISTA1)
+	else
 	{
-		nombre = nombreJugador1;
-		habilidad = habilidadJugador1;
-		velocidad = velocidadJugador1;
-	}
-	else if (tenista_golpea == TENISTA2)
-	{
-		nombre = nombreJugador1;
-		habilidad = habilidadJugador1;
-		velocidad = velocidadJugador1;
+		pos_bola = golpeoBola(pos_bola, habilidad, nombreJugador2); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+		if (pos_bola <= 0 || pos_bola >= ANCHO_PISTA + 1) // Si tira la bola fuera
+		{
+			return TENISTA1; //Gana el otro jugador
+		}
+		else
+		{
+			pos_recibe = correTenista(pos_recibe, velocidad, pos_bola, nombreJugador1);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
+			if (pos_recibe == pos_bola)//Si el jugador que recibe llega
+			{
+				return NADIE; //Se sigue el punto
+			}
+			else //El jugador que recibe no llega a la bola
+			{
+				return TENISTA2; //Gana el jugador que golpea
+			}
+		}
 	}
 }
 
