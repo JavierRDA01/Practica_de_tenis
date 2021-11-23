@@ -54,17 +54,23 @@ string puntosAstring(tPuntosJuego puntuacion);
 
 tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2);
 
+tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpes_ganados, int velocidad, int& pos_recibe, int& posicionBola);
+
+void arrayReset(tConteoGolpes& array);
+
 int main()
 {
 	int velocidadJugador1, habilidadJugador1, velocidadJugador2, habilidadJugador2, juegos1 = 0, juegos2 = 0, habilidad, velocidad;
 	int punto = 0, jugadorTurno;
 	string nombreJugador1, nombreJugador2, breakTest, iniciales;
-	tTenista bola_jugador, servicio_para, ganador_punto;
+	tTenista bola_jugador, servicio_para, ganador_punto, tenista_golpea;
 	tPuntosJuego puntos1, puntos2, puntuacion;
+	tConteoGolpes golpes1 = { 0 }, golpes2 = { 0 };
 	bool JUEGO_TERMINADO = false;
 	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
 	int posicionJugador1 = 4;
 	int posicionJugador2 = 4, posicionBola = 4;
+	int golpes_ganados = 1, pos_recibe = 4;
 	srand(time(NULL));
 	system("chcp 1252");
 	system("cls");
@@ -81,21 +87,45 @@ int main()
 
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
-	servicio_para = TENISTA1;
 	puntos1 = NADA;
 	puntos2 = QUINCE;
 	ganador_punto = TENISTA1;
+	bola_jugador = TENISTA1;
 
 	jugadorTurno = elegirSaque(nombreJugador1, nombreJugador2);
-	cout << endl;
+	if (jugadorTurno == 1)
+	{
+		tenista_golpea = TENISTA1;
+		servicio_para = TENISTA1;
+		bola_jugador = TENISTA1;
+	}
+	else
+	{
+		tenista_golpea = TENISTA2;
+		servicio_para = TENISTA2;
+		bola_jugador = TENISTA2;
+	}
 
 	
 
-	while (juegos1 - juegos2 != 2 || juegos2 - juegos1 != 2)
+	cout << endl;
+
+
+
+	while (((juegos1 - juegos2) >= 2 || (juegos2 - juegos1) >= 2) && (juegos1 >= 3 && juegos2 >= 3))
 	{
-		
+		if (actualizarMarcador(ganador_punto, puntos1, puntos2, juegos1, juegos2) == TENISTA1)
+		{
+			juegos1++;
+		}
+		else if (actualizarMarcador(ganador_punto, puntos1, puntos2, juegos1, juegos2) == TENISTA2)
+		{
+			juegos2++;
+		}
 		pintarMarcador(nombreJugador1, nombreJugador2, puntos1, puntos2, juegos1, juegos2, servicio_para);
 		actualizarMarcador(ganador_punto, puntos1, puntos2, juegos1, juegos2);
+		pintarPeloteo( nombreJugador1,  nombreJugador2,  posicionJugador1,  posicionJugador2,  posicionBola, bola_jugador);
+		lance(tenista_golpea, nombreJugador1, nombreJugador2, habilidad, golpes1, golpes_ganados, velocidad, pos_recibe, posicionBola);
 
 	}
 
@@ -362,11 +392,18 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 	}
 }
 
+void arrayReset(tConteoGolpes& array)
+{
+	for (int i = 0; i < DIM_ARRAY_GOLPES; i++)
+	{
+		array[i] = 0;
+	}
+}
+
 tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2)
 {
 	if (ganador_punto == TENISTA1)
 	{
-		ganador_punto = NADIE;
 		if (puntos1 == NADA)
 		{
 			puntos1 = QUINCE;
@@ -383,7 +420,6 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 	}
 	else if (ganador_punto == TENISTA2)
 	{
-		ganador_punto = NADIE;
 		if (puntos2 == NADA)
 		{
 			puntos2 = QUINCE;
@@ -423,7 +459,7 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		}
 		else
 		{
-			if(puntos2 == CUARENTA)
+			if (puntos2 == CUARENTA)
 			{
 				puntos2 = NADA;
 				juegos2++;
@@ -432,49 +468,96 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		}
 	}
 }
-tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpes_ganados, int velocidad, int& pos_recibe, int& pos_bola)
+
+tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpes_ganados, int velocidad, int& pos_recibe, int& posicionBola)
 {
 	if (tenista_golpea == TENISTA1) {
-		pos_bola = golpeoBola(pos_bola, habilidad, nombreJugador1); //La posicion de la bola pasará a la posición dada por la función golpeo bola
-		if (pos_bola <= 0 || pos_bola >= ANCHO_PISTA + 1) // Si tira la bola fuera
+		posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador1); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
+			golpes_ganados++;
+			golpes++;
 			return TENISTA2; //Gana el otro jugador
 		}
 		else
 		{
-			pos_recibe = correTenista(pos_recibe, velocidad, pos_bola, nombreJugador2);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
-			if (pos_recibe == pos_bola)//Si el jugador que recibe llega
+			pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador2);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
+			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
 			{
 				return NADIE; //Se sigue el punto
 			}
 			else //El jugador que recibe no llega a la bola
 			{
+				golpes_ganados++;
+				golpes++;
 				return TENISTA1; //Gana el jugador que golpea
 			}
 		}
 	}
 	else
 	{
-		pos_bola = golpeoBola(pos_bola, habilidad, nombreJugador2); //La posicion de la bola pasará a la posición dada por la función golpeo bola
-		if (pos_bola <= 0 || pos_bola >= ANCHO_PISTA + 1) // Si tira la bola fuera
+		posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador2); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
+			golpes_ganados++;
+			golpes++;
 			return TENISTA1; //Gana el otro jugador
 		}
 		else
 		{
-			pos_recibe = correTenista(pos_recibe, velocidad, pos_bola, nombreJugador1);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
-			if (pos_recibe == pos_bola)//Si el jugador que recibe llega
+			pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador1);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
+			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
 			{
 				return NADIE; //Se sigue el punto
 			}
 			else //El jugador que recibe no llega a la bola
 			{
+				golpes_ganados++;
+				golpes++;
 				return TENISTA2; //Gana el jugador que golpea
 			}
 		}
 	}
 }
 
-//tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int velocidad1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, tConteoGolpes golpes2, int& golpes_ganados2)
+tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int velocidad1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, tConteoGolpes golpes2, int& golpes_ganados2)
+{
+	int pos_jugador1 = 4, pos_jugador2 = 4, pos_bola = 4;
+	tTenista ganaPunto = NADIE;
+	while (ganaPunto == NADIE) {
+		if (servicio == TENISTA1)
+		{
+			ganaPunto = lance(servicio, nombre1, nombre2, habilidad1, golpes1, golpes_ganados1, velocidad2, pos_jugador2, pos_bola);
+			if (ganaPunto == TENISTA1)
+			{
+				return TENISTA1;
+			}
+			else if (ganaPunto == TENISTA2)
+			{
+				return TENISTA2;
+			}
+			else
+			{
+				servicio == TENISTA2;
+			}
+		}
+		else if (servicio == TENISTA2)
+		{
+			ganaPunto = lance(servicio, nombre1, nombre2, habilidad2, golpes2, golpes_ganados2, velocidad1, pos_jugador1, pos_bola);
+			if (ganaPunto == TENISTA1)
+			{
+				return TENISTA1;
+			}
+			else if (ganaPunto == TENISTA2)
+			{
+				return TENISTA2;
+			}
+			else
+			{
+				servicio == TENISTA1;
+			}
+		}
+	}
+}
 
-//tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpes_ganados2)
+tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpes_ganados2);
