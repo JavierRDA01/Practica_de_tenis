@@ -75,11 +75,10 @@ int main()
 	system("chcp 1252");
 	system("cls");
 	cout << "¡Bienvenido al simulador de partidos de tenis!" << endl;
-	introducirTenista(iniciales, habilidad, velocidad);
-	nombreJugador1 = iniciales;
-	
-	introducirTenista(iniciales, habilidad, velocidad);
-	nombreJugador2 = iniciales;
+	cout << "Introduzca los datos del jugador 1: " << endl;
+	introducirTenista(inicialesJugador1, habilidadJugador1, velocidadJugador1);
+	cout << "Introduzca los datos del jugador 2: " << endl;
+	introducirTenista(inicialesJugador2, habilidadJugador2, velocidadJugador2);
 	
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
@@ -119,19 +118,29 @@ string introducirNombre(string numeroJugador)
 	cin >> nombreJugador;
 	return nombreJugador;
 }
-
 void introducirTenista(string& iniciales, int& habilidad, int& velocidad)
 {
-	string nombreJugador1, nombreJugador2;
-	int habilidadJugador1, habilidadJugador2, velocidadJugador1, velocidadJugador2;
-	cout << "introduzca las iniciales del jugador 1 : ";
+	cout << "Introduce las iniciales del tenista (deben ser 3 iniciales): ";
 	cin >> iniciales;
 	while (iniciales.length() != 3)
 	{
-		iniciales = introducirNombre("1");
+		cout << "Debe introducir solo 3 iniciales, por favor vuelva a introducir las iniciales del jugador: ";
+		cin >> iniciales;
 	}
-	velocidad = introducirDato("velocidad", LIM_INF_VEL, LIM_SUP_VEL);
-	habilidad = introducirDato("habilidad", LIM_INF_HAB, LIM_SUP_HAB);
+	cout << "Introduce la habilidad del jugador (Intervalo 1-3): ";
+	cin >> habilidad;
+	while (habilidad < 1 || habilidad > 3)
+	{
+		cout << "Valores incorrectos, introduzca de nuevo la habilidad del jugador: ";
+		cin >> habilidad;
+	}
+	cout << "Introduce la velocidad del jugador (Intervalo 1-3): ";
+	cin >> velocidad;
+	while (velocidad < 1 || velocidad > 3)
+	{
+		cout << "Valores incorrectos, introduzca de nuevo la velocidad del jugador: ";
+		cin >> velocidad;
+	}
 }
 
 int elegirSaque(string jugador1, string jugador2)
