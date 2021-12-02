@@ -18,6 +18,8 @@ bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = false;
 
 
+string transformartPuntosJuego(tPuntosJuego puntos);
+
 string introducirNombre(string numeroJugador);
 
 int introducirDato(string nombreJugador, int habilidadJugador, int velocidadJugador);
@@ -172,17 +174,144 @@ int introducirDato(string tipoDato, int limiteInferior, int limiteSuperior)
 	return datoNumerico;
 }
 
-void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego puntos2, int juegos1, int juegos2, tTenista servicio_para)
+string transformartPuntosJuego(tPuntosJuego puntos)
 {
-	if (servicio_para == 1)
+	if(puntos == NADA)
 	{
-		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntos1 << "*" << endl;
-		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntos2 << endl;
+		return "00";
+	}
+	else if(puntos == QUINCE)
+	{
+		return "15";
+	}
+	else if (puntos == TREINTA)
+	{
+		return "30";
+	}
+	else if (puntos == CUARENTA)
+	{
+		return "40";
+	}
+	else 
+	{
+		return "[VENTAJA]";
+	}
+}
+void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego puntos2, int juegos1, int juegos2, tTenista servicio_para)
+{	
+	if (servicio_para == TENISTA1)
+	{
+		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << transformartPuntosJuego(puntos1) << "*" << endl;
+		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << transformartPuntosJuego(puntos2) << endl;
 	}
 	else
 	{
-		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntos1 << endl;
-		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntos2 << "*" << endl;
+		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << transformartPuntosJuego(puntos1) << endl;
+		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << transformartPuntosJuego(puntos2) << "*" << endl;
+	}
+}
+tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2)
+{
+	if (ganador_punto == TENISTA1 && puntos2 <= CUARENTA && puntos1 < CUARENTA)
+	{
+		if (puntos1 == NADA)
+		{
+			puntos1 = QUINCE;
+			return NADIE;
+		}
+		else if (puntos1 == QUINCE)
+		{
+			puntos1 = TREINTA;
+			return NADIE;
+		}
+		else if (puntos1 == TREINTA)
+		{
+			puntos1 = CUARENTA;
+			return NADIE;
+		}
+	}
+	else if (ganador_punto == TENISTA2 && puntos1 <= CUARENTA && puntos2 < CUARENTA)
+	{
+		if (puntos2 == NADA)
+		{
+			puntos2 = QUINCE;
+			return NADIE;
+		}
+		else if (puntos2 == QUINCE)
+		{
+			puntos2 = TREINTA;
+			return NADIE;
+		}
+		else if (puntos2 == TREINTA)
+		{
+			puntos2 = CUARENTA;
+			return NADIE;
+		}
+	}
+	else if (puntos1 == CUARENTA && puntos2 == CUARENTA)
+	{
+		if (ganador_punto == TENISTA1)
+		{
+			puntos1 == VENTAJA;
+			return NADIE;
+		}
+		else
+		{
+			puntos2 == VENTAJA;
+			return NADIE;
+		}
+	}
+	else if (puntos1 == VENTAJA || puntos2 == VENTAJA)
+	{
+		if(puntos1 == VENTAJA)
+		{
+			if (ganador_punto == TENISTA1)
+			{
+				juegos1++;
+				puntos1 == NADIE;
+				puntos2 == NADIE;
+				return TENISTA1;
+			}
+			else
+			{
+				puntos1 == CUARENTA;
+				puntos2 == CUARENTA;
+				return NADIE;
+			}
+		}
+		else
+		{
+			if (ganador_punto == TENISTA2)
+			{
+				juegos2++;
+				puntos1 == NADIE;
+				puntos2 == NADIE;
+				return TENISTA2;
+			}
+			else
+			{
+				puntos1 == CUARENTA;
+				puntos2 == CUARENTA;
+				return NADIE;
+			}
+		}
+	}
+	else
+	{
+		if(ganador_punto == TENISTA1)
+		{
+			juegos1++;
+			puntos1 == NADIE;
+			puntos2 == NADIE;
+			return TENISTA1;
+		}
+		else
+		{
+			juegos2++;
+			puntos1 == NADIE;
+			puntos2 == NADIE;
+			return TENISTA2;
+		}
 	}
 }
 
@@ -380,76 +509,6 @@ void arrayReset(tConteoGolpes& array)
 	for (int i = 0; i < DIM_ARRAY_GOLPES; i++)
 	{
 		array[i] = 0;
-	}
-}
-
-tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2)
-{
-	if (ganador_punto == TENISTA1)
-	{
-		if (puntos1 == NADA)
-		{
-			puntos1 = QUINCE;
-		}
-		else if (puntos1 == QUINCE)
-		{
-			puntos1 = TREINTA;
-		}
-		else if (puntos1 == TREINTA)
-		{
-			puntos1 = CUARENTA;
-		}
-		return TENISTA1;
-	}
-	else if (ganador_punto == TENISTA2)
-	{
-		if (puntos2 == NADA)
-		{
-			puntos2 = QUINCE;
-		}
-		else if (puntos2 == QUINCE)
-		{
-			puntos2 = TREINTA;
-		}
-		else if (puntos2 == TREINTA)
-		{
-			puntos2 = CUARENTA;
-		}
-		return TENISTA2;
-	}
-	if (puntos1 == CUARENTA && puntos2 == CUARENTA)
-	{
-		if (ganador_punto == TENISTA1)
-		{
-			puntos1 = VENTAJA;
-		}
-		else if (ganador_punto == TENISTA2)
-		{
-			puntos2 = VENTAJA;
-		}
-		return NADIE;
-	}
-	else
-	{
-		if (ganador_punto == TENISTA1)
-		{
-			if (puntos1 == CUARENTA)
-			{
-				puntos1 = NADA;
-				juegos1++;
-			}
-			return TENISTA1;
-		}
-		else
-		{
-			if (puntos2 == CUARENTA)
-				if (puntos2 == CUARENTA)
-				{
-					puntos2 = NADA;
-					juegos2++;
-				}
-			return TENISTA2;
-		}
 	}
 }
 
