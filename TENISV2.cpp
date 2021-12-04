@@ -18,8 +18,6 @@ bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = false;
 
 
-string transformartPuntosJuego(tPuntosJuego puntos);
-
 string introducirNombre(string numeroJugador);
 
 int introducirDato(string nombreJugador, int habilidadJugador, int velocidadJugador);
@@ -52,15 +50,30 @@ void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego p
 
 string puntosAstring(tPuntosJuego puntuacion);
 
-tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpes_ganados2);
+tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpesGanados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpesGanados2);
 
 tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2);
 
-tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpes_ganados, int velocidad, int& pos_recibe, int& posicionBola);
+tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpesGanados, int velocidad, int& pos_recibe, int& posicionBola);
 
 void arrayReset(tConteoGolpes& array);
 
-void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tConteoGolpes golpes1, tConteoGolpes golpes2, int golpes_ganados1, int golpes_ganados2);
+void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tConteoGolpes golpes1, tConteoGolpes golpes2, int golpesGanados1, int golpesGanados2);
+
+void contarGolpesGanados(int golpesGanados, tTenista ganador_juego);
+
+void actualizarGolpes(tConteoGolpes& golpes, tTenista servicio_para, int posicionBola, tTenista ganador, int& golpesGanados);
+
+int contarGolpesTotales(tConteoGolpes golpes);
+
+int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales, int calle);
+
+int contarGolpesFallidos(tConteoGolpes golpes);
+
+
+
+
+
 
 int main()
 {
@@ -72,16 +85,16 @@ int main()
 	tConteoGolpes golpes1 = { 0 }, golpes2 = { 0 };
 	bool JUEGO_TERMINADO = false;
 	int puntuacionJugador1 = 0, puntuacionJugador2 = 0;
-	int golpes_ganados1 = 0, pos_recibe = 4, golpes_ganados2 = 0;
+	int golpesGanados1 = 0, pos_recibe = 4, golpesGanados2 = 0, golpesFallidos1 = 0, golpesFallidos2 = 0;
 	srand(time(NULL));
 	system("chcp 1252");
 	system("cls");
 	cout << "¡Bienvenido al simulador de partidos de tenis!" << endl;
 	cout << "Introduzca los datos del jugador 1: " << endl;
-	introducirTenista(inicialesJugador1, habilidadJugador1, velocidadJugador1);
+	introducirTenista(nombreJugador1, habilidadJugador1, velocidadJugador1);
 	cout << "Introduzca los datos del jugador 2: " << endl;
-	introducirTenista(inicialesJugador2, habilidadJugador2, velocidadJugador2);
-	
+	introducirTenista(nombreJugador2, habilidadJugador2, velocidadJugador2);
+
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
 
@@ -104,11 +117,11 @@ int main()
 
 	while (((juegos1 - juegos2) <= 2 || (juegos2 - juegos1) <= 2) && (juegos1 <= 3 && juegos2 <= 3))
 	{
-		jugarJuego(servicio_para, nombreJugador1, habilidadJugador1, velocidadJugador1, juegos1,  golpes1, golpes_ganados1,  nombreJugador2, habilidadJugador2, velocidadJugador2, juegos2, golpes2,  golpes_ganados2);
+		jugarJuego(servicio_para, nombreJugador1, habilidadJugador1, velocidadJugador1, juegos1, golpes1, golpesGanados1, nombreJugador2, habilidadJugador2, velocidadJugador2, juegos2, golpes2, golpesGanados2);
 		system("pause");
 	}
-	
-	mostrarEstadisticas(nombreJugador1, nombreJugador2, golpes1, golpes2, golpes_ganados1, golpes_ganados2);
+
+	mostrarEstadisticas(nombreJugador1, nombreJugador2, golpes1, golpes2, golpesGanados1, golpesGanados2);
 	exit(EXIT_SUCCESS);
 	return 0;
 }
@@ -174,143 +187,17 @@ int introducirDato(string tipoDato, int limiteInferior, int limiteSuperior)
 	return datoNumerico;
 }
 
-string transformartPuntosJuego(tPuntosJuego puntos)
-{
-	if(puntos == NADA)
-	{
-		return "00";
-	}
-	else if(puntos == QUINCE)
-	{
-		return "15";
-	}
-	else if (puntos == TREINTA)
-	{
-		return "30";
-	}
-	else if (puntos == CUARENTA)
-	{
-		return "40";
-	}
-	else 
-	{
-		return "[VENTAJA]";
-	}
-}
 void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego puntos2, int juegos1, int juegos2, tTenista servicio_para)
-{	
-	if (servicio_para == TENISTA1)
-	{
-		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << transformartPuntosJuego(puntos1) << "*" << endl;
-		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << transformartPuntosJuego(puntos2) << endl;
-	}
-	else
-	{
-		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << transformartPuntosJuego(puntos1) << endl;
-		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << transformartPuntosJuego(puntos2) << "*" << endl;
-	}
-}
-tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2)
 {
-	int cambioPuntos1, cambioPuntos2;
-	if (ganador_punto == TENISTA1 && puntos2 <= CUARENTA && puntos1 < CUARENTA)
+	if (servicio_para == 1)
 	{
-		if (puntos1 == NADA)
-		{
-			puntos1 = QUINCE;
-			return NADIE;
-		}
-		else if (puntos1 == QUINCE)
-		{
-			puntos1 = TREINTA;
-			return NADIE;
-		}
-		else if (puntos1 == TREINTA)
-		{
-			puntos1 = CUARENTA;
-			return NADIE;
-		}
-	}
-	else if (ganador_punto == TENISTA2 && puntos1 <= CUARENTA && puntos2 < CUARENTA)
-	{
-		if (puntos2 == NADA)
-		{
-			puntos2 = QUINCE;
-			return NADIE;
-		}
-		else if (puntos2 == QUINCE)
-		{
-			puntos2 = TREINTA;
-			return NADIE;
-		}
-		else if (puntos2 == TREINTA)
-		{
-			puntos2 = CUARENTA;
-			return NADIE;
-		}
-	}
-	else if (puntos1 == CUARENTA && puntos2 == CUARENTA)
-	{
-		if (ganador_punto == TENISTA1)
-		{
-			puntos1 = VENTAJA;
-			return NADIE;
-		}
-		else
-		{
-			puntos2 = VENTAJA;
-			return NADIE;
-		}
-	}
-	
-	else if(puntos1 == VENTAJA)
-	{
-		if (ganador_punto == TENISTA1)
-		{
-			juegos1++;
-			puntos1 = NADA;
-			puntos2 = NADA;
-			return TENISTA1;
-		}
-		else
-		{
-			puntos1 = CUARENTA;
-			puntos2 = CUARENTA;
-			return NADIE;
-		}
-	}
-	else if(puntos2 == VENTAJA)
-	{
-		if (ganador_punto == TENISTA2)
-		{
-			juegos2++;
-			puntos1 = NADA;
-			puntos2 = NADA;
-			return TENISTA2;
-		}
-		else
-		{
-			puntos1 = CUARENTA;
-			puntos2 = CUARENTA;
-			return NADIE;
-		}
+		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntos1 << "*" << endl;
+		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntos2 << endl;
 	}
 	else
 	{
-		if(ganador_punto == TENISTA1)
-		{
-			juegos1++;
-			puntos1 = NADA;
-			puntos2 = NADA;
-			return TENISTA1;
-		}
-		else
-		{
-			juegos2++;
-			puntos1 = NADA;
-			puntos2 = NADA;
-			return TENISTA2;
-		}
+		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntos1 << endl;
+		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntos2 << "*" << endl;
 	}
 }
 
@@ -318,7 +205,7 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 {
 	if (bola_jugador == 1)
 	{
-		cout << setw(posicionJugador1 * 2 + 2) << nombreJugador1 << endl;
+		cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
 		cout << "  - - - - - - - " << endl;
 		for (int a = 1; a <= LARGO_PISTA; a++)
 		{
@@ -342,11 +229,11 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 		cout << "  - - - - - - - " << endl;
-		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
+		cout << setw((posicionJugador2 * 2)+ 2) << nombreJugador2 << endl;
 	}
 	else if (bola_jugador == 2)
 	{
-		cout << setw(posicionJugador1 * 2 + 2) << nombreJugador1 << endl;
+		cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
 		cout << "  - - - - - - - " << endl;
 		for (int i = 1; i <= LARGO_PISTA; i++)
 		{
@@ -511,31 +398,100 @@ void arrayReset(tConteoGolpes& array)
 	}
 }
 
-tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpes_ganados, int velocidad, int& pos_recibe, int& posicionBola)
+tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2)
+{
+	if (ganador_punto == TENISTA1)
+	{
+		if (puntos1 == NADA)
+		{
+			puntos1 = QUINCE;
+		}
+		else if (puntos1 == QUINCE)
+		{
+			puntos1 = TREINTA;
+		}
+		else if (puntos1 == TREINTA)
+		{
+			puntos1 = CUARENTA;
+		}
+		
+	}
+	else if (ganador_punto == TENISTA2)
+	{
+		if (puntos2 == NADA)
+		{
+			puntos2 = QUINCE;
+		}
+		else if (puntos2 == QUINCE)
+		{
+			puntos2 = TREINTA;
+		}
+		else if (puntos2 == TREINTA)
+		{
+			puntos2 = CUARENTA;
+		}
+	}
+	if (puntos1 == CUARENTA && puntos2 == CUARENTA)// Controlar deuce
+	{
+		if (ganador_punto == TENISTA1)
+		{
+			puntos1 = VENTAJA;
+		}
+		else if (ganador_punto == TENISTA2)
+		{
+			puntos2 = VENTAJA;
+		}
+		return NADIE;
+	}
+	else if(puntos1 <= CUARENTA && puntos2 <= CUARENTA) // Nadie gana el punto si no hay alguien que esté por encima de 40
+	{
+		return NADIE;
+	}
+
+	else
+	{
+		if (ganador_punto == TENISTA1)
+		{
+			if (puntos1 == CUARENTA)
+			{
+				puntos1 = NADA;
+				juegos1++;
+			}
+			return TENISTA1;
+		}
+		else
+		{
+			if (puntos2 == CUARENTA)
+				if (puntos2 == CUARENTA)
+				{
+					puntos2 = NADA;
+					juegos2++;
+				}
+			return TENISTA2;
+		}
+	}
+}
+
+tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes& golpes, int& golpesGanados, int velocidad, int& pos_recibe, int& posicionBola)
 {
 	if (tenista_golpea == TENISTA1) {
 		posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador1); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
-			posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador1); //La posicion de la bola pasará a la posición dada por la función golpeo bola
-		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
-			golpes_ganados++;
-			golpes++;
+			actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA2, golpesGanados);
 			return TENISTA2; //Gana el otro jugador
 		}
 		else
 		{
 			pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador2);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
 			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
-				pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador2);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
-			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
 			{
+				actualizarGolpes(golpes, tenista_golpea, posicionBola, NADIE, golpesGanados);
 				return NADIE; //Se sigue el punto
 			}
 			else //El jugador que recibe no llega a la bola
 			{
-				golpes_ganados++;
-				golpes++;
+				actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA1, golpesGanados);
 				return TENISTA1; //Gana el jugador que golpea
 			}
 		}
@@ -544,41 +500,36 @@ tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJuga
 	{
 		posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador2); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
-			posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador2); //La posicion de la bola pasará a la posición dada por la función golpeo bola
-		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
-			golpes_ganados++;
-			golpes++;
+			actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA1, golpesGanados);
 			return TENISTA1; //Gana el otro jugador
 		}
 		else
 		{
 			pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador1);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
 			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
-				pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador1);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
-			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
 			{
+				actualizarGolpes(golpes, tenista_golpea, posicionBola, NADIE, golpesGanados);
 				return NADIE; //Se sigue el punto
 			}
 			else //El jugador que recibe no llega a la bola
 			{
-				golpes_ganados++;
-				golpes++;
+				actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA2, golpesGanados);
 				return TENISTA2; //Gana el jugador que golpea
 			}
 		}
 	}
 }
 
-//tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int velocidad1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, tConteoGolpes golpes2, int& golpes_ganados2)
-tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int velocidad1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, tConteoGolpes golpes2, int& golpes_ganados2)
+//tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int velocidad1, tConteoGolpes golpes1, int& golpesGanados1, string nombre2, int habilidad2, int velocidad2, tConteoGolpes golpes2, int& golpesGanados2)
+tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int velocidad1, tConteoGolpes golpes1, int& golpesGanados1, string nombre2, int habilidad2, int velocidad2, tConteoGolpes golpes2, int& golpesGanados2)
 {
 	int pos_jugador1 = 4, pos_jugador2 = 4, posicionBola = 4;
 	tTenista ganaPunto = NADIE;
 	while (ganaPunto == NADIE) {
 		if (servicio == TENISTA1)
 		{
-			ganaPunto = lance(servicio, nombre1, nombre2, habilidad1, golpes1, golpes_ganados1, velocidad2, pos_jugador2, posicionBola);
+			ganaPunto = lance(servicio, nombre1, nombre2, habilidad1, golpes1, golpesGanados1, velocidad2, pos_jugador2, posicionBola);
 			if (ganaPunto == TENISTA1)
 			{
 				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
@@ -597,7 +548,7 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 		}
 		else if (servicio == TENISTA2)
 		{
-			ganaPunto = lance(servicio, nombre1, nombre2, habilidad2, golpes2, golpes_ganados2, velocidad1, pos_jugador1, posicionBola);
+			ganaPunto = lance(servicio, nombre1, nombre2, habilidad2, golpes2, golpesGanados2, velocidad1, pos_jugador1, posicionBola);
 			if (ganaPunto == TENISTA1)
 			{
 				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
@@ -617,14 +568,13 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 	}
 }
 
-tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpes_ganados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpes_ganados2, tPuntosJuego& puntos1, tPuntosJuego& puntos2)
+tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpesGanados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpesGanados2, tPuntosJuego& puntos1, tPuntosJuego& puntos2)
 {
-	tTenista ganadorJuego = actualizarMarcador(jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpes_ganados1, nombre2, habilidad2, velocidad2, golpes2, golpes_ganados2), puntos1, puntos2, juegos1, juegos2);
-
+	tTenista ganadorJuego = NADIE;
 
 	while (ganadorJuego == NADIE)
 	{
-		actualizarMarcador(jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpes_ganados1, nombre2, habilidad2, velocidad2, golpes2, golpes_ganados2), puntos1, puntos2, juegos1, juegos2);
+		ganadorJuego = actualizarMarcador(jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpesGanados1, nombre2, habilidad2, velocidad2, golpes2, golpesGanados2), puntos1, puntos2, juegos1, juegos2);
 		pintarMarcador(nombre1, nombre2, puntos1, puntos2, juegos1, juegos2, servicio);
 	}
 	if (ganadorJuego == TENISTA1)
@@ -637,23 +587,59 @@ tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int veloc
 	}
 }
 
-void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tConteoGolpes golpes1, tConteoGolpes golpes2, int golpes_ganados1, int golpes_ganados2)
+void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tConteoGolpes golpes1, tConteoGolpes golpes2, int golpesGanados1, int golpesGanados2)
 {
+	int golpesTotales1 = contarGolpesTotales(golpes1), golpesTotales2 = contarGolpesTotales(golpes2);
 	cout << "Estadisticas de " << nombreJugador1;
-	cout << setw(3) << "Golpes totales: "<<golpes1;
-	cout << setw(3) << "Golpes ganadores: " << golpes_ganados1;
-	cout << setw(3) << "Errores no forzados: ";
-	cout << setw(3) << "Distribucion de los golpes en la pista";
-	cout << setw(6) << "Calle" << setw(6) << "0"<<setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8";
-	cout << setw(10) << "%";
-
-	cout << "Estadisticas de " << nombreJugador2;
-	cout << setw(3) << "Golpes totales: " << golpes2;
-	cout << setw(3) << "Golpes ganadores: " << golpes_ganados2;
-	cout << setw(3) << "Errores no forzados: ";
+	cout << setw(3) << "Golpes totales: " << contarGolpesTotales(golpes1);
+	cout << setw(3) << "Golpes ganadores: " << golpesGanados1;
+	cout << setw(3) << "Errores no forzados: " << contarGolpesFallidos(golpes1);
 	cout << setw(3) << "Distribucion de los golpes en la pista";
 	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8";
-	cout << setw(10) << "%";
+	cout << setw(10) << "%" << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 0) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 1) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 2) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 3) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 4) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 5) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 6) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 7) << setw(6) << porcentajeDeAcierto(golpes1, golpesTotales1, 8);
+
+	cout << "Estadisticas de " << nombreJugador2;
+	cout << setw(3) << "Golpes totales: " << contarGolpesTotales(golpes2);
+	cout << setw(3) << "Golpes ganadores: " << golpesGanados2;
+	cout << setw(3) << "Errores no forzados: " << contarGolpesFallidos(golpes2);
+	cout << setw(3) << "Distribucion de los golpes en la pista";
+	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8";
+	cout << setw(10) << "%" << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2,0) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 2) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 3) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 4) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 5) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 6) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 7) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 8);
+}																		
+
+void actualizarGolpes(tConteoGolpes& golpes, tTenista servicio_para, int posicionBola, tTenista ganador, int& golpesGanados)
+{
+	golpes[posicionBola]++; //Se suma un golpe en la dirección a la que haya ido la bola
+	if (servicio_para == ganador)
+	{
+		golpesGanados++; //Si el que golpea la bola gana el punto se suma uno a golpes ganados
+	}
+}
+
+int contarGolpesTotales(tConteoGolpes golpes)
+{
+	int sumaDeGolpes = 0;
+	for(int i = 0; i < ANCHO_PISTA + 2; i++)
+	{
+		sumaDeGolpes = sumaDeGolpes + golpes[i];
+	}
+	return sumaDeGolpes;
+}
 
 
+int contarGolpesFallidos(tConteoGolpes golpes)
+{
+	int golpesTotales = contarGolpesTotales(golpes), int sumaDeGolpesDentro = 0;
+	for (int i = 1; i < ANCHO_PISTA + 1; i++)
+	{
+		sumaDeGolpesDentro = sumaDeGolpesDentro + golpes[i];
+	}
+	return (golpesTotales - sumaDeGolpesDentro);
+}
+
+int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales ,int calle)
+{
+	int golpesCalle = golpes[calle], int porcentaje;
+	porcentaje = (golpesCalle / golpesTotales) * 100;
+	return porcentaje;
 }
