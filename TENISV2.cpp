@@ -201,13 +201,21 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 		cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
 		cout << "  - - - - - - - " << endl;
 		cout << setw(2);
+		if (posicionBola == 0)
+		{
+			cout << "o| ";
+		}
 		for (int f = 1; f <= ANCHO_PISTA; f++)
 		{
 			cout << "|" << setw(2);
-			if (f == posicionBola)
+			if (f == posicionBola && (f <= 7 && f>= 1))
 			{
 				cout << "o| ";
 			}
+		}
+		if (posicionBola == 8)
+		{
+			cout << " |o";
 		}
 		cout << endl;
 		for (int a = 1; a <= (LARGO_PISTA - 1); a++)
@@ -215,10 +223,6 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			for (int i = 1; i <= ANCHO_PISTA; i++)
 			{
 				cout << setw(2) << "|";
-				if (i == posicionBola && a == LARGO_PISTA)
-				{
-					cout << setw((posicionBola + 1) - posicionBola) << "o|";
-				}
 			}
 			cout << setw(2) << "|" << endl;
 		}
@@ -256,20 +260,27 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 		cout << setw(2);
+		if (posicionBola == 0)
+		{
+			cout << "o| ";
+		}
 		for (int f = 1; f <= ANCHO_PISTA; f++)
 		{
 			cout << "|" << setw(2);
-			if (f == posicionBola)
+			if (f == posicionBola && (f <= 7 && f >= 1))
 			{
 				cout << "o| ";
 			}
+		}
+		if (posicionBola == 8)
+		{
+			cout << " |o";
 		}
 		cout << endl;
 		cout << "  - - - - - - - " << endl;
 		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 	}
 }
-
 
 string puntosAstring(tPuntosJuego puntuacion)
 {
