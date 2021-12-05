@@ -53,9 +53,9 @@ tTenista jugarPartido(tTenista servicio, string nombre1, int habilidad1, int vel
 
 tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2);
 
-tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, int golpes, int& golpesGanados, int velocidad, int& pos_recibe, int& posicionBola);
+tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpesGanados, int velocidad, int& pos_recibe, int& posicionBola);
 
-void arrayReset(tConteoGolpes& array);
+void arrayReset(tConteoGolpes array);
 
 void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tConteoGolpes golpes1, tConteoGolpes golpes2, int golpesGanados1, int golpesGanados2);
 
@@ -79,7 +79,7 @@ int main()
 	string nombreJugador1, nombreJugador2, breakTest;
 	tTenista  servicio, ganadorPunto, ganadorJuego, ganadorPartido;
 	tPuntosJuego puntos1 = NADA, puntos2 = NADA;
-	tConteoGolpes golpes1 = { 0,0,0,0,0,0,0,0,0 }, golpes2 = { 0,0,0,0,0,0,0,0,0 };
+	tConteoGolpes golpes1 = {0,0,0,0,0,0,0,0,0}, golpes2 = { 0,0,0,0,0,0,0,0,0 };
 	bool JUEGO_TERMINADO = false;
 	
 	srand(time(NULL));
@@ -181,15 +181,15 @@ int introducirDato(string tipoDato, int limiteInferior, int limiteSuperior)
 
 void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego puntos2, int juegos1, int juegos2, tTenista servicio_para)
 {
-	if (servicio_para == 1)
+	if (servicio_para == TENISTA1)
 	{
-		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntos1 << "*" << endl;
-		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntos2 << endl;
+		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntosAstring(puntos1) << "*" << endl;
+		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntosAstring(puntos2) << endl;
 	}
 	else
 	{
-		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntos1 << endl;
-		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntos2 << "*" << endl;
+		cout << setw(5) << nombreJugador1 << setw(2) << juegos1 << " : " << puntosAstring(puntos1) << endl;
+		cout << setw(5) << nombreJugador2 << setw(2) << juegos2 << " : " << puntosAstring(puntos2) << "*" << endl;
 	}
 }
 
@@ -199,21 +199,15 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 	{
 		cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
 		cout << "  - - - - - - - " << endl;
-		cout << setw(2);
-		for (int f = 1; f <= ANCHO_PISTA; f++)
-		{
-			cout << "|" << setw(2);
-			if (f == posicionBola)
-			{
-				cout << "o| ";
-			}
-		}
-		cout << endl;
-		for (int a = 1; a <= (LARGO_PISTA - 1); a++)
+		for (int a = 1; a <= LARGO_PISTA; a++)
 		{
 			for (int i = 1; i <= ANCHO_PISTA; i++)
 			{
 				cout << setw(2) << "|";
+				if (i == posicionBola && a == LARGO_PISTA)
+				{
+					cout << setw((posicionBola + 1) - posicionBola) << "o|";
+				}
 			}
 			cout << setw(2) << "|" << endl;
 		}
@@ -227,7 +221,7 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 		cout << "  - - - - - - - " << endl;
-		cout << setw((posicionJugador2 * 2) + 2) << nombreJugador2 << endl;
+		cout << setw((posicionJugador2 * 2)+ 2) << nombreJugador2 << endl;
 	}
 	else if (bola_jugador == 2)
 	{
@@ -242,29 +236,22 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 		cout << "--1-2-3-4-5-6-7--" << endl;
-		for (int a = 1; a <= (LARGO_PISTA - 1); a++)
+		for (int a = 1; a <= LARGO_PISTA; a++)
 		{
 			for (int i = 1; i <= ANCHO_PISTA; i++)
 			{
 				cout << setw(2) << "|";
+				if (i == posicionBola && a == LARGO_PISTA)
+				{
+					cout << setw((posicionBola + 1) - posicionBola) << "o|";
+				}
 			}
 			cout << setw(2) << "|" << endl;
 		}
-		cout << setw(2);
-		for (int f = 1; f <= ANCHO_PISTA; f++)
-		{
-			cout << "|" << setw(2);
-			if (f == posicionBola)
-			{
-				cout << "o| ";
-			}
-		}
-		cout << endl;
 		cout << "  - - - - - - - " << endl;
 		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 	}
 }
-
 
 string puntosAstring(tPuntosJuego puntuacion)
 {
@@ -341,14 +328,18 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 	acierto = rand() % 100; // número aleatorio 0 - 100 
 	cout << "Golpea " << nombreGolpeadorBola << "!" << endl;
 
-
-	if (JUEGO_ALEATORIO == true) {
-		cout << "Introduzca la posición destino: ";
+	if (JUEGO_ALEATORIO == false) {
+		cout << "Elija el destino de la bola: "; //juego controlado por usuario
 		cin >> posicionDestino;
+
 	}
-	else
-	{
-		posicionDestino = rand() % (ANCHO_PISTA + 1); // posición destino de la bola
+
+	else if (JUEGO_ALEATORIO == true) { //juego aleatorio
+
+		srand(time(NULL));
+		posicionDestino = rand() % ANCHO_PISTA + 1;
+		system("PAUSE");
+		cout << endl;
 	}
 	diferencia = abs(posicionDestino - posicion_tenista); //
 	if (diferencia <= habilidad)
@@ -419,7 +410,6 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		{
 			puntos1 = CUARENTA;
 		}
-		
 	}
 	else if (ganador_punto == TENISTA2)
 	{
@@ -483,7 +473,6 @@ tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJuga
 		posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador1); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
-			actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA2, golpesGanados);
 			return TENISTA2; //Gana el otro jugador
 		}
 		else //Si mete la bola dentro del campo
@@ -491,12 +480,10 @@ tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJuga
 			pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador2);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
 			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
 			{
-				actualizarGolpes(golpes, tenista_golpea, posicionBola, NADIE, golpesGanados);
 				return NADIE; //Se sigue el punto
 			}
 			else //El jugador que recibe no llega a la bola
 			{
-				actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA1, golpesGanados);
 				return TENISTA1; //Gana el jugador que golpea
 			}
 		}
@@ -506,7 +493,6 @@ tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJuga
 		posicionBola = golpeoBola(posicionBola, habilidad, nombreJugador2); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
-			actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA1, golpesGanados);
 			return TENISTA1; //Gana el otro jugador
 		}
 		else
@@ -514,12 +500,10 @@ tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJuga
 			pos_recibe = correTenista(pos_recibe, velocidad, posicionBola, nombreJugador1);//La posicion del jugador que recibe pasará a la posición dada por la función correTensita
 			if (pos_recibe == posicionBola)//Si el jugador que recibe llega
 			{
-				actualizarGolpes(golpes, tenista_golpea, posicionBola, NADIE, golpesGanados);
 				return NADIE; //Se sigue el punto
 			}
 			else //El jugador que recibe no llega a la bola
 			{
-				actualizarGolpes(golpes, tenista_golpea, posicionBola, TENISTA2, golpesGanados);
 				return TENISTA2; //Gana el jugador que golpea
 			}
 		}
@@ -535,33 +519,40 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 		if (servicio == TENISTA1) //Si saca el tenista1
 		{
 			ganaPunto = lance(servicio, nombre1, nombre2, habilidad1, golpes1, golpesGanados1, velocidad2, pos_jugador2, posicionBola); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
+			actualizarGolpes(golpes1, TENISTA1, posicionBola, ganaPunto, golpesGanados1);
 			if (ganaPunto == TENISTA1) //Si gana el punto el tenista1 se pinta la pista y devuelve que ha ganado el tenista1
 			{
 				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
+				cout << "Gana el punto " << nombre1 << "!" << endl;
 				return TENISTA1;
 			}
 			else if (ganaPunto == TENISTA2)//Si gana el punto el tenista1 se pinta la pista y devuelve que ha ganado el tenista1
 			{
 				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
+				cout << "Gana el punto " << nombre2 << "!" << endl;
 				return TENISTA2;
 			}
 			else //Si no gana nadie se repite el lance() pero el turno pasa al otro jugador
 			{
 				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
+
 				servicio = TENISTA2;
 			}
 		}
 		else if (servicio == TENISTA2)
 		{
 			ganaPunto = lance(servicio, nombre1, nombre2, habilidad2, golpes2, golpesGanados2, velocidad1, pos_jugador1, posicionBola);
+			actualizarGolpes(golpes2, TENISTA2, posicionBola, ganaPunto, golpesGanados2);
 			if (ganaPunto == TENISTA1)
 			{
 				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
+				cout << "Gana el punto " << nombre1 << "!" << endl;
 				return TENISTA1;
 			}
 			else if (ganaPunto == TENISTA2)
 			{
 				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
+				cout << "Gana el punto " << nombre2 << "!" << endl;
 				return TENISTA2;
 			}
 			else
@@ -575,20 +566,19 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 
 tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpesGanados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpesGanados2) {
 	
-	tTenista ganadorJuego = NADIE;//Inicia el bucle, no hay nadie que gane el juego al principio del juego
+	tTenista ganadorPunto = jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpesGanados1, nombre2, habilidad2, velocidad2, golpes2, golpesGanados2);
 	tPuntosJuego puntos1 = NADA, puntos2 = NADA;
 	
-	while (ganadorJuego == NADIE) //Se repite jugarPunto 
+	while (actualizarMarcador(ganadorPunto, puntos1, puntos2, juegos1, juegos2) == NADIE) // Se juegan los puntos hasta que actualizarMarcador devuelva o TENISTA1 o TENISTA2
 	{
 		pintarMarcador(nombre1, nombre2, puntos1, puntos2, juegos1, juegos2, servicio); //Muestra el marcador
-		ganadorJuego = actualizarMarcador(jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpesGanados1, nombre2, habilidad2, velocidad2, golpes2, golpesGanados2), puntos1, puntos2, juegos1, juegos2);
-		// Se juegan los puntos hasta que actualizarMarcador devuelva o TENISTA1 o TENISTA2
+		ganadorPunto = jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpesGanados1, nombre2, habilidad2, velocidad2, golpes2, golpesGanados2);
 	}
 
 	mostrarEstadisticas(nombre1, nombre2, golpes1, golpes2, golpesGanados1, golpesGanados2); //Al final de cada juego muestra las estadísticas
 	
 	
-	if (ganadorJuego == TENISTA1)// Si el juego lo gana el j1
+	if (ganadorPunto == TENISTA1)// Si el juego lo gana el j1
 	{
 		return TENISTA1; 
 	}
@@ -646,10 +636,10 @@ void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tConteoGo
 	cout << setw(10) << "%" << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2,0) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 2) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 3) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 4) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 5) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 6) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 7) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 8);
 }																		
 
-void actualizarGolpes(tConteoGolpes golpes, tTenista servicio_para, int posicionBola, tTenista ganador, int& golpesGanados)
+void actualizarGolpes(tConteoGolpes golpes, tTenista servicio, int posicionBola, tTenista ganador, int& golpesGanados)
 {
 	golpes[posicionBola]++; //Se suma un golpe en la dirección a la que haya ido la bola
-	if (servicio_para == ganador)
+	if (servicio == ganador)
 	{
 		golpesGanados++; //Si el que golpea la bola gana el punto se suma uno a golpes ganados
 	}
@@ -681,5 +671,5 @@ int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales ,int calle)
 	int golpesCalle = golpes[calle]; 
 	double porcentaje;
 	porcentaje = (golpesCalle / golpesTotales) * 100;
-}	return porcentaje;
-
+	return porcentaje;
+}
