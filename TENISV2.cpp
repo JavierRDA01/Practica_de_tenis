@@ -232,7 +232,6 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 		}
 		cout << "  - - - - - - - " << endl;
 		cout << setw((posicionJugador2 * 2) + 2) << nombreJugador2 << endl;
-		cout << setw((posicionJugador2 * 2) + 2) << nombreJugador2 << endl;
 	}
 	else if (bola_jugador == 2)
 	{
