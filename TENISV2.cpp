@@ -83,7 +83,14 @@ int main()
 	tConteoGolpes golpes1 = { 0,0,0,0,0,0,0,0,0 }, golpes2 = { 0,0,0,0,0,0,0,0,0 };
 	bool JUEGO_TERMINADO = false;
 
-	srand(time(NULL));
+	if (MODO_DEBUG == false) {
+
+		srand(time(NULL));
+	}
+	else {
+
+		srand(0);
+	}
 	system("chcp 1252");
 	system("cls");
 	cout << "¡Bienvenido al simulador de partidos de tenis!" << endl;
@@ -201,21 +208,13 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 		cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
 		cout << "  - - - - - - - " << endl;
 		cout << setw(2);
-		if (posicionBola == 0)
-		{
-			cout << "o| ";
-		}
 		for (int f = 1; f <= ANCHO_PISTA; f++)
 		{
 			cout << "|" << setw(2);
-			if (f == posicionBola && (f <= 7 && f>= 1))
+			if (f == posicionBola)
 			{
 				cout << "o| ";
 			}
-		}
-		if (posicionBola == 8)
-		{
-			cout << " |o";
 		}
 		cout << endl;
 		for (int a = 1; a <= (LARGO_PISTA - 1); a++)
@@ -223,6 +222,10 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			for (int i = 1; i <= ANCHO_PISTA; i++)
 			{
 				cout << setw(2) << "|";
+				if (i == posicionBola && a == LARGO_PISTA)
+				{
+					cout << setw((posicionBola + 1) - posicionBola) << "o|";
+				}
 			}
 			cout << setw(2) << "|" << endl;
 		}
@@ -260,27 +263,20 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 		cout << setw(2);
-		if (posicionBola == 0)
-		{
-			cout << "o| ";
-		}
 		for (int f = 1; f <= ANCHO_PISTA; f++)
 		{
 			cout << "|" << setw(2);
-			if (f == posicionBola && (f <= 7 && f >= 1))
+			if (f == posicionBola)
 			{
 				cout << "o| ";
 			}
-		}
-		if (posicionBola == 8)
-		{
-			cout << " |o";
 		}
 		cout << endl;
 		cout << "  - - - - - - - " << endl;
 		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 	}
 }
+
 
 string puntosAstring(tPuntosJuego puntuacion)
 {
@@ -324,7 +320,8 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 	}
 	else //En el caso de que la velocidad fuera menor que el diferencia
 	{
-		if (posicionBola < posicionTenista) {
+		if (posicionBola < posicionTenista) 
+		{
 			if (MODO_DEBUG == true)
 			{
 				diferenciaCasillas = posicionTenista - posicionBola;
@@ -333,7 +330,8 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 			posicionTenista = posicionTenista - velocidad;
 			return posicionTenista;// Posición adelantada
 		}
-		else if (posicionBola > posicionTenista) {
+		else if (posicionBola > posicionTenista) 
+		{
 			if (MODO_DEBUG == true)
 			{
 				diferenciaCasillas = posicionBola - posicionTenista;
@@ -342,8 +340,10 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 			posicionTenista = posicionTenista + velocidad;
 			return posicionTenista;// Posición atrasada
 		}
-		else {
-			if (posicionBola < posicionTenista) {
+		else
+		{
+			if (posicionBola < posicionTenista) 
+			{
 				return posicionTenista;// Punto para el otro jugador
 			}
 		}
@@ -359,9 +359,8 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 	cout << "Golpea " << nombreGolpeadorBola << "!" << endl;
 
 	if (JUEGO_ALEATORIO == false) {
-		cout << "Elija el destino de la bola: "; //juego controlado por usuario
+		cout << "Indique donde quiere tirar de la bola: "; //juego controlado por usuario
 		cin >> posicionDestino;
-
 	}
 
 	else if (JUEGO_ALEATORIO == true) { //juego aleatorio
@@ -380,41 +379,39 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 		}
 		return posicionDestino;
 	}
-	else if (diferencia > habilidad) // Si la diferencia entre la posicion del tenista y la posicion de destino de la bola es mayor que la habilidad 
+	else // Si la diferencia entre la posicion del tenista y la posicion de destino de la bola es mayor que la habilidad 
 	{
 		probabilidadExito = (100.0 - ((posicionDestino - habilidad) / ((ANCHO_PISTA - 1.0) - LIM_INF_HAB) * 100.0)); // porcentaje de acierto
-		if (MODO_DEBUG == true)
+		if (acierto <= probabilidadExito)
 		{
-			if (acierto <= probabilidadExito)
+			if (MODO_DEBUG == true)
+			{
+				cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << endl;
+			}
+			return posicionDestino;
+		}
+		else 
+		{
+			if (desvio == 0)
 			{
 				if (MODO_DEBUG == true)
 				{
-					cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << endl;
+					cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la derecha y acaba en la posición " << posicionDestino + 1 << endl;
+					cout << "es un tipo complicado con prob_acierto: " << probabilidadExito << " y el resultado es: " << acierto << endl;
 				}
-				return posicionDestino;
+				return posicionDestino + 1; // Desvío a la derecha
 			}
-			else if (acierto > probabilidadExito)
+			else if (desvio == 1)
 			{
-				if (desvio == 0)
+				if (MODO_DEBUG == true)
 				{
-					if (MODO_DEBUG == true)
-					{
-						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la derecha y acaba en la posición " << posicionDestino + 1 << endl;
-						cout << "es un tipo complicado con prob_acierto: " << probabilidadExito << " y el resultado es: " << acierto << endl;
-					}
-					return posicionDestino + 1; // Desvío a la derecha
+					cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la izquierda y acaba en la posicion " << posicionDestino - 1 << endl;
+					cout << "es un tipo complicado con prob_acierto: " << probabilidadExito << " y el resultado es: " << acierto << endl;
 				}
-				else if (desvio == 1)
-				{
-					if (MODO_DEBUG == true)
-					{
-						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la izquierda y acaba en la posicion " << posicionDestino - 1 << endl;
-						cout << "es un tipo complicado con prob_acierto: " << probabilidadExito << " y el resultado es: " << acierto << endl;
-					}
-					return posicionDestino - 1; // Desvío a la izquierda
-				}
+				return posicionDestino - 1; // Desvío a la izquierda
 			}
 		}
+		
 	}
 }
 
@@ -645,6 +642,7 @@ tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int veloc
 		ganadorPunto = jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpesGanados1, nombre2, habilidad2, velocidad2, golpes2, golpesGanados2);
 	}
 
+	pintarMarcador(nombre1, nombre2, puntos1, puntos2, juegos1, juegos2, servicio);
 	mostrarEstadisticas(nombre1, nombre2, golpes1, golpes2, golpesGanados1, golpesGanados2); //Al final de cada juego muestra las estadísticas
 
 
@@ -759,3 +757,4 @@ int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales, int calle)
 	porcentaje = (golpesCalle / golpesTotales) * 100;
 	return porcentaje;
 }
+
