@@ -215,10 +215,6 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			for (int i = 1; i <= ANCHO_PISTA; i++)
 			{
 				cout << setw(2) << "|";
-				if (i == posicionBola && a == LARGO_PISTA)
-				{
-					cout << setw((posicionBola + 1) - posicionBola) << "o|";
-				}
 			}
 			cout << setw(2) << "|" << endl;
 		}
