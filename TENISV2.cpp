@@ -419,14 +419,17 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		if (puntos1 == NADA)
 		{
 			puntos1 = QUINCE;
+			return NADIE;
 		}
 		else if (puntos1 == QUINCE)
 		{
 			puntos1 = TREINTA;
+			return NADIE;
 		}
 		else if (puntos1 == TREINTA)
 		{
 			puntos1 = CUARENTA;
+			return NADIE;
 		}
 	}
 	else if (ganador_punto == TENISTA2)
@@ -434,52 +437,85 @@ tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPunt
 		if (puntos2 == NADA)
 		{
 			puntos2 = QUINCE;
+			return NADIE;
 		}
 		else if (puntos2 == QUINCE)
 		{
 			puntos2 = TREINTA;
+			return NADIE;
 		}
 		else if (puntos2 == TREINTA)
 		{
 			puntos2 = CUARENTA;
+			return NADIE;
 		}
+		
 	}
 	if (puntos1 == CUARENTA && puntos2 == CUARENTA)// Controlar deuce
 	{
 		if (ganador_punto == TENISTA1)
 		{
 			puntos1 = VENTAJA;
+			return NADIE;
 		}
 		else if (ganador_punto == TENISTA2)
 		{
 			puntos2 = VENTAJA;
+			return NADIE;
 		}
-		return NADIE;
 	}
-	else if (puntos1 <= CUARENTA && puntos2 <= CUARENTA) // Nadie gana el punto si no hay alguien que esté por encima de 40
+	else if(puntos1 == VENTAJA || puntos2 == VENTAJA)
 	{
-		return NADIE;
-	}
-
-	else
-	{
-		if (ganador_punto == TENISTA1)
+		if(puntos1 == VENTAJA)
 		{
-			if (puntos1 == CUARENTA)
+			if (ganador_punto == TENISTA1)
 			{
 				puntos1 = NADA;
+				puntos2 = NADA;
 				juegos1++;
+				return TENISTA1;
 			}
+			else
+			{
+				puntos1 = CUARENTA;
+				puntos2 = CUARENTA;
+				return NADIE;
+			}
+		}
+		else if (puntos2 == VENTAJA)
+		{
+			if (ganador_punto == TENISTA2)
+			{
+				puntos1 = NADA;
+				puntos2 = NADA;
+				juegos2++;
+				return TENISTA2;
+			}
+			else
+			{
+				puntos1 = CUARENTA;
+				puntos2 = CUARENTA;
+				return NADIE;
+			}
+		}
+	}
+	else
+	{
+		if (puntos1 == CUARENTA)
+		{
+			puntos1 = NADA;
+			puntos2 = NADA;
+			juegos1++;
 			return TENISTA1;
 		}
 		else
 		{
 			if (puntos2 == CUARENTA)
-				if (puntos2 == CUARENTA)
-				{
-					puntos2 = NADA;
-					juegos2++;
-				}
+			{
+				puntos1 = NADA;
+				puntos2 = NADA;
+				juegos2++;
+			}
 			return TENISTA2;
 		}
 	}
