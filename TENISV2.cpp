@@ -215,6 +215,10 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			for (int i = 1; i <= ANCHO_PISTA; i++)
 			{
 				cout << setw(2) << "|";
+				if (i == posicionBola && a == LARGO_PISTA)
+				{
+					cout << setw((posicionBola + 1) - posicionBola) << "o|";
+				}
 			}
 			cout << setw(2) << "|" << endl;
 		}
@@ -301,7 +305,8 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 	{
 		if (MODO_DEBUG == true)
 		{
-			cout << nombreJugador << " llega sin problemas" << endl;
+			cout << "ese ha sido un tiro sencillo" << endl;
+			cout << "su rival llega a la bola" << endl;
 		}
 		posicionTenista = posicionBola;
 		return posicionTenista;
@@ -384,6 +389,7 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 					if (MODO_DEBUG == true)
 					{
 						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la derecha y acaba en la posición " << posicionDestino + 1 << endl;
+						cout << "es un tipo complicado con prob_acierto: " << probabilidadExito << " y el resultado es: " << acierto << endl;
 					}
 					return posicionDestino + 1; // Desvío a la derecha
 				}
@@ -392,6 +398,7 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 					if (MODO_DEBUG == true)
 					{
 						cout << nombreGolpeadorBola << " lanza la bola a " << posicionDestino << " pero se desvía a la izquierda y acaba en la posicion " << posicionDestino - 1 << endl;
+						cout << "es un tipo complicado con prob_acierto: " << probabilidadExito << " y el resultado es: " << acierto << endl;
 					}
 					return posicionDestino - 1; // Desvío a la izquierda
 				}
