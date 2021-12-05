@@ -14,7 +14,7 @@ const int ANCHO_PISTA = 7;
 const int LARGO_PISTA = 3;
 const int JUEGOS_SET = 3;
 const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
-bool JUEGO_ALEATORIO = false;
+bool JUEGO_ALEATORIO = true;
 bool MODO_DEBUG = true;
 
 
@@ -66,6 +66,9 @@ int contarGolpesTotales(tConteoGolpes golpes);
 int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales, int calle);
 
 int contarGolpesFallidos(tConteoGolpes golpes);
+
+tTenista hayGanadorSet(bool ganadorSet, tTenista servicio);
+
 
 
 
@@ -590,9 +593,8 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 			}
 			else //Si no gana nadie se repite el lance() pero el turno pasa al otro jugador
 			{
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
-
 				servicio = TENISTA2;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);	
 			}
 		}
 		else if (servicio == TENISTA2)
@@ -613,8 +615,8 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 			}
 			else
 			{
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 				servicio = TENISTA1;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 			}
 		}
 	}
@@ -689,7 +691,7 @@ void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tConteoGo
 	cout << setw(3) << "Errores no forzados: " << contarGolpesFallidos(golpes2) << endl;
 	cout << setw(3) << "Distribucion de los golpes en la pista:" << endl << endl;
 	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8" << endl;
-	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(golpes2, golpesTotales2, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(golpes2, golpesTotales2, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(golpes2, golpesTotales2, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 8) << fixed << setprecision(1) << endl;
+	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(golpes2, golpesTotales2, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(golpes2, golpesTotales2, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(golpes2, golpesTotales2, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(golpes2, golpesTotales2, 8) << fixed << setprecision(1) << endl << endl;
 }
 
 void actualizarGolpes(tConteoGolpes golpes, tTenista servicio, int posicionBola, tTenista ganador, int& golpesGanados)
@@ -728,4 +730,18 @@ int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales, int calle)
 	double porcentaje;
 	porcentaje = (golpesCalle / golpesTotales) * 100;
 	return porcentaje;
+}
+tTenista hayGanadorSet(bool ganadorSet, tTenista servicio)
+{
+	while (!ganadorSet)
+	{
+		if (servicio == TENISTA1) 
+		{
+			return TENISTA2;
+		}
+		else
+		{
+			return TENISTA1;
+		}
+	}
 }
