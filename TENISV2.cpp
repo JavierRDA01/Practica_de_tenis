@@ -15,7 +15,7 @@ const int LARGO_PISTA = 3;
 const int JUEGOS_SET = 3;
 const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
 bool JUEGO_ALEATORIO = false;
-bool MODO_DEBUG = false;
+bool MODO_DEBUG = true;
 
 
 string introducirNombre(string numeroJugador);
@@ -231,6 +231,7 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 		cout << "  - - - - - - - " << endl;
+		cout << setw((posicionJugador2 * 2) + 2) << nombreJugador2 << endl;
 		cout << setw((posicionJugador2 * 2) + 2) << nombreJugador2 << endl;
 	}
 	else if (bola_jugador == 2)
@@ -567,6 +568,9 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 {
 	int pos_jugador1 = 4, pos_jugador2 = 4, posicionBola = 4; //Al principio de todos los puntos las posiciones son las mismas
 	tTenista ganaPunto = NADIE; //Al prinicipio nadie gana el punto
+	
+	pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio); //Pinta el campo inicial
+
 	while (ganaPunto == NADIE)//Se sigue el partido mientras que nadie gane el punto 
 	{
 		if (servicio == TENISTA1) //Si saca el tenista1
@@ -721,7 +725,7 @@ int contarGolpesFallidos(tConteoGolpes golpes)
 
 int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales, int calle)
 {
-	int golpesCalle = golpes[calle];
+	double golpesCalle = golpes[calle];
 	double porcentaje;
 	porcentaje = (golpesCalle / golpesTotales) * 100;
 	return porcentaje;
