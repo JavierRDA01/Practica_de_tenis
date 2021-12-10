@@ -4,7 +4,7 @@
 #include <string>
 #include <time.h>
 #include <stdlib.h>
-#include <iomanip>
+#include<iomanip>
 using namespace std;
 const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
@@ -50,7 +50,6 @@ tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int veloc
 
 tTenista jugarPartido(tTenista servicio, string nombre1, int habilidad1, int velocidad1, int& juegos1, tConteoGolpes golpes1, int& golpesGanados1, string nombre2, int habilidad2, int velocidad2, int& juegos2, tConteoGolpes golpes2, int& golpesGanados2);
 
-
 tTenista actualizarMarcador(tTenista ganador_punto, tPuntosJuego& puntos1, tPuntosJuego& puntos2, int& juegos1, int& juegos2);
 
 tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJugador2, int habilidad, tConteoGolpes golpes, int& golpesGanados, int velocidad, int& pos_recibe, int& posicionBola);
@@ -68,6 +67,8 @@ int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales, int calle);
 int contarGolpesFallidos(tConteoGolpes golpes);
 
 void menu(int& option);
+
+void mostrarTenistas(string nombreJugador1, string nombreJugador2);
 
 int main()
 {
@@ -99,7 +100,13 @@ int main()
 	if (option == 0)
 	{
 		exit(EXIT_SUCCESS);
+
 	}
+	if (option == 1)
+	{
+		mostrarTenistas(nombreJugador1, nombreJugador2);
+	}
+	
 	if (option == 2)
 	{
 		cout << "Introduzca los datos del jugador 1: " << endl;
@@ -107,35 +114,34 @@ int main()
 		cout << "Introduzca los datos del jugador 2: " << endl;
 		introducirTenista(nombreJugador2, habilidadJugador2, velocidadJugador2);
 	}
+	if (option == 5)
+	{
+		cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
+
+
+
+
+		servicio = tTenista(elegirServicio(nombreJugador1, nombreJugador2));
+
+		if (servicio == TENISTA1)
+		{
+			ganadorPartido = jugarPartido(TENISTA1, nombreJugador1, habilidadJugador1, velocidadJugador1, juegos1, golpes1, golpesGanados1, nombreJugador2, habilidadJugador2, velocidadJugador2, juegos2, golpes2, golpesGanados2);
+		}
+		else
+		{
+			ganadorPartido = jugarPartido(TENISTA2, nombreJugador1, habilidadJugador1, velocidadJugador1, juegos1, golpes1, golpesGanados1, nombreJugador2, habilidadJugador2, velocidadJugador2, juegos2, golpes2, golpesGanados2);
+		}
+
+		if (ganadorPartido == TENISTA1)
+		{
+			cout << "¡El ganador del partido es " << nombreJugador1 << " Enhorabuena!";
+		}
+		else
+		{
+			cout << "¡El ganador del partido es " << nombreJugador2 << " Enhorabuena!";
+		}
+	}
 	
-	
-
-	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
-
-
-
-
-	servicio = tTenista(elegirServicio(nombreJugador1, nombreJugador2));
-
-	if (servicio == TENISTA1)
-	{
-		ganadorPartido = jugarPartido(TENISTA1, nombreJugador1, habilidadJugador1, velocidadJugador1, juegos1, golpes1, golpesGanados1, nombreJugador2, habilidadJugador2, velocidadJugador2, juegos2, golpes2, golpesGanados2);
-	}
-	else
-	{
-		ganadorPartido = jugarPartido(TENISTA2, nombreJugador1, habilidadJugador1, velocidadJugador1, juegos1, golpes1, golpesGanados1, nombreJugador2, habilidadJugador2, velocidadJugador2, juegos2, golpes2, golpesGanados2);
-	}
-
-	if (ganadorPartido == TENISTA1)
-	{
-		cout << "¡El ganador del partido es " << nombreJugador1 << " Enhorabuena!";
-	}
-	else
-	{
-		cout << "¡El ganador del partido es " << nombreJugador2 << " Enhorabuena!";
-	}
-
-	exit(EXIT_SUCCESS);
 	return 0;
 }
 
@@ -152,6 +158,13 @@ void menu(int& option)
 	cout << "Opcion:";
 	cin >> option;
 	cout << endl;
+}
+
+void mostrarTenistas(string nombreJugador1, string nombreJugador2)
+{
+	cout << setw(2) << "INI" << setw(2) << "HAB" << setw(2) << "VEL" << setw(2) << "PG" << setw(2) << "PP" << endl;
+	cout << setw(2) << nombreJugador1 << setw(2);
+	cout << setw(2) << nombreJugador2 << setw(2);
 }
 
 string introducirNombre(string numeroJugador)
@@ -317,7 +330,6 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 	}
 }
-
 
 string puntosAstring(tPuntosJuego puntuacion)
 {
