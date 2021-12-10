@@ -96,10 +96,19 @@ int main()
 
 	menu(option);
 
-	cout << "Introduzca los datos del jugador 1: " << endl;
-	introducirTenista(nombreJugador1, habilidadJugador1, velocidadJugador1);
-	cout << "Introduzca los datos del jugador 2: " << endl;
-	introducirTenista(nombreJugador2, habilidadJugador2, velocidadJugador2);
+	if (option == 0)
+	{
+		exit(EXIT_SUCCESS);
+	}
+	if (option == 2)
+	{
+		cout << "Introduzca los datos del jugador 1: " << endl;
+		introducirTenista(nombreJugador1, habilidadJugador1, velocidadJugador1);
+		cout << "Introduzca los datos del jugador 2: " << endl;
+		introducirTenista(nombreJugador2, habilidadJugador2, velocidadJugador2);
+	}
+	
+	
 
 	cout << "Empieza el partido entre " << nombreJugador1 << " y " << nombreJugador2 << endl;
 
@@ -129,7 +138,6 @@ int main()
 	exit(EXIT_SUCCESS);
 	return 0;
 }
-
 
 void menu(int& option)
 {
@@ -775,7 +783,6 @@ int contarGolpesTotales(tConteoGolpes golpes)
 	}
 	return sumaDeGolpes;
 }
-
 
 int contarGolpesFallidos(tConteoGolpes golpes)
 {
