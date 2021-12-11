@@ -54,6 +54,8 @@ int menu();
 
 bool cargar(tListaTenistas& listaT);
 
+void guardar(const tListaTenistas& listaT);
+
 void mostrar(const tListaTenistas& listaT);
 
 void mostrarIniciales(const tListaTenistas& listaT);
@@ -69,14 +71,12 @@ int main()
 {
 	tListaTenistas listaDeTenistas;
 	int opcionMenu;
-	string nombre;
-	cout << "Introduzca un nombre de 3 letras" << endl;
-	cin >> nombre;
 	//opcionMenu = menu();
 	cargar(listaDeTenistas);
 	mostrar(listaDeTenistas);
 	mostrarIniciales(listaDeTenistas);
 	introducirTenista(listaDeTenistas);
+	guardar(listaDeTenistas);
 	mostrarIniciales(listaDeTenistas);
 	mostrar(listaDeTenistas);
 	return 0;
@@ -99,18 +99,8 @@ int menu()
 	return opcion;
 }
 
-void mostrar(const tListaTenistas& listaT)
-{
-	cout << setw(2) << "INI" << setw(5) << "HAB" << setw(5) << "VEL" << setw(4) << "PG" << setw(4) << "PP" << endl;
-	for (int i = 0; i < listaT.contador; i++)
-	{
-		cout << setw(2) << listaT.datos[i].iniciales << setw(5) <<  listaT.datos[i].habilidad << setw(5) << listaT.datos[i].velocidad << setw(4) << listaT.datos[i].partidosGanados << setw(4) << listaT.datos[i].partidosPerdidos << endl;
-	}
-	cout << "done" << endl;
-}
 
-
-bool cargar(tListaTenistas &listaT)
+bool cargar(tListaTenistas& listaT)
 {
 	ifstream archivoLista;
 	bool archivoAbierto;
@@ -119,11 +109,11 @@ bool cargar(tListaTenistas &listaT)
 	archivoAbierto = archivoLista.is_open();
 	if (!archivoAbierto)
 	{
-		cout << "Ha habido un error en el archivo" << endl;	
+		cout << "Ha habido un error en el archivo" << endl;
 	}
 	else
 	{
-		while (!archivoLista.eof()) 
+		while (!archivoLista.eof())
 		{
 			for (int i = 0; !archivoLista.eof(); i++)
 			{
@@ -140,6 +130,40 @@ bool cargar(tListaTenistas &listaT)
 	}
 	return archivoAbierto;
 }
+
+void guardar(const tListaTenistas& listaT)
+{
+	ofstream archivoLista;
+	bool archivoAbierto;
+	char aux;
+	archivoLista.open("Tenistas.txt");
+	archivoAbierto = archivoLista.is_open();
+	if (!archivoAbierto)
+	{
+		cout << "Ha habido un error en el archivo" << endl;
+	}
+	else
+	{
+		for (int i = 0; i < (listaT.contador - 1); i++)
+		{
+			archivoLista << listaT.datos[i].iniciales << " " << listaT.datos[i].habilidad << " " << listaT.datos[i].velocidad << " " << listaT.datos[i].partidosGanados << " " << listaT.datos[i].partidosPerdidos << endl;
+		}
+		archivoLista << listaT.datos[listaT.contador - 1].iniciales << " " << listaT.datos[listaT.contador - 1].habilidad << " " << listaT.datos[listaT.contador - 1].velocidad << " " << listaT.datos[listaT.contador - 1].partidosGanados << " " << listaT.datos[listaT.contador - 1].partidosPerdidos;
+
+	}
+	archivoLista.close();
+}
+void mostrar(const tListaTenistas& listaT)
+{
+	cout << setw(2) << "INI" << setw(5) << "HAB" << setw(5) << "VEL" << setw(4) << "PG" << setw(4) << "PP" << endl;
+	for (int i = 0; i < listaT.contador; i++)
+	{
+		cout << setw(2) << listaT.datos[i].iniciales << setw(5) <<  listaT.datos[i].habilidad << setw(5) << listaT.datos[i].velocidad << setw(4) << listaT.datos[i].partidosGanados << setw(4) << listaT.datos[i].partidosPerdidos << endl;
+	}
+}
+
+
+
 void mostrarIniciales(const tListaTenistas& listaT)
 {
 	cout << "Iniciales de los tenistas: " << listaT.datos[0].iniciales;
@@ -195,7 +219,7 @@ void introducirTenista(tListaTenistas& listaT)
 {
 	int velocidad, habilidad;
 	string iniciales;
-	if (listaT.contador < 11)
+	if (listaT.contador < 10)
 	{
 		cout << "Introduce las iniciales del tenista (deben ser 3 iniciales): ";
 		cin >> iniciales;
@@ -228,6 +252,21 @@ void introducirTenista(tListaTenistas& listaT)
 	else
 	{
 		cout << "No hay espacio suficiente para el tenista, primero debe eliminar un tenista" << endl;
+	}
+}
+
+int tenistaRepetido(const tListaTenistas& listaT, string iniciales)
+{
+	int posicion;
+	posicion = buscarIniciales(listaT, iniciales);
+	if(posicion != -1)
+	{
+		cout << "Tenista repetido. Elija otro" << endl;
+		return 0;
+	}
+	else
+	{
+		return 1;
 	}
 }
 
