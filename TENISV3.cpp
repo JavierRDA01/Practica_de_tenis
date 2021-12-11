@@ -1,3 +1,5 @@
+//Rishi Pursnani Mirpuri y Javier Ramírez de Andrés
+//Version 3
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -60,9 +62,7 @@ int buscarIniciales(const tListaTenistas& listaT, string ini);
 
 void eliminarTenista(tListaTenistas& listaT, string iniciales);
 
-
-
-
+void introducirTenista(tListaTenistas& listaT);
 
 
 int main()
@@ -76,8 +76,9 @@ int main()
 	cargar(listaDeTenistas);
 	mostrar(listaDeTenistas);
 	mostrarIniciales(listaDeTenistas);
-	eliminarTenista(listaDeTenistas, nombre);
+	introducirTenista(listaDeTenistas);
 	mostrarIniciales(listaDeTenistas);
+	mostrar(listaDeTenistas);
 	return 0;
 }
 
@@ -146,6 +147,7 @@ void mostrarIniciales(const tListaTenistas& listaT)
 	{
 		cout << " - " << listaT.datos[i].iniciales;
 	}
+	cout << endl;
 }
 
 int buscarIniciales(const tListaTenistas& listaT, string ini)
@@ -188,3 +190,44 @@ void eliminarTenista(tListaTenistas& listaT, string iniciales)
 		cout << "No hay ningun tenista con esas iniciales" << endl;
 	}
 }
+
+void introducirTenista(tListaTenistas& listaT)
+{
+	int velocidad, habilidad;
+	string iniciales;
+	if (listaT.contador < 11)
+	{
+		cout << "Introduce las iniciales del tenista (deben ser 3 iniciales): ";
+		cin >> iniciales;
+		while (iniciales.length() != 3)
+		{
+			cout << "Debe introducir solo 3 iniciales, por favor vuelva a introducir las iniciales del jugador: ";
+			cin >> iniciales;
+		}
+		cout << "Introduce la habilidad del jugador (Intervalo 1-3): ";
+		cin >> habilidad;
+		while (habilidad < 1 || habilidad > 3)
+		{
+			cout << "Valores incorrectos, introduzca de nuevo la habilidad del jugador (Intervalo 1-3): ";
+			cin >> habilidad;
+		}
+		cout << "Introduce la velocidad del jugador (Intervalo 1-3): ";
+		cin >> velocidad;
+		while (velocidad < 1 || velocidad > 3)
+		{
+			cout << "Valores incorrectos, introduzca de nuevo la velocidad del jugador (Intervalo 1-3): ";
+			cin >> velocidad;
+		}
+		listaT.datos[listaT.contador].iniciales = iniciales;
+		listaT.datos[listaT.contador].habilidad = habilidad;
+		listaT.datos[listaT.contador].velocidad = velocidad;
+		listaT.datos[listaT.contador].partidosGanados = 0;
+		listaT.datos[listaT.contador].partidosPerdidos = 0;
+		listaT.contador++;
+	}
+	else
+	{
+		cout << "No hay espacio suficiente para el tenista, primero debe eliminar un tenista" << endl;
+	}
+}
+
