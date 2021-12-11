@@ -1,5 +1,3 @@
-//Rishi Pursnani Mirpuri y Javier Ramírez de Andrés
-//Version 3
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -56,6 +54,12 @@ bool cargar(tListaTenistas& listaT);
 
 void mostrar(const tListaTenistas& listaT);
 
+void mostrarIniciales(const tListaTenistas& listaT);
+
+int buscarIniciales(const tListaTenistas& listaT, string ini);
+
+void eliminarTenista(tListaTenistas& listaT, string iniciales);
+
 
 
 
@@ -65,10 +69,15 @@ int main()
 {
 	tListaTenistas listaDeTenistas;
 	int opcionMenu;
+	string nombre;
+	cout << "Introduzca un nombre de 3 letras" << endl;
+	cin >> nombre;
 	//opcionMenu = menu();
 	cargar(listaDeTenistas);
 	mostrar(listaDeTenistas);
-
+	mostrarIniciales(listaDeTenistas);
+	eliminarTenista(listaDeTenistas, nombre);
+	mostrarIniciales(listaDeTenistas);
 	return 0;
 }
 
@@ -129,4 +138,53 @@ bool cargar(tListaTenistas &listaT)
 		archivoLista.close();
 	}
 	return archivoAbierto;
+}
+void mostrarIniciales(const tListaTenistas& listaT)
+{
+	cout << "Iniciales de los tenistas: " << listaT.datos[0].iniciales;
+	for (int i = 1; i < listaT.contador; i++)
+	{
+		cout << " - " << listaT.datos[i].iniciales;
+	}
+}
+
+int buscarIniciales(const tListaTenistas& listaT, string ini)
+{
+	int posicionInicial = -1;
+	for(int i = 0; i < listaT.contador; i++)
+	{
+		if(ini == listaT.datos[i].iniciales)
+		{
+			posicionInicial = i;
+			return posicionInicial;
+		}
+		else
+		{
+			posicionInicial = -1;
+		}
+	}
+	return posicionInicial;
+}
+
+void eliminarTenista(tListaTenistas& listaT, string iniciales) 
+{
+	int posicion;
+	posicion = buscarIniciales(listaT, iniciales);
+	if(posicion != -1)
+	{
+		cout << listaT.contador << endl;
+		for (int i = posicion; i < (listaT.contador - 1); i++)
+		{
+			listaT.datos[i].iniciales = listaT.datos[i + 1].iniciales;
+			listaT.datos[i].habilidad = listaT.datos[i + 1].habilidad;
+			listaT.datos[i].velocidad = listaT.datos[i + 1].velocidad;
+			listaT.datos[i].partidosGanados = listaT.datos[i + 1].partidosGanados;
+			listaT.datos[i].partidosPerdidos = listaT.datos[i + 1].partidosPerdidos;
+		}
+		listaT.contador--;
+	}
+	else
+	{
+		cout << "No hay ningun tenista con esas iniciales" << endl;
+	}
 }
