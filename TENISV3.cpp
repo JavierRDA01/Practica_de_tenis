@@ -22,14 +22,14 @@ const int DIM_ARRAY_TENISTAS = 10;
 bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = true;
 
-enum tPuntosJuego 
+enum tPuntosJuego
 {
-	NADA, QUINCE, TREINTA, CUARENTA, VENTAJA 
+	NADA, QUINCE, TREINTA, CUARENTA, VENTAJA
 };
 
-enum tTenista 
+enum tTenista
 {
-	NADIE, TENISTA1, TENISTA2 
+	NADIE, TENISTA1, TENISTA2
 };
 
 typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
@@ -89,16 +89,39 @@ tTenista lance(tTenista bolaPara, tDatosTenista& tenistaGolpea, tDatosTenista& t
 
 int main()
 {
-	tListaTenistas listaDeTenistas;
+	tListaTenistas listaDeTenistas, listaT;
+	string iniciales;
 	int opcionMenu;
-	//opcionMenu = menu();
-	cargar(listaDeTenistas);
-	mostrar(listaDeTenistas);
-	mostrarIniciales(listaDeTenistas);
-	introducirTenista(listaDeTenistas);
-	guardar(listaDeTenistas);
-	mostrarIniciales(listaDeTenistas);
-	mostrar(listaDeTenistas);
+	opcionMenu = menu();
+
+	if (opcionMenu == 0)
+	{
+		exit(EXIT_SUCCESS);
+	}
+	else if (opcionMenu == 1)
+	{
+		mostrar( listaT);
+	}
+	else if (opcionMenu == 2)
+	{
+		introducirTenista(listaDeTenistas);
+	}
+	else if (opcionMenu == 3)
+	{
+		eliminarTenista(listaT, iniciales);
+	}
+	else if (opcionMenu == 4)
+	{
+
+	}
+	else if (opcionMenu == 5)
+	{
+
+	}
+	else if (opcionMenu == 6)
+	{
+
+	}
 	return 0;
 }
 
@@ -178,7 +201,7 @@ void mostrar(const tListaTenistas& listaT)
 	cout << setw(2) << "INI" << setw(5) << "HAB" << setw(5) << "VEL" << setw(4) << "PG" << setw(4) << "PP" << endl;
 	for (int i = 0; i < listaT.contador; i++)
 	{
-		cout << setw(2) << listaT.datos[i].iniciales << setw(5) <<  listaT.datos[i].habilidad << setw(5) << listaT.datos[i].velocidad << setw(4) << listaT.datos[i].partidosGanados << setw(4) << listaT.datos[i].partidosPerdidos << endl;
+		cout << setw(2) << listaT.datos[i].iniciales << setw(5) << listaT.datos[i].habilidad << setw(5) << listaT.datos[i].velocidad << setw(4) << listaT.datos[i].partidosGanados << setw(4) << listaT.datos[i].partidosPerdidos << endl;
 	}
 }
 
@@ -197,9 +220,9 @@ void mostrarIniciales(const tListaTenistas& listaT)
 int buscarIniciales(const tListaTenistas& listaT, string ini)
 {
 	int posicionInicial = -1;
-	for(int i = 0; i < listaT.contador; i++)
+	for (int i = 0; i < listaT.contador; i++)
 	{
-		if(ini == listaT.datos[i].iniciales)
+		if (ini == listaT.datos[i].iniciales)
 		{
 			posicionInicial = i;
 			return posicionInicial;
@@ -212,11 +235,11 @@ int buscarIniciales(const tListaTenistas& listaT, string ini)
 	return posicionInicial;
 }
 
-void eliminarTenista(tListaTenistas& listaT, string iniciales) 
+void eliminarTenista(tListaTenistas& listaT, string iniciales)
 {
 	int posicion;
 	posicion = buscarIniciales(listaT, iniciales);
-	if(posicion != -1)
+	if (posicion != -1)
 	{
 		cout << listaT.contador << endl;
 		for (int i = posicion; i < (listaT.contador - 1); i++)
@@ -279,7 +302,7 @@ int tenistaRepetido(const tListaTenistas& listaT, string iniciales)
 {
 	int posicion;
 	posicion = buscarIniciales(listaT, iniciales);
-	if(posicion != -1)
+	if (posicion != -1)
 	{
 		cout << "Tenista repetido. Elija otro" << endl;
 		return 0;
