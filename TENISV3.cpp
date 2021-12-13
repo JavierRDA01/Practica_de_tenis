@@ -22,7 +22,15 @@ const int DIM_ARRAY_TENISTAS = 10;
 bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = true;
 
-enum tPuntosJuego { NADA, QUINCE, TREINTA, CUARENTA, VENTAJA };
+enum tPuntosJuego 
+{
+	NADA, QUINCE, TREINTA, CUARENTA, VENTAJA 
+};
+
+enum tTenista 
+{
+	NADIE, TENISTA1, TENISTA2 
+};
 
 typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
@@ -65,6 +73,18 @@ int buscarIniciales(const tListaTenistas& listaT, string ini);
 void eliminarTenista(tListaTenistas& listaT, string iniciales);
 
 void introducirTenista(tListaTenistas& listaT);
+
+int tenistaRepetido(const tListaTenistas& listaT, string iniciales);
+
+string puntosAstring(tPuntosJuego puntuacion);
+
+int elegirServicio(string nombreJugador1, string nombreJugador2);
+
+int correTenista(int posicionTenista, int velocidad, int posicionBola, string nombreJugador);
+
+int golpeoBola(int posicionTenista, int habilidad, string nombreGolpeador);
+
+tTenista lance(tTenista bolaPara, tDatosTenista& tenistaGolpea, tDatosTenista& tenistaRecibe, int& posicionBola);
 
 
 int main()
@@ -270,3 +290,44 @@ int tenistaRepetido(const tListaTenistas& listaT, string iniciales)
 	}
 }
 
+string puntosAstring(tPuntosJuego puntuacion)
+{
+	string puntos;
+	if (puntuacion == NADA)
+	{
+		puntos = "00";
+	}
+	else if (puntuacion == QUINCE)
+	{
+		puntos = "15";
+	}
+	else if (puntuacion == TREINTA)
+	{
+		puntos = "30";
+	}
+	else if (puntuacion == CUARENTA)
+	{
+		puntos = "40";
+	}
+	else if (puntuacion == VENTAJA)
+	{
+		puntos = "[AD]";
+	}
+	return puntos;
+}
+
+int elegirServicio(string nombreJugador1, string nombreJugador2)
+{
+	int saque;
+	saque = rand() % 2;
+	if (saque == 0)
+	{
+		cout << "Servicio para " << nombreJugador1 << endl;
+		return 1;
+	}
+	else if (saque == 1)
+	{
+		cout << "Servicio para " << nombreJugador2 << endl;
+		return 2;
+	}
+}
