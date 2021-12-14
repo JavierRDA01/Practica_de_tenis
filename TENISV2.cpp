@@ -15,7 +15,10 @@ const int LARGO_PISTA = 3;
 const int JUEGOS_SET = 3;
 const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
 bool JUEGO_ALEATORIO = false;
-bool MODO_DEBUG = true;
+bool MODO_DEBUG = true; 
+enum tTenista { NADIE, TENISTA1, TENISTA2 };
+enum tPuntosJuego { NADA, QUINCE, TREINTA, CUARENTA, VENTAJA };
+typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
 
 string introducirNombre(string numeroJugador);
@@ -28,11 +31,7 @@ int correTenista(int posicion_tenista, int velocidad, int posicionBola, string n
 
 int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeador);
 
-enum tTenista { NADIE, TENISTA1, TENISTA2 };
 
-enum tPuntosJuego { NADA, QUINCE, TREINTA, CUARENTA, VENTAJA };
-
-typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
 void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego actualizarMarpuntos2, int juegos1, int juegos2, tTenista servicio_para);
 
@@ -80,10 +79,10 @@ int main()
 	string nombreJugador1, nombreJugador2, breakTest;
 	tTenista  servicio, ganadorPunto, ganadorJuego, ganadorPartido;
 	tPuntosJuego puntos1 = NADA, puntos2 = NADA;
-	tConteoGolpes golpes1 = { 0,0,0,0,0,0,0,0,0 }, golpes2 = { 0,0,0,0,0,0,0,0,0 };
+	tConteoGolpes golpes1, golpes2;
 	bool JUEGO_TERMINADO = false;
 
-	if (MODO_DEBUG == false) {
+	if (!MODO_DEBUG) {
 
 		srand(time(NULL));
 	}
@@ -377,7 +376,7 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 
 	else if (JUEGO_ALEATORIO == true) { //juego aleatorio
 
-		srand(time(NULL));
+		//srand(time(NULL));
 		posicionDestino = rand() % ANCHO_PISTA + 1;
 		system("PAUSE");
 		cout << endl;
@@ -590,58 +589,58 @@ tTenista lance(tTenista tenista_golpea, string nombreJugador1, string nombreJuga
 tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int velocidad1, tConteoGolpes golpes1, int& golpesGanados1, string nombre2, int habilidad2, int velocidad2, tConteoGolpes golpes2, int& golpesGanados2)
 {
 	int pos_jugador1 = 4, pos_jugador2 = 4, posicionBola = 4; //Al principio de todos los puntos las posiciones son las mismas
-	tTenista ganaPunto = NADIE, turno = servicio; //Al prinicipio nadie gana el punto
+	tTenista ganaPunto = NADIE; //Al prinicipio nadie gana el punto
 
 	pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio); //Pinta el campo inicial
 
 	while (ganaPunto == NADIE)//Se sigue el partido mientras que nadie gane el punto 
 	{
-		if (turno == TENISTA1) //Si saca el tenista1
+		if (servicio == TENISTA1) //Si saca el tenista1
 		{
-			ganaPunto = lance(turno, nombre1, nombre2, habilidad1, golpes1, golpesGanados1, velocidad2, pos_jugador2, posicionBola); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
+			ganaPunto = lance(servicio, nombre1, nombre2, habilidad1, golpes1, golpesGanados1, velocidad2, pos_jugador2, posicionBola); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
 			actualizarGolpes(golpes1, TENISTA1, posicionBola, ganaPunto, golpesGanados1);
 			if (ganaPunto == TENISTA1) //Si gana el punto el tenista1 se pinta la pista y devuelve que ha ganado el tenista1
 			{
-				turno = TENISTA2;
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);
+				servicio = TENISTA2;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 				cout << "Gana el punto " << nombre1 << "!" << endl;
 				return TENISTA1;
 			}
 			else if (ganaPunto == TENISTA2)//Si gana el punto el tenista1 se pinta la pista y devuelve que ha ganado el tenista1
 			{
-				turno = TENISTA2;
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);
+				servicio = TENISTA2;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 				cout << "Gana el punto " << nombre2 << "!" << endl;
 				return TENISTA2;
 			}
-			else //Si no gana nadie se repite el lance() pero el turno pasa al otro jugador
+			else //Si no gana nadie se repite el lance() pero el servicio pasa al otro jugador
 			{
-				turno = TENISTA2;
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);
+				servicio = TENISTA2;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 			}
 		}
-		else if (turno == TENISTA2)
+		else if (servicio == TENISTA2)
 		{
-			ganaPunto = lance(turno, nombre1, nombre2, habilidad2, golpes2, golpesGanados2, velocidad1, pos_jugador1, posicionBola);
+			ganaPunto = lance(servicio, nombre1, nombre2, habilidad2, golpes2, golpesGanados2, velocidad1, pos_jugador1, posicionBola);
 			actualizarGolpes(golpes2, TENISTA2, posicionBola, ganaPunto, golpesGanados2);
 			if (ganaPunto == TENISTA1)
 			{
-				turno = TENISTA1;
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);
+				servicio = TENISTA1;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 				cout << "Gana el punto " << nombre1 << "!" << endl;
 				return TENISTA1;
 			}
 			else if (ganaPunto == TENISTA2)
 			{
-				turno = TENISTA1;
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);
+				servicio = TENISTA1;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 				cout << "Gana el punto " << nombre2 << "!" << endl;
 				return TENISTA2;
 			}
 			else
 			{
-				turno = TENISTA1;
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);
+				servicio = TENISTA1;
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio);
 			}
 		}
 	}
