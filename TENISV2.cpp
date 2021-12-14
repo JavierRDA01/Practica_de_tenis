@@ -34,7 +34,7 @@ enum tPuntosJuego { NADA, QUINCE, TREINTA, CUARENTA, VENTAJA };
 
 typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
-void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego puntos2, int juegos1, int juegos2, tTenista servicio_para);
+void pintarMarcador(string nombreJugador1, string nombreJugador2, tPuntosJuego puntos1, tPuntosJuego actualizarMarpuntos2, int juegos1, int juegos2, tTenista servicio_para);
 
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola, tTenista bola_jugador);
 
@@ -332,7 +332,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 	}
 	else //En el caso de que la velocidad fuera menor que el diferencia
 	{
-		if (posicionBola < posicionTenista) 
+		if (posicionBola < posicionTenista)
 		{
 			if (MODO_DEBUG == true)
 			{
@@ -342,7 +342,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 			posicionTenista = posicionTenista - velocidad;
 			return posicionTenista;// Posición adelantada
 		}
-		else if (posicionBola > posicionTenista) 
+		else if (posicionBola > posicionTenista)
 		{
 			if (MODO_DEBUG == true)
 			{
@@ -354,7 +354,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 		}
 		else
 		{
-			if (posicionBola < posicionTenista) 
+			if (posicionBola < posicionTenista)
 			{
 				return posicionTenista;// Punto para el otro jugador
 			}
@@ -402,7 +402,7 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 			}
 			return posicionDestino;
 		}
-		else 
+		else
 		{
 			if (desvio == 0)
 			{
@@ -423,13 +423,13 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola) 
 				return posicionDestino - 1; // Desvío a la izquierda
 			}
 		}
-		
+
 	}
 }
 
-void arrayReset(tConteoGolpes& array)
+void arrayReset(tConteoGolpes array)
 {
-	for (int i = 0; i < DIM_ARRAY_GOLPES; i++)
+	for (int i = 0; i < (DIM_ARRAY_GOLPES - 1); i++)
 	{
 		array[i] = 0;
 	}
@@ -591,7 +591,7 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 {
 	int pos_jugador1 = 4, pos_jugador2 = 4, posicionBola = 4; //Al principio de todos los puntos las posiciones son las mismas
 	tTenista ganaPunto = NADIE, turno = servicio; //Al prinicipio nadie gana el punto
-	
+
 	pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, servicio); //Pinta el campo inicial
 
 	while (ganaPunto == NADIE)//Se sigue el partido mientras que nadie gane el punto 
@@ -617,7 +617,7 @@ tTenista jugarPunto(tTenista servicio, string nombre1, int habilidad1, int veloc
 			else //Si no gana nadie se repite el lance() pero el turno pasa al otro jugador
 			{
 				turno = TENISTA2;
-				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);	
+				pintarPeloteo(nombre1, nombre2, pos_jugador1, pos_jugador2, posicionBola, turno);
 			}
 		}
 		else if (turno == TENISTA2)
@@ -652,6 +652,9 @@ tTenista jugarJuego(tTenista servicio, string nombre1, int habilidad1, int veloc
 	tTenista ganadorPunto = jugarPunto(servicio, nombre1, habilidad1, velocidad1, golpes1, golpesGanados1, nombre2, habilidad2, velocidad2, golpes2, golpesGanados2);
 	tPuntosJuego puntos1 = NADA, puntos2 = NADA;
 
+	arrayReset(golpes1);
+	arrayReset(golpes2);
+
 	while (actualizarMarcador(ganadorPunto, puntos1, puntos2, juegos1, juegos2) == NADIE) // Se juegan los puntos hasta que actualizarMarcador devuelva o TENISTA1 o TENISTA2
 	{
 		pintarMarcador(nombre1, nombre2, puntos1, puntos2, juegos1, juegos2, servicio); //Muestra el marcador
@@ -683,11 +686,11 @@ tTenista jugarPartido(tTenista servicio, string nombre1, int habilidad1, int vel
 		if (ganadorJuego == TENISTA1)
 		{
 			puntos1++;
-			if(servicio == TENISTA1) //Cambio de servicio al cambiar el punto
+			if (servicio == TENISTA1) //Cambio de servicio al cambiar el punto
 			{
 				servicio = TENISTA2;
 			}
-			else 
+			else
 			{
 				servicio = TENISTA1;
 			}
@@ -773,5 +776,3 @@ int porcentajeDeAcierto(tConteoGolpes golpes, int golpesTotales, int calle)
 	porcentaje = (golpesCalle / golpesTotales) * 100;
 	return porcentaje;
 }
-
-
