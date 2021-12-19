@@ -1056,67 +1056,67 @@ void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int in
 
 void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4)
 {
-	int tenista1 = 0, tenista2 = 0, tenista3 = 0, tenista4 = 0, PGmayor1 = listaT.datos[0].partidosGanados, PGmayor2 = listaT.datos[0].partidosGanados, PGmayor3 = listaT.datos[0].partidosGanados, PGmayor4 = listaT.datos[0].partidosGanados;
+	int  PGmayor1 = listaT.datos[0].partidosGanados, PGmayor2 = listaT.datos[0].partidosGanados, PGmayor3 = listaT.datos[0].partidosGanados, PGmayor4 = listaT.datos[0].partidosGanados;
 	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador con mas partidos ganados
 	{
 		if (PGmayor1 < listaT.datos[i].partidosGanados) // Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganados
 		{
 			PGmayor1 = listaT.datos[i].partidosGanados;
-			tenista1 = i;
+			indT1 = i;
 		}
 	}
 	//Fin del bucle 1
-	if (tenista1 == 0)
+	if (indT1 == 0)
 	{
 		PGmayor2 = listaT.datos[1].partidosGanados;//El bucle empieza en el cuarto jugador en el caso de que el mayores sea el primero
 	}
 	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 2 con mas partidos ganados
 	{
 
-		if (PGmayor2 < listaT.datos[i].partidosGanados && i != tenista1)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganados pero sin contar con jugador1
+		if (PGmayor2 < listaT.datos[i].partidosGanados && i != indT1)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganados pero sin contar con jugador1
 		{
 			PGmayor2 = listaT.datos[i].partidosGanados;
-			tenista2 = i;
+			indT2 = i;
 		}
 	}
 	//Fin del bucle 2
-	if ((tenista1 == 0 && tenista2 == 1) || (tenista2 == 0 && tenista1 == 1))//Si los mayores son los dos primeros.Son permutaciones sin repeticion por lo que las posibilidades son 2!
+	if((indT1 == 0 && indT2 == 1) || (indT2 == 0 && indT1 == 1))//Si los mayores son los dos primeros.Son permutaciones sin repeticion por lo que las posibilidades son 2!
 	{
 		PGmayor3 = listaT.datos[2].partidosGanados;
 	}
-	else if (tenista1 == 0 || tenista2 == 0)//Si el mayor es el primero
+	else if(indT1 == 0 || indT2 == 0)//Si el mayor es el primero
 	{
 		PGmayor3 = listaT.datos[1].partidosGanados;
 	}
-	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 3 con mas partidos ganados
+	for(int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 3 con mas partidos ganados
 	{
-		if (PGmayor3 < listaT.datos[i].partidosGanados && i != tenista1 && i != tenista2)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1 y jugador2
+		if (PGmayor3 < listaT.datos[i].partidosGanados && i != indT1 && i != indT2)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1 y jugador2
 		{
 			PGmayor3 = listaT.datos[i].partidosGanados;
-			tenista3 = i;
+			indT3 = i;
 		}
 	}
 	//Fin del bucle 3
-	if ((tenista1 == 0 && tenista2 == 1 && tenista3 == 2) || (tenista1 == 0 && tenista2 == 2 && tenista3 == 1) || (tenista1 == 1 && tenista2 == 0 && tenista3 == 2) || (tenista1 == 1 && tenista2 == 2 && tenista3 == 0) || (tenista1 == 2 && tenista2 == 1 && tenista3 == 0) || (tenista1 == 2 && tenista2 == 0 && tenista3 == 1))
+	if((indT1 == 0 && indT2 == 1 && indT3 == 2)|| (indT1 == 0 && indT2 == 2 && indT3 == 1)|| (indT1 == 1 && indT2 == 0 && indT3 == 2) || (indT1 == 1 && indT2 == 2 && indT3 == 0) || (indT1 == 2 && indT2 == 1 && indT3 == 0) || (indT1 == 2 && indT2 == 0 && indT3 == 1))
 		//El bucle empieza en el cuarto jugador en el caso de que los tres mayores sean los tres primeros. Son permutaciones sin repeticion por lo que las posibilidades son 3!
 	{
 		PGmayor4 = listaT.datos[3].partidosGanados;
 	}
-	else if ((tenista1 == 0 && tenista2 == 1) || tenista1 == 0 && tenista3 == 1 || (tenista1 == 1 && tenista2 == 0) || (tenista1 == 1 && tenista3 == 1) || (tenista2 == 0 && tenista3 == 1) || (tenista2 == 1 && tenista3 == 0))
+	else if((indT1 == 0 && indT2 == 1)|| indT1 == 0 && indT3 == 1 || (indT1 == 1 && indT2 == 0) || (indT1 == 1 && indT3 == 1) || (indT2 == 0 && indT3 == 1) || (indT2 == 1 && indT3 == 0))
 		//Si los mayores son solo dos. Se trataria de variaciones de 3 elementos con dos posiciones sin repeticion por lo que seria 3!/1! que son 6 posibilidades distintas
 	{
 		PGmayor4 = listaT.datos[2].partidosGanados;
 	}
-	else if (tenista1 == 0 || tenista2 == 0 || tenista3 == 0)//Si el mayor es uno de los tres pero los siguientes no lo son
+	else if(indT1 == 0 || indT2 == 0 || indT3 == 0)//Si el mayor es uno de los tres pero los siguientes no lo son
 	{
 		PGmayor4 = listaT.datos[1].partidosGanados;
 	}
 	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 4 con mas partidos ganados
 	{
-		if (PGmayor4 < listaT.datos[i].partidosGanados && i != tenista1 && i != tenista2 && i != tenista3)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1, jugador2 y jugador3
+		if (PGmayor4 < listaT.datos[i].partidosGanados && i != indT1 && i != indT2 && i != indT3)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1, jugador2 y jugador3
 		{
 			PGmayor4 = listaT.datos[i].partidosGanados;
-			tenista4 = i;
-		}
+			indT4 = i;
+		}	
 	}
 }
