@@ -128,14 +128,13 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 
 int main()
 {
-	tListaTenistas listaDeTenistas, listaT;
+	tListaTenistas listaT;
 	tDatosTenista tenista1, tenista2;
-	tTenista servicio_para;
 	string iniciales;
 	int opcionMenu, indT1, indT2, indT3, indT4;
-	
-	cout << setfill('=') << setw(20)<<endl;
-	cout << setw(3)<<"SIMULADOR DE TENIS V3"<<endl;
+
+	cout << setfill('=') << setw(20) << endl;
+	cout << setw(3) << "SIMULADOR DE TENIS V3" << endl;
 	cout << setfill('=') << setw(20) << endl;
 
 	opcionMenu = menu();
@@ -146,7 +145,7 @@ int main()
 	}
 	else if (opcionMenu == 1)
 	{
-		mostrarIniciales(listaDeTenistas);
+		mostrarIniciales(listaT);
 	}
 	else if (opcionMenu == 2)
 	{
@@ -264,12 +263,14 @@ void mostrarIniciales(const tListaTenistas& listaT)
 int buscarIniciales(const tListaTenistas& listaT, string ini)
 {
 	int posicionInicial = -1;
-	for (int i = 0; i < listaT.contador; i++)
+	bool palabraEncontrada = false;
+
+	for (int i = 0; i < listaT.contador && !palabraEncontrada; i++)
 	{
 		if (ini == listaT.datos[i].iniciales)
 		{
 			posicionInicial = i;
-			return posicionInicial;
+			palabraEncontrada = true;
 		}
 		else
 		{
@@ -473,7 +474,7 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			}
 		}
 	}
-	else 
+	else
 	{
 		for (int i = 1; i <= LARGO_PISTA; i++)
 		{
@@ -484,9 +485,9 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 	}
-		cout << endl;
-		cout << "  - - - - - - - " << endl;
-		cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
+	cout << endl;
+	cout << "  - - - - - - - " << endl;
+	cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 }
 
 void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& datos_t1, const tDatosPartido& datos_t2, tTenista servicio_para)
@@ -512,7 +513,7 @@ void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tDatosTen
 	cout << setw(3) << "Errores no forzados: " << contarGolpesFallidos(tenista1.datosPartido.golpes) << endl;
 	cout << setw(3) << "Distribucion de los golpes en la pista:" << endl << endl;
 	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8" << endl;
-	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1.datosPartido.golpes, golpesTotales1, 8) << fixed << setprecision(1) << endl << endl;
+	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1, golpesTotales1, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1, golpesTotales1, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1, golpesTotales1, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 8) << fixed << setprecision(1) << endl << endl;
 
 	cout << "Estadisticas de " << tenista2.iniciales << ":" << endl;
 	cout << setw(3) << "Golpes totales: " << contarGolpesTotales(tenista2.datosPartido.golpes) << endl;
@@ -520,7 +521,7 @@ void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tDatosTen
 	cout << setw(3) << "Errores no forzados: " << contarGolpesFallidos(tenista2.datosPartido.golpes) << endl;
 	cout << setw(3) << "Distribucion de los golpes en la pista:" << endl << endl;
 	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8" << endl;
-	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2.datosPartido.golpes, golpesTotales2, 8) << fixed << setprecision(1) << endl << endl;
+	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2, golpesTotales2, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2, golpesTotales2, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2, golpesTotales2, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 8) << fixed << setprecision(1) << endl << endl;
 }
 
 tTenista actualizarMarcador(tTenista ganador_punto, tDatosPartido& datos_t1, tDatosPartido& datos_t2)
@@ -798,7 +799,7 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 		if (turno == TENISTA1) //Si saca el tenista1
 		{
 			ganaPunto = lance(turno, tenista1, tenista2, posicionBola); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
-			actualizarGolpes(tenista1.datosPartido, TENISTA1, posicionBola, ganaPunto);
+			actualizarGolpes(tenista1, TENISTA1, posicionBola, ganaPunto);
 			if (ganaPunto == TENISTA1) //Si gana el punto el tenista1 se pinta la pista y devuelve que ha ganado el tenista1
 			{
 				turno = TENISTA2;
@@ -823,7 +824,7 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 		{
 			ganaPunto = lance(turno, tenista2, tenista1, posicionBola);
 			tTenista lance(tTenista bolaPara, tDatosTenista & tenistaGolpea, tDatosTenista & tenistaRecibe, int& posicionBola);
-			actualizarGolpes(tenista2.datosPartido, TENISTA2, posicionBola, ganaPunto);
+			actualizarGolpes(tenista2, TENISTA2, posicionBola, ganaPunto);
 			if (ganaPunto == TENISTA1)
 			{
 				turno = TENISTA1;
@@ -859,7 +860,7 @@ tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 	}
 
 	pintarMarcador(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido, tenista2.datosPartido, servicio_para);
-	mostrarEstadisticas(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido, tenista2.datosPartido); //Al final de cada juego muestra las estadísticas
+	mostrarEstadisticas(tenista1.iniciales, tenista2.iniciales, tenista1, tenista2); //Al final de cada juego muestra las estadísticas
 
 
 	if (ganadorPunto == TENISTA1)// Si el juego lo gana el j1
@@ -872,12 +873,12 @@ tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 	}
 }
 
-void actualizarGolpes(tDatosPartido& datos_partido, tTenista servicio, int posicionBola, tTenista ganador)
+void actualizarGolpes(tDatosTenista& datos_tenista, tTenista servicio, int posicionBola, tTenista ganador)
 {
-	datos_partido.golpes[posicionBola]++; //Se suma un golpe en la dirección a la que haya ido la bola
+	datos_tenista.datosPartido.golpes[posicionBola]++; //Se suma un golpe en la dirección a la que haya ido la bola
 	if (servicio == ganador)
 	{
-		datos_partido.golpesGanadores++; //Si el que golpea la bola gana el punto se suma uno a golpes ganados
+		datos_tenista.datosPartido.golpesGanadores++; //Si el que golpea la bola gana el punto se suma uno a golpes ganados
 	}
 }
 
@@ -916,8 +917,8 @@ void buscar2Jug(tListaTenistas& listaT)
 	cout << "introduce las iniciales del tenista1: ";
 	cin >> iniciales;
 	jugador1 = buscarIniciales(listaT, iniciales);
-	
-	while(jugador1 < 0)
+
+	while (jugador1 < 0)
 	{
 		cout << "vuelva a introducir las iniciales del tenista1: ";
 		cin >> iniciales;
@@ -942,7 +943,7 @@ void buscar2Jug(tListaTenistas& listaT)
 
 tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 {
-	tTenista ganador;
+	tTenista ganador = NADIE;
 	tTenista servicio_para = tTenista(elegirServicio());
 
 	if (jugarParaGanadorSet(tenista1, tenista2, servicio_para) == TENISTA1)
@@ -964,7 +965,7 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 
 tTenista jugarParaGanadorSet(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para) // para jugar minimo de 3 juegos y 2 de diferencia
 {
-	bool juegoEstaTerminado;
+	bool juegoEstaTerminado = false;
 	tTenista ganador;
 
 	servicio_para = tTenista(elegirServicio());
@@ -1053,58 +1054,69 @@ void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int in
 	//guardar(listaT);
 }
 
-void seleccionarTop4(tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4)
+void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4)
 {
-	int tenista1, tenista2, tenista3, tenista4;
-	string iniciales;
-
-	cout << "introduce las iniciales del jugador 1: ";
-	cin >> iniciales;
-	tenista1 = buscarIniciales(listaT, iniciales);
-
-	while (tenista1 < 0)
+	int tenista1 = 0, tenista2 = 0, tenista3 = 0, tenista4 = 0, PGmayor1 = listaT.datos[0].partidosGanados, PGmayor2 = listaT.datos[0].partidosGanados, PGmayor3 = listaT.datos[0].partidosGanados, PGmayor4 = listaT.datos[0].partidosGanados;
+	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador con mas partidos ganados
 	{
-		cout << "ERROR, esas iniciales no concuerdan con ningun tenista";
-		cout << "vuelva a introducir las iniciales: ";
-		cin >> iniciales;
-		tenista1 = buscarIniciales(listaT, iniciales);
+		if (PGmayor1 < listaT.datos[i].partidosGanados) // Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganados
+		{
+			PGmayor1 = listaT.datos[i].partidosGanados;
+			tenista1 = i;
+		}
 	}
-
-	cout << "introduce las iniciales del jugador 2: ";
-	cin >> iniciales;
-	tenista2 = buscarIniciales(listaT, iniciales);
-
-	while ((tenista2 < 0) || (iniciales == listaT.datos[tenista1].iniciales))
+	//Fin del bucle 1
+	if (tenista1 == 0)
 	{
-		cout << "ERROR, esas iniciales no concuerdan con ningun tenista o ya coinciden con un tenista";
-		cout << "vuelva a introducir las iniciales: ";
-		cin >> iniciales;
-		tenista2 = buscarIniciales(listaT, iniciales);
+		PGmayor2 = listaT.datos[1].partidosGanados;//El bucle empieza en el cuarto jugador en el caso de que el mayores sea el primero
 	}
-
-	cout << "introduce las iniciales del jugador 3: ";
-	cin >> iniciales;
-	tenista3 = buscarIniciales(listaT, iniciales);
-
-	while ((tenista3 < 0) || (iniciales == listaT.datos[tenista1].iniciales) || (iniciales == listaT.datos[tenista2].iniciales) || (iniciales == listaT.datos[tenista3].iniciales))
+	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 2 con mas partidos ganados
 	{
-		cout << "ERROR, esas iniciales no concuerdan con ningun tenista o ya coinciden con un tenista";
-		cout << "vuelva a introducir las iniciales: ";
-		cin >> iniciales;
-		tenista3 = buscarIniciales(listaT, iniciales);
+
+		if (PGmayor2 < listaT.datos[i].partidosGanados && i != tenista1)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganados pero sin contar con jugador1
+		{
+			PGmayor2 = listaT.datos[i].partidosGanados;
+			tenista2 = i;
+		}
 	}
-
-	cout << "introduce las iniciales del jugador 4: ";
-	cin >> iniciales;
-	tenista4 = buscarIniciales(listaT, iniciales);
-
-	while ((tenista4 < 0) || (iniciales == listaT.datos[tenista1].iniciales) || (iniciales == listaT.datos[tenista2].iniciales) || (iniciales == listaT.datos[tenista3].iniciales))
+	//Fin del bucle 2
+	if ((tenista1 == 0 && tenista2 == 1) || (tenista2 == 0 && tenista1 == 1))//Si los mayores son los dos primeros.Son permutaciones sin repeticion por lo que las posibilidades son 2!
 	{
-		cout << "ERROR, esas iniciales no concuerdan con ningun tenista o ya coinciden con un tenista";
-		cout << "vuelva a introducir las iniciales: ";
-		cin >> iniciales;
-		tenista4 = buscarIniciales(listaT, iniciales);
+		PGmayor3 = listaT.datos[2].partidosGanados;
 	}
-
-	jugarTorneo(listaT, tenista1, tenista2, tenista3, tenista4);
+	else if (tenista1 == 0 || tenista2 == 0)//Si el mayor es el primero
+	{
+		PGmayor3 = listaT.datos[1].partidosGanados;
+	}
+	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 3 con mas partidos ganados
+	{
+		if (PGmayor3 < listaT.datos[i].partidosGanados && i != tenista1 && i != tenista2)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1 y jugador2
+		{
+			PGmayor3 = listaT.datos[i].partidosGanados;
+			tenista3 = i;
+		}
+	}
+	//Fin del bucle 3
+	if ((tenista1 == 0 && tenista2 == 1 && tenista3 == 2) || (tenista1 == 0 && tenista2 == 2 && tenista3 == 1) || (tenista1 == 1 && tenista2 == 0 && tenista3 == 2) || (tenista1 == 1 && tenista2 == 2 && tenista3 == 0) || (tenista1 == 2 && tenista2 == 1 && tenista3 == 0) || (tenista1 == 2 && tenista2 == 0 && tenista3 == 1))
+		//El bucle empieza en el cuarto jugador en el caso de que los tres mayores sean los tres primeros. Son permutaciones sin repeticion por lo que las posibilidades son 3!
+	{
+		PGmayor4 = listaT.datos[3].partidosGanados;
+	}
+	else if ((tenista1 == 0 && tenista2 == 1) || tenista1 == 0 && tenista3 == 1 || (tenista1 == 1 && tenista2 == 0) || (tenista1 == 1 && tenista3 == 1) || (tenista2 == 0 && tenista3 == 1) || (tenista2 == 1 && tenista3 == 0))
+		//Si los mayores son solo dos. Se trataria de variaciones de 3 elementos con dos posiciones sin repeticion por lo que seria 3!/1! que son 6 posibilidades distintas
+	{
+		PGmayor4 = listaT.datos[2].partidosGanados;
+	}
+	else if (tenista1 == 0 || tenista2 == 0 || tenista3 == 0)//Si el mayor es uno de los tres pero los siguientes no lo son
+	{
+		PGmayor4 = listaT.datos[1].partidosGanados;
+	}
+	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 4 con mas partidos ganados
+	{
+		if (PGmayor4 < listaT.datos[i].partidosGanados && i != tenista1 && i != tenista2 && i != tenista3)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1, jugador2 y jugador3
+		{
+			PGmayor4 = listaT.datos[i].partidosGanados;
+			tenista4 = i;
+		}
+	}
 }
