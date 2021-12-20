@@ -39,10 +39,11 @@ typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
 struct tDatosPartido
 {
-	int posicion;
-	int puntos;
-	int juegos;
-	int golpesGanadores;
+	int posicion = 4;
+	tPuntosJuego puntos = NADA;
+	int juegos = 0;
+	int golpesGanadores = 0;
+
 	tConteoGolpes golpes;
 };
 
@@ -118,7 +119,7 @@ tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 
 tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2); //
 
-void buscar2Jug(tListaTenistas& listaT, int indT1, int indT2);//funcion para buscar los 2 jugadores para el partido
+void buscar2Jug(tListaTenistas& listaT, int& indT1, int& indT2);//funcion para buscar los 2 jugadores para el partido
 
 void arrayReset(tConteoGolpes array); //una funcion que permita reiniciar cualquier array
 
@@ -135,7 +136,15 @@ int main()
 	int opcionMenu, indT1 = 0, indT2 = 0, indT3 = 0, indT4 = 0;
 	cargar(listaT);
 	cout << setw(3) << "SIMULADOR DE TENIS V3" << endl;
+	
+	if (MODO_DEBUG == false) {
 
+		srand(time(NULL));
+	}
+	else {
+
+		srand(0);
+	}
 	opcionMenu = menu();
 
 	if (opcionMenu == 0)
@@ -470,26 +479,25 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 				cout << setw(2) << "|";
 			}
 			cout << setw(2) << "|" << endl;
-		}
-		cout << setw(2);
-		if (posicionBola == 0)
-		{
-			cout << "o| ";
-		}
-		for (int f = 1; f <= ANCHO_PISTA; f++)
-		{
-			cout << "|" << setw(2);
-			if (f == posicionBola && (f <= 7 && f >= 1))
+
+			if (posicionBola == 0)
 			{
 				cout << "o| ";
 			}
-		}
-		if (posicionBola == 8)
-		{
-			cout << " |o";
+			for (int f = 1; f <= ANCHO_PISTA; f++)
+			{
+				cout << "|" << setw(2);
+				if (f == posicionBola && (f <= 7 && f >= 1))
+				{
+					cout << "o| ";
+				}
+			}
+			if (posicionBola == 8)
+			{
+				cout << " |o";
+			}
 		}
 	}
-
 	else
 	{
 		for (int i = 1; i <= LARGO_PISTA; i++)
@@ -505,7 +513,6 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 	cout << "  - - - - - - - " << endl;
 	cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 }
-
 void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& datos_t1, const tDatosPartido& datos_t2, tTenista servicio_para)
 {
 	if (servicio_para == TENISTA1)
@@ -810,7 +817,6 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 	tTenista ganaPunto = NADIE, turno = servicio_para; //Al prinicipio nadie gana el punto
 
 	pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno); //Pinta el campo inicial
-
 	while (ganaPunto == NADIE)//Se sigue el partido mientras que nadie gane el punto 
 	{
 		if (turno == TENISTA1) //Si saca el tenista1
@@ -840,7 +846,6 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 		else if (turno == TENISTA2)
 		{
 			ganaPunto = lance(turno, tenista2, tenista1, posicionBola);
-			tTenista lance(tTenista bolaPara, tDatosTenista & tenistaGolpea, tDatosTenista & tenistaRecibe, int& posicionBola);
 			actualizarGolpes(tenista2, TENISTA2, posicionBola, ganaPunto);
 			if (ganaPunto == TENISTA1)
 			{
@@ -921,11 +926,37 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 
 void actualizarGolpes(tDatosTenista& datos_tenista, tTenista servicio, int posicionBola, tTenista ganador)
 {
-	datos_tenista.datosPartido.golpes[posicionBola]++; //Se suma un golpe en la dirección a la que haya ido la bola
+	for (int i = 0; i < ANCHO_PISTA + 2; i++) 
+	{
+
+		if (posicionBola == i)
+		{
+			datos_tenista.datosPartido.golpes[i]++;
+		}
+	} //Se suma un golpe en la dirección a la que haya ido la bola
 	if (servicio == ganador)
 	{
 		datos_tenista.datosPartido.golpesGanadores++; //Si el que golpea la bola gana el punto se suma uno a golpes ganados
 	}
+}
+void actualizarGolpes(tConteoGolpes golpes, int& golpes_ganados, tTenista ganador, tTenista tenista, int pos_bola) {
+
+	//golpes en cada calle
+	for (int i = 0; i < ANCHO_PISTA + 2; i++) {
+
+		if (pos_bola == i) {
+
+			golpes[i]++;
+
+		}
+	}
+
+	//golpe ganador?
+	if (tenista == ganador) {
+
+		golpes_ganados++;
+	}
+
 }
 
 int contarGolpesTotales(tConteoGolpes golpes_totales)
@@ -956,7 +987,7 @@ double porcentajeDeAcierto(tDatosTenista tenista, int golpesTotales, int calle)
 	return porcentaje;
 }
 
-void buscar2Jug(tListaTenistas& listaT, int indT1, int indT2)
+void buscar2Jug(tListaTenistas& listaT, int& indT1, int& indT2)
 {
 	string iniciales1, iniciales2;
 	cout << "introduce las iniciales del tenista1: ";
