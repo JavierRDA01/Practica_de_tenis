@@ -472,6 +472,7 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 
 	if (bola_jugador == TENISTA2)
 	{
+
 		for (int a = 1; a <= (LARGO_PISTA - 1); a++)
 		{
 			for (int i = 1; i <= ANCHO_PISTA; i++)
@@ -479,6 +480,8 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 				cout << setw(2) << "|";
 			}
 			cout << setw(2) << "|" << endl;
+		}
+		cout<<setw(2);
 
 			if (posicionBola == 0)
 			{
