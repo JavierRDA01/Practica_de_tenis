@@ -21,6 +21,7 @@ const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
 const int DIM_ARRAY_TENISTAS = 10;
 const int DIFERENCIA_PARA_GANAR = 2;
 const int MINIMO_SET = 3;
+const int JUGADORES_FINAL = 2;
 bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = true;
 
@@ -43,7 +44,7 @@ struct tDatosPartido
 	int juegos = 0;
 	int golpesGanadores = 0;
 
-	tConteoGolpes golpes;
+	tConteoGolpes golpes = {0,0,0,0,0,0,0,0,0};
 };
 
 struct tDatosTenista
@@ -61,7 +62,7 @@ typedef tDatosTenista tArray[DIM_ARRAY_TENISTAS];
 
 struct tListaTenistas
 {
-	tDatosTenista datos[DIM_ARRAY_TENISTAS];
+	tArray datos;
 	int contador = 0;
 };
 
@@ -108,11 +109,11 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 
 void actualizarGolpes(tDatosTenista& tenista, tTenista servicio, int posicionBola, tTenista ganador); //
 
-int contarGolpesTotales(tConteoGolpes golpes_totales); //
+int contarGolpesTotales(const tDatosTenista tenista); //
 
-int contarGolpesFallidos(tConteoGolpes golpes_fallados); //
+int contarGolpesFallidos(const tDatosTenista tenista); //
 
-double porcentajeDeAcierto(tDatosTenista tenista, int golpesTotales, int calle); //
+double porcentajeDeAcierto(const tDatosTenista tenista, double golpesTotales, int calle); //
 
 tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para); //
 
@@ -120,11 +121,16 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2); //
 
 void buscar2Jug(tListaTenistas& listaT, int& indT1, int& indT2);//funcion para buscar los 2 jugadores para el partido
 
+void buscar4Jug(tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4);//funcion para buscar los 2 jugadores para el partido
+
 void arrayReset(tConteoGolpes array); //una funcion que permita reiniciar cualquier array
 
 void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int indT4); //jugar un Torneo entre 4 personas
 
 void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4); //seleccionar los los 4 para el torneo
+
+void resetearJugadoresTorneo(tListaTenistas& listaT, int jugador);
+
 
 
 int main()
@@ -172,6 +178,8 @@ int main()
 	}
 	else if (opcionMenu == 5)
 	{	
+		mostrarIniciales(listaT);
+		buscar4Jug(listaT, indT1, indT2, indT3, indT4);
 		jugarTorneo(listaT, indT1, indT2, indT3, indT4);
 	}
 	else if (opcionMenu == 6)
@@ -426,12 +434,7 @@ int elegirServicio()
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola, tTenista bola_jugador)
 {
 	cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
-	cout << setw(4);
-	for (int a = 1; a <= ANCHO_PISTA; a++)
-	{
-		cout << "- ";
-	}
-	cout << endl;
+	cout << "  - - - - - - - " << endl;
 	cout << setw(2);
 	if (bola_jugador == TENISTA1)
 	{
@@ -472,12 +475,8 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 	}
-	cout << "--";
-	for (int i = 1; i <= ANCHO_PISTA; i++)
-	{
-		cout << i << "-";
-	}
-	cout << "-"<<endl;
+	cout << "--1-2-3-4-5-6-7--" << endl;
+
 	if (bola_jugador == TENISTA2)
 	{
 
@@ -507,8 +506,8 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 		{
 			cout << " |o";
 		}
-		cout << endl;
 	}
+
 	else
 	{
 		for (int i = 1; i <= LARGO_PISTA; i++)
@@ -517,19 +516,13 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			{
 				cout << setw(2) << "|";
 			}
-			cout << setw(2) << "|"<<endl;
+			cout << setw(2) << "|" << endl;
 		}
 	}
-	
-	cout << setw(4);
-	for (int a = 1; a <= ANCHO_PISTA; a++)
-	{
-		cout << "- ";
-	}
 	cout << endl;
+	cout << "  - - - - - - - " << endl;
 	cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 }
-
 void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& datos_t1, const tDatosPartido& datos_t2, tTenista servicio_para)
 {
 	if (servicio_para == TENISTA1)
@@ -544,21 +537,21 @@ void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& d
 	}
 }
 
-void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tDatosTenista tenista1, tDatosTenista tenista2)  //tDatosTenista tenista
+void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, const tDatosTenista tenista1, const tDatosTenista tenista2)  //tDatosTenista tenista
 {
-	int golpesTotales1 = contarGolpesTotales(tenista1.datosPartido.golpes), golpesTotales2 = contarGolpesTotales(tenista2.datosPartido.golpes);
+	int golpesTotales1 = contarGolpesTotales(tenista1), golpesTotales2 = contarGolpesTotales(tenista2), golpesFallidos1 = contarGolpesFallidos(tenista1), golpesFallidos2 = contarGolpesFallidos(tenista2);
 	cout << "Estadisticas de " << tenista1.iniciales << ":" << endl;
-	cout << setw(3) << "Golpes totales: " << contarGolpesTotales(tenista1.datosPartido.golpes) << endl;
+	cout << setw(3) << "Golpes totales: " << golpesTotales1 << endl;
 	cout << setw(3) << "Golpes ganadores: " << tenista1.datosPartido.golpesGanadores << endl;
-	cout << setw(3) << "Errores no forzados: " << contarGolpesFallidos(tenista1.datosPartido.golpes) << endl;
+	cout << setw(3) << "Errores no forzados: " << golpesFallidos1 << endl;
 	cout << setw(3) << "Distribucion de los golpes en la pista:" << endl << endl;
 	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8" << endl;
 	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1, golpesTotales1, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1, golpesTotales1, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista1, golpesTotales1, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista1, golpesTotales1, 8) << fixed << setprecision(1) << endl << endl;
 
 	cout << "Estadisticas de " << tenista2.iniciales << ":" << endl;
-	cout << setw(3) << "Golpes totales: " << contarGolpesTotales(tenista2.datosPartido.golpes) << endl;
+	cout << setw(3) << "Golpes totales: " << golpesTotales2 << endl;
 	cout << setw(3) << "Golpes ganadores: " << tenista2.datosPartido.golpesGanadores << endl;
-	cout << setw(3) << "Errores no forzados: " << contarGolpesFallidos(tenista2.datosPartido.golpes) << endl;
+	cout << setw(3) << "Errores no forzados: " << golpesFallidos2 << endl;
 	cout << setw(3) << "Distribucion de los golpes en la pista:" << endl << endl;
 	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8" << endl;
 	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2, golpesTotales2, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2, golpesTotales2, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeAcierto(tenista2, golpesTotales2, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeAcierto(tenista2, golpesTotales2, 8) << fixed << setprecision(1) << endl << endl;
@@ -839,13 +832,13 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 	{
 		if (turno == TENISTA1) //Si saca el tenista1
 		{
-			ganaPunto = tTenista(lance(turno, tenista1, tenista2, posicionBola)); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
+			ganaPunto = lance(turno, tenista1, tenista2, posicionBola); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
 			actualizarGolpes(tenista1, TENISTA1, posicionBola, ganaPunto);
 			turno = TENISTA2;
 		}
 		else
 		{
-			ganaPunto = tTenista(lance(turno, tenista2, tenista1, posicionBola));
+			ganaPunto = lance(turno, tenista2, tenista1, posicionBola);
 			actualizarGolpes(tenista2, TENISTA2, posicionBola, ganaPunto);
 			turno = TENISTA1;
 		}
@@ -869,12 +862,14 @@ tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 	tTenista ganadorPunto = jugarPunto(tenista1, tenista2, servicio_para);
 	tPuntosJuego puntos1 = NADA, puntos2 = NADA;
 
+	arrayReset(tenista1.datosPartido.golpes);
+	arrayReset(tenista2.datosPartido.golpes);
+
 	while (actualizarMarcador(ganadorPunto, tenista1.datosPartido, tenista2.datosPartido) == NADIE) // Se juegan los puntos hasta que actualizarMarcador devuelva o TENISTA1 o TENISTA2
 	{
 		pintarMarcador(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido, tenista2.datosPartido, servicio_para); //Muestra el marcador
 		ganadorPunto = jugarPunto(tenista1, tenista2, servicio_para);
 	}
-
 	pintarMarcador(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido, tenista2.datosPartido, servicio_para);
 	mostrarEstadisticas(tenista1.iniciales, tenista2.iniciales, tenista1, tenista2); //Al final de cada juego muestra las estadísticas
 	return ganadorPunto;
@@ -884,6 +879,8 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 {
 	tTenista ganadorJuego = NADIE, ganadorPartido = NADIE, servicio = tTenista(elegirServicio());
 	int puntos1 = 0, puntos2 = 0, absoluto = 0;
+	arrayReset(tenista1.datosPartido.golpes);
+	arrayReset(tenista2.datosPartido.golpes);
 	absoluto = abs(puntos1 - puntos2);
 	while ((puntos1 < MINIMO_SET && puntos2 < MINIMO_SET) || (absoluto < DIFERENCIA_PARA_GANAR)) //Hasta que uno de los dos llegue a 3 puntos y hasta que haya una diferencia de 2
 	{
@@ -920,64 +917,47 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 
 void actualizarGolpes(tDatosTenista& datos_tenista, tTenista servicio, int posicionBola, tTenista ganador)
 {
-	for (int i = 0; i < ANCHO_PISTA + 2; i++) 
+	for (int i = 0; i < DIM_ARRAY_GOLPES; i++)
 	{
-
-		if (posicionBola == i)
+		if (posicionBola == i) //Se suma un golpe en la dirección a la que haya ido la bola
 		{
 			datos_tenista.datosPartido.golpes[i]++;
 		}
-	} //Se suma un golpe en la dirección a la que haya ido la bola
+	}
 	if (servicio == ganador)
 	{
 		datos_tenista.datosPartido.golpesGanadores++; //Si el que golpea la bola gana el punto se suma uno a golpes ganados
 	}
 }
-void actualizarGolpes(tConteoGolpes golpes, int& golpes_ganados, tTenista ganador, tTenista tenista, int pos_bola) {
 
-	//golpes en cada calle
-	for (int i = 0; i < ANCHO_PISTA + 2; i++) {
-
-		if (pos_bola == i) {
-
-			golpes[i]++;
-
-		}
-	}
-
-	//golpe ganador?
-	if (tenista == ganador) {
-
-		golpes_ganados++;
-	}
-
-}
-
-int contarGolpesTotales(tConteoGolpes golpes_totales)
+int contarGolpesTotales(const tDatosTenista tenista)
 {
 	int sumaDeGolpes = 0;
 	for (int i = 0; i < DIM_ARRAY_GOLPES; i++)
 	{
-		sumaDeGolpes = sumaDeGolpes + golpes_totales[i];
+		sumaDeGolpes = sumaDeGolpes + tenista.datosPartido.golpes[i];
 	}
 	return sumaDeGolpes;
 }
 
-int contarGolpesFallidos(tConteoGolpes golpes_fallados)
+//calcula el porcentaje de golpes en una pista respecto al total de golpes
+
+
+
+int contarGolpesFallidos(const tDatosTenista tenista)
 {
-	int golpesTotales = contarGolpesTotales(golpes_fallados), sumaDeGolpesDentro = 0;
-	for (int i = 1; i < ANCHO_PISTA + 1; i++)
+	int golpesTotales = contarGolpesTotales(tenista), sumaDeGolpesDentro = 0;
+	for (int i = 1; i < ANCHO_PISTA ; i++)
 	{
-		sumaDeGolpesDentro = sumaDeGolpesDentro + golpes_fallados[i];
+		sumaDeGolpesDentro = sumaDeGolpesDentro + tenista.datosPartido.golpes[i];
 	}
 	return (golpesTotales - sumaDeGolpesDentro);
 }
 
-double porcentajeDeAcierto(tDatosTenista tenista, int golpesTotales, int calle)
+double porcentajeDeAcierto(const tDatosTenista tenista, double golpesTotales, int calle)
 {
-	double golpesCalle = tenista.datosPartido.golpes[calle];
-	double porcentaje;
-	porcentaje = (golpesCalle / golpesTotales) * 100;
+	double porcentaje = 0;
+	porcentaje = (double((tenista.datosPartido.golpes[calle]) / golpesTotales) * 100);
 	return porcentaje;
 }
 
@@ -1005,6 +985,52 @@ void buscar2Jug(tListaTenistas& listaT, int& indT1, int& indT2)
 		cout << "vuelva a introducir las iniciales del tenista2: ";
 		cin >> iniciales2;
 		indT2 = buscarIniciales(listaT, iniciales2);
+	}
+}
+
+void buscar4Jug(tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4)
+{
+	string iniciales1, iniciales2, iniciales3, iniciales4;
+	cout << "introduce las iniciales del tenista1: ";
+	cin >> iniciales1;
+	indT1 = buscarIniciales(listaT, iniciales1);
+	indT2 = buscarIniciales(listaT, iniciales2);
+	indT3 = buscarIniciales(listaT, iniciales3);
+	while (indT1 < 0)
+	{
+		cout << "vuelva a introducir las iniciales del tenista1: ";
+		cin >> iniciales1;
+		indT1 = buscarIniciales(listaT, iniciales1);
+	}
+
+	cout << "introduce las iniciales del tenista2: ";
+	cin >> iniciales2;
+	indT2 = buscarIniciales(listaT, iniciales2);
+	while ((iniciales2 == listaT.datos[indT1].iniciales) || (indT2 < 0))
+	{
+		cout << "vuelva a introducir las iniciales del tenista2: ";
+		cin >> iniciales2;
+		indT2 = buscarIniciales(listaT, iniciales2);
+	}
+
+	cout << "introduce las iniciales del tenista3: ";
+	cin >> iniciales3;
+	indT3 = buscarIniciales(listaT, iniciales3);
+	while ((iniciales3 == listaT.datos[indT1].iniciales) || (iniciales3 == listaT.datos[indT2].iniciales) || indT3 < 0)
+	{
+		cout << "vuelva a introducir las iniciales del tenista3: ";
+		cin >> iniciales3;
+		indT3 = buscarIniciales(listaT, iniciales3);
+	}
+
+	cout << "introduce las iniciales del tenista4: ";
+	cin >> iniciales4;
+	indT4 = buscarIniciales(listaT, iniciales4);
+	while ((iniciales4 == listaT.datos[indT1].iniciales) || (iniciales4 == listaT.datos[indT2].iniciales) || indT4 < 0 || (iniciales4 == listaT.datos[indT3].iniciales))
+	{
+		cout << "vuelva a introducir las iniciales del tenista4: ";
+		cin >> iniciales4;
+		indT4 = buscarIniciales(listaT, iniciales4);
 	}
 }
 
@@ -1047,6 +1073,8 @@ void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int in
 		partido3 = indT3;
 		cout << "el segundo partido lo ha ganado: " << listaT.datos[indT3].iniciales << endl;
 	}
+	resetearJugadoresTorneo(listaT, partido1);
+	resetearJugadoresTorneo(listaT, partido2);
 
 	cout << "la final sera entre: " << listaT.datos[partido1].iniciales << " y " << listaT.datos[partido2].iniciales << "!!!" << endl;
 
@@ -1129,4 +1157,11 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 			indT4 = i;
 		}
 	}
+}
+
+void resetearJugadoresTorneo(tListaTenistas& listaT, int jugador)
+{
+	listaT.datos[jugador].datosPartido.puntos = NADA;
+	listaT.datos[jugador].datosPartido.juegos = 0;
+	listaT.datos[jugador].datosPartido.golpesGanadores = 0;
 }
