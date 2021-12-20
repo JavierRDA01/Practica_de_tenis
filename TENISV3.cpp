@@ -10,7 +10,6 @@
 
 using namespace std;
 
-
 const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
 const int LIM_SUP_VEL = 3;
@@ -481,26 +480,26 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			}
 			cout << setw(2) << "|" << endl;
 		}
-		cout<<setw(2);
+		cout << setw(2);
 
-			if (posicionBola == 0)
+		if (posicionBola == 0)
+		{
+			cout << "o| ";
+		}
+		for (int f = 1; f <= ANCHO_PISTA; f++)
+		{
+			cout << "|" << setw(2);
+			if (f == posicionBola && (f <= 7 && f >= 1))
 			{
 				cout << "o| ";
 			}
-			for (int f = 1; f <= ANCHO_PISTA; f++)
-			{
-				cout << "|" << setw(2);
-				if (f == posicionBola && (f <= 7 && f >= 1))
-				{
-					cout << "o| ";
-				}
-			}
-			if (posicionBola == 8)
-			{
-				cout << " |o";
-			}
+		}
+		if (posicionBola == 8)
+		{
+			cout << " |o";
 		}
 	}
+
 	else
 	{
 		for (int i = 1; i <= LARGO_PISTA; i++)
@@ -677,22 +676,22 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 	{
 		if (posicionBola < posicionTenista)
 		{
+			posicionTenista = posicionTenista - velocidad;
 			if (MODO_DEBUG == true)
 			{
 				diferenciaCasillas = posicionTenista - posicionBola;
 				cout << nombreJugador << " intenta llegar por la derecha pero se queda en la posicion " << posicionTenista << " a " << diferenciaCasillas << " de su objetivo y pierde el punto" << endl;
-			}
-			posicionTenista = posicionTenista - velocidad;
+			}	
 			return posicionTenista;// Posición adelantada
 		}
 		else if (posicionBola > posicionTenista)
 		{
+			posicionTenista = posicionTenista + velocidad;
 			if (MODO_DEBUG == true)
 			{
 				diferenciaCasillas = posicionBola - posicionTenista;
 				cout << nombreJugador << " intenta llegar por la izquierda pero se queda en la posicion " << posicionTenista << " a " << diferenciaCasillas << " de su objetivo y pierde el punto" << endl;
 			}
-			posicionTenista = posicionTenista + velocidad;
 			return posicionTenista;// Posición atrasada
 		}
 		else
@@ -816,7 +815,8 @@ tTenista lance(tTenista bola_para, tDatosTenista& tenista_golpea, tDatosTenista&
 
 tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para)
 {
-	int pos_jugador1 = 4, pos_jugador2 = 4, posicionBola = 4; //Al principio de todos los puntos las posiciones son las mismas
+	tenista1.datosPartido.posicion = 4; tenista2.datosPartido.posicion = 4;
+	int posicionBola = 4; //Al principio de todos los puntos las posiciones son las mismas
 	tTenista ganaPunto = NADIE, turno = servicio_para; //Al prinicipio nadie gana el punto
 
 	pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno); //Pinta el campo inicial
@@ -824,53 +824,29 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 	{
 		if (turno == TENISTA1) //Si saca el tenista1
 		{
-			ganaPunto = lance(turno, tenista1, tenista2, posicionBola); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
+			ganaPunto = tTenista(lance(turno, tenista1, tenista2, posicionBola)); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
 			actualizarGolpes(tenista1, TENISTA1, posicionBola, ganaPunto);
-			if (ganaPunto == TENISTA1) //Si gana el punto el tenista1 se pinta la pista y devuelve que ha ganado el tenista1
-			{
-				turno = TENISTA2;
-				pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
-				cout << "Gana el punto " << tenista1.iniciales << "!" << endl;
-				return TENISTA1;
-			}
-			else if (ganaPunto == TENISTA2)//Si gana el punto el tenista1 se pinta la pista y devuelve que ha ganado el tenista1
-			{
-				turno = TENISTA2;
-				pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
-				cout << "Gana el punto " << tenista2.iniciales << "!" << endl;
-				return TENISTA2;
-			}
-			else //Si no gana nadie se repite el lance() pero el turno pasa al otro jugador
-			{
-				turno = TENISTA2;
-				pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
-			}
+			turno = TENISTA2;
 		}
-		else if (turno == TENISTA2)
+		else
 		{
-			ganaPunto = lance(turno, tenista2, tenista1, posicionBola);
+			ganaPunto = tTenista(lance(turno, tenista2, tenista1, posicionBola));
 			actualizarGolpes(tenista2, TENISTA2, posicionBola, ganaPunto);
-			if (ganaPunto == TENISTA1)
-			{
-				turno = TENISTA1;
-				pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
-				cout << "Gana el punto " << tenista1.iniciales << "!" << endl;
-				return TENISTA1;
-			}
-			else if (ganaPunto == TENISTA2)
-			{
-				turno = TENISTA1;
-				pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
-				cout << "Gana el punto " << tenista2.iniciales << "!" << endl;
-				return TENISTA2;
-			}
-			else
-			{
-				turno = TENISTA1;
-				pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
-			}
+			turno = TENISTA1;
 		}
+		pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
 	}
+	if(ganaPunto == TENISTA1)
+	{
+		cout << "Gana el punto " << tenista1.iniciales << "!" << endl;
+
+	}
+	else
+	{
+		cout << "Gana el punto " << tenista2.iniciales << "!" << endl;
+
+	}
+	return ganaPunto;
 }
 
 tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para)
