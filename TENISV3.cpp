@@ -21,18 +21,19 @@ const int JUEGOS_SET = 3;
 const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
 const int DIM_ARRAY_TENISTAS = 10;
 const int DIFERENCIA_PARA_GANAR = 2;
+const int MINIMO_SET = 3;
 bool JUEGO_ALEATORIO = false;
 bool MODO_DEBUG = true;
 
-enum tPuntosJuego
+typedef enum 
 {
 	NADA, QUINCE, TREINTA, CUARENTA, VENTAJA
-};
+}tPuntosJuego;
 
-enum tTenista
+typedef enum 
 {
 	NADIE, TENISTA1, TENISTA2
-};
+}tTenista;
 
 typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
@@ -81,6 +82,8 @@ void eliminarTenista(tListaTenistas& listaT, string iniciales); //elimina el ten
 
 void introducirTenista(tListaTenistas& listaT); //introduce un tenista cualquiera
 
+tDatosTenista imprimirTenista(tListaTenistas listaT, int jugador);//Imprime los datos del tenista en las iniciales elegidas
+
 int tenistaRepetido(const tListaTenistas& listaT, string iniciales); //para localizar a ver si existe un tenista repetido
 
 string puntosAstring(tPuntosJuego puntuacion); //transforma los puntos dados en fotma de tPuntosJuego a un string para poder visualizarlo
@@ -115,9 +118,7 @@ tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 
 tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2); //
 
-void buscar2Jug(tListaTenistas& listaT); //funcion para buscar los 2 jugadores para el partido
-
-tTenista jugarParaGanadorSet(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para); //funcion para 
+void buscar2Jug(tListaTenistas& listaT, int indT1, int indT2);//funcion para buscar los 2 jugadores para el partido
 
 void arrayReset(tConteoGolpes array); //una funcion que permita reiniciar cualquier array
 
@@ -131,11 +132,9 @@ int main()
 	tListaTenistas listaT;
 	tDatosTenista tenista1, tenista2;
 	string iniciales;
-	int opcionMenu, indT1, indT2, indT3, indT4;
-
-	cout << setfill('=') << setw(20) << endl;
+	int opcionMenu, indT1 = 0, indT2 = 0, indT3 = 0, indT4 = 0;
+	cargar(listaT);
 	cout << setw(3) << "SIMULADOR DE TENIS V3" << endl;
-	cout << setfill('=') << setw(20) << endl;
 
 	opcionMenu = menu();
 
@@ -145,7 +144,7 @@ int main()
 	}
 	else if (opcionMenu == 1)
 	{
-		mostrarIniciales(listaT);
+		mostrar(listaT);
 	}
 	else if (opcionMenu == 2)
 	{
@@ -157,15 +156,20 @@ int main()
 	}
 	else if (opcionMenu == 4)
 	{
-		buscar2Jug(listaT);
+		mostrarIniciales(listaT);
+		buscar2Jug(listaT, indT1, indT2);
+		tenista1 = imprimirTenista(listaT, indT1);
+		tenista2 = imprimirTenista(listaT, indT2);
+		jugarPartido(tenista1, tenista2);
 	}
 	else if (opcionMenu == 5)
-	{
+	{	
 		jugarTorneo(listaT, indT1, indT2, indT3, indT4);
 	}
 	else if (opcionMenu == 6)
 	{
 		seleccionarTop4(listaT, indT1, indT2, indT3, indT4);
+		jugarTorneo(listaT, indT1, indT2, indT3, indT4);
 	}
 	return 0;
 }
@@ -343,6 +347,17 @@ void introducirTenista(tListaTenistas& listaT)
 	}
 }
 
+tDatosTenista imprimirTenista(tListaTenistas listaT, int jugador)
+{
+	tDatosTenista tenista;
+	tenista.iniciales = listaT.datos[jugador].iniciales;
+	tenista.habilidad = listaT.datos[jugador].habilidad;
+	tenista.velocidad = listaT.datos[jugador].velocidad;
+	tenista.partidosGanados = listaT.datos[jugador].partidosGanados;
+	tenista.partidosPerdidos = listaT.datos[jugador].partidosPerdidos;
+	tenista.datosPartido = listaT.datos[jugador].datosPartido;
+	return tenista;
+}
 int tenistaRepetido(const tListaTenistas& listaT, string iniciales)
 {
 	int posicion;
@@ -699,7 +714,7 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola)
 		system("PAUSE");
 		cout << endl;
 	}
-	diferencia = abs(posicionDestino - posicion_tenista); //
+	diferencia = abs(posicionDestino - posicion_tenista); 
 	if (diferencia <= habilidad)
 	{
 		if (MODO_DEBUG == true)
@@ -746,8 +761,9 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola)
 
 tTenista lance(tTenista bola_para, tDatosTenista& tenista_golpea, tDatosTenista& tenista_recibe, int& posicionBola)
 {
-	if (bola_para == TENISTA1) {
-		posicionBola = golpeoBola(posicionBola, tenista_golpea.habilidad, tenista_golpea.iniciales); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+	if (bola_para == TENISTA1)
+	{
+		posicionBola = golpeoBola(tenista_golpea.datosPartido.posicion, tenista_golpea.habilidad, tenista_golpea.iniciales); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
 			return TENISTA2; //Gana el otro jugador
@@ -767,7 +783,7 @@ tTenista lance(tTenista bola_para, tDatosTenista& tenista_golpea, tDatosTenista&
 	}
 	else
 	{
-		posicionBola = golpeoBola(posicionBola, tenista_golpea.habilidad, tenista_golpea.iniciales); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+		posicionBola = golpeoBola(tenista_golpea.datosPartido.posicion, tenista_golpea.habilidad, tenista_golpea.iniciales); //La posicion de la bola pasará a la posición dada por la función golpeo bola
 		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
 			return TENISTA1; //Gana el otro jugador
@@ -861,16 +877,45 @@ tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 
 	pintarMarcador(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido, tenista2.datosPartido, servicio_para);
 	mostrarEstadisticas(tenista1.iniciales, tenista2.iniciales, tenista1, tenista2); //Al final de cada juego muestra las estadísticas
+	return ganadorPunto;
+}
 
-
-	if (ganadorPunto == TENISTA1)// Si el juego lo gana el j1
+tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
+{
+	tTenista ganadorJuego = NADIE, ganadorPartido = NADIE, servicio = tTenista(elegirServicio());
+	int puntos1 = 0, puntos2 = 0, absoluto = 0;
+	absoluto = abs(puntos1 - puntos2);
+	while ((puntos1 < MINIMO_SET && puntos2 < MINIMO_SET) || (absoluto < DIFERENCIA_PARA_GANAR)) //Hasta que uno de los dos llegue a 3 puntos y hasta que haya una diferencia de 2
 	{
-		return TENISTA1;
+		ganadorJuego = jugarJuego(tenista1, tenista2, servicio);
+		
+			if (ganadorJuego == TENISTA1)
+			{
+				puntos1++;
+			}
+			else
+			{
+				puntos2++;
+			}
+			if (servicio == TENISTA1)
+			{
+				servicio = TENISTA2;
+			}
+			else
+			{
+				servicio = TENISTA1;
+			}
+		absoluto = abs(puntos1 - puntos2);
 	}
-	else // Si el juego lo gana el j2
+	if (puntos1 > puntos2)
 	{
-		return TENISTA2;
+		ganadorPartido = TENISTA1;
 	}
+	else
+	{
+		ganadorPartido = TENISTA2;
+	}
+	return ganadorPartido;
 }
 
 void actualizarGolpes(tDatosTenista& datos_tenista, tTenista servicio, int posicionBola, tTenista ganador)
@@ -910,95 +955,34 @@ double porcentajeDeAcierto(tDatosTenista tenista, int golpesTotales, int calle)
 	return porcentaje;
 }
 
-void buscar2Jug(tListaTenistas& listaT)
+void buscar2Jug(tListaTenistas& listaT, int indT1, int indT2)
 {
-	string iniciales;
-	int jugador1, jugador2;
+	string iniciales1, iniciales2;
 	cout << "introduce las iniciales del tenista1: ";
-	cin >> iniciales;
-	jugador1 = buscarIniciales(listaT, iniciales);
+	cin >> iniciales1;
+	indT1 = buscarIniciales(listaT, iniciales1);
 
-	while (jugador1 < 0)
+	while (indT1 < 0)
 	{
 		cout << "vuelva a introducir las iniciales del tenista1: ";
-		cin >> iniciales;
-		jugador1 = buscarIniciales(listaT, iniciales);
+		cin >> iniciales1;
+		indT1 = buscarIniciales(listaT, iniciales1);
 	}
 
 	cout << "introduce las iniciales del tenista2: ";
-	cin >> iniciales;
-	jugador2 = buscarIniciales(listaT, iniciales);
+	cin >> iniciales2;
+	indT2 = buscarIniciales(listaT, iniciales2);
 
 
-	while ((iniciales == listaT.datos[jugador1].iniciales) || (jugador2 < 0))
+	while ((iniciales2 == listaT.datos[indT1].iniciales) || (indT2 < 0))
 	{
 		cout << "vuelva a introducir las iniciales del tenista2: ";
-		cin >> iniciales;
-		jugador2 = buscarIniciales(listaT, iniciales);
+		cin >> iniciales2;
+		indT2 = buscarIniciales(listaT, iniciales2);
 	}
-
-	jugarPartido(listaT.datos[jugador1], listaT.datos[jugador2]);
-	//guardar(listaT);
 }
 
-tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
-{
-	tTenista ganador = NADIE;
-	tTenista servicio_para = tTenista(elegirServicio());
 
-	if (jugarParaGanadorSet(tenista1, tenista2, servicio_para) == TENISTA1)
-	{
-		tenista1.partidosGanados++;
-		tenista2.partidosPerdidos++;
-		ganador = TENISTA1;
-	}
-	if (jugarParaGanadorSet(tenista1, tenista2, servicio_para) == TENISTA2)
-	{
-		tenista2.partidosGanados++;
-		tenista1.partidosPerdidos++;
-		ganador = TENISTA2;
-	}
-
-	//ganador = NADIE;
-	return ganador;
-}
-
-tTenista jugarParaGanadorSet(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para) // para jugar minimo de 3 juegos y 2 de diferencia
-{
-	bool juegoEstaTerminado = false;
-	tTenista ganador;
-
-	servicio_para = tTenista(elegirServicio());
-
-	while (!juegoEstaTerminado)
-	{
-		jugarJuego(tenista1, tenista2, servicio_para);
-
-		if (servicio_para == tTenista(1))
-		{
-			servicio_para = tTenista(2);
-		}
-		else
-		{
-			servicio_para = tTenista(2);
-		}
-
-		if ((tenista1.datosPartido.juegos - tenista2.datosPartido.juegos) == DIFERENCIA_PARA_GANAR && (tenista1.datosPartido.juegos + tenista2.datosPartido.juegos) >= 3)
-		{
-			juegoEstaTerminado = true;
-			ganador = tTenista(1);
-
-		}
-		else if ((tenista2.datosPartido.juegos - tenista1.datosPartido.juegos) == DIFERENCIA_PARA_GANAR && (tenista1.datosPartido.juegos + tenista2.datosPartido.juegos) >= 3)
-		{
-			juegoEstaTerminado = true;
-			ganador = tTenista(2);
-		}
-
-		servicio_para = NADIE;
-	}
-	return ganador;
-}
 
 void arrayReset(tConteoGolpes array)
 {
@@ -1080,15 +1064,15 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 		}
 	}
 	//Fin del bucle 2
-	if((indT1 == 0 && indT2 == 1) || (indT2 == 0 && indT1 == 1))//Si los mayores son los dos primeros.Son permutaciones sin repeticion por lo que las posibilidades son 2!
+	if ((indT1 == 0 && indT2 == 1) || (indT2 == 0 && indT1 == 1))//Si los mayores son los dos primeros.Son permutaciones sin repeticion por lo que las posibilidades son 2!
 	{
 		PGmayor3 = listaT.datos[2].partidosGanados;
 	}
-	else if(indT1 == 0 || indT2 == 0)//Si el mayor es el primero
+	else if (indT1 == 0 || indT2 == 0)//Si el mayor es el primero
 	{
 		PGmayor3 = listaT.datos[1].partidosGanados;
 	}
-	for(int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 3 con mas partidos ganados
+	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 3 con mas partidos ganados
 	{
 		if (PGmayor3 < listaT.datos[i].partidosGanados && i != indT1 && i != indT2)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1 y jugador2
 		{
@@ -1097,17 +1081,17 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 		}
 	}
 	//Fin del bucle 3
-	if((indT1 == 0 && indT2 == 1 && indT3 == 2)|| (indT1 == 0 && indT2 == 2 && indT3 == 1)|| (indT1 == 1 && indT2 == 0 && indT3 == 2) || (indT1 == 1 && indT2 == 2 && indT3 == 0) || (indT1 == 2 && indT2 == 1 && indT3 == 0) || (indT1 == 2 && indT2 == 0 && indT3 == 1))
+	if ((indT1 == 0 && indT2 == 1 && indT3 == 2) || (indT1 == 0 && indT2 == 2 && indT3 == 1) || (indT1 == 1 && indT2 == 0 && indT3 == 2) || (indT1 == 1 && indT2 == 2 && indT3 == 0) || (indT1 == 2 && indT2 == 1 && indT3 == 0) || (indT1 == 2 && indT2 == 0 && indT3 == 1))
 		//El bucle empieza en el cuarto jugador en el caso de que los tres mayores sean los tres primeros. Son permutaciones sin repeticion por lo que las posibilidades son 3!
 	{
 		PGmayor4 = listaT.datos[3].partidosGanados;
 	}
-	else if((indT1 == 0 && indT2 == 1)|| indT1 == 0 && indT3 == 1 || (indT1 == 1 && indT2 == 0) || (indT1 == 1 && indT3 == 1) || (indT2 == 0 && indT3 == 1) || (indT2 == 1 && indT3 == 0))
+	else if ((indT1 == 0 && indT2 == 1) || indT1 == 0 && indT3 == 1 || (indT1 == 1 && indT2 == 0) || (indT1 == 1 && indT3 == 1) || (indT2 == 0 && indT3 == 1) || (indT2 == 1 && indT3 == 0))
 		//Si los mayores son solo dos. Se trataria de variaciones de 3 elementos con dos posiciones sin repeticion por lo que seria 3!/1! que son 6 posibilidades distintas
 	{
 		PGmayor4 = listaT.datos[2].partidosGanados;
 	}
-	else if(indT1 == 0 || indT2 == 0 || indT3 == 0)//Si el mayor es uno de los tres pero los siguientes no lo son
+	else if (indT1 == 0 || indT2 == 0 || indT3 == 0)//Si el mayor es uno de los tres pero los siguientes no lo son
 	{
 		PGmayor4 = listaT.datos[1].partidosGanados;
 	}
@@ -1117,6 +1101,6 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 		{
 			PGmayor4 = listaT.datos[i].partidosGanados;
 			indT4 = i;
-		}	
+		}
 	}
 }
