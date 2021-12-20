@@ -470,25 +470,26 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 				cout << setw(2) << "|";
 			}
 			cout << setw(2) << "|" << endl;
-
-			if (posicionBola == 0)
+		}
+		cout << setw(2);
+		if (posicionBola == 0)
+		{
+			cout << "o| ";
+		}
+		for (int f = 1; f <= ANCHO_PISTA; f++)
+		{
+			cout << "|" << setw(2);
+			if (f == posicionBola && (f <= 7 && f >= 1))
 			{
 				cout << "o| ";
 			}
-			for (int f = 1; f <= ANCHO_PISTA; f++)
-			{
-				cout << "|" << setw(2);
-				if (f == posicionBola && (f <= 7 && f >= 1))
-				{
-					cout << "o| ";
-				}
-			}
-			if (posicionBola == 8)
-			{
-				cout << " |o";
-			}
+		}
+		if (posicionBola == 8)
+		{
+			cout << " |o";
 		}
 	}
+
 	else
 	{
 		for (int i = 1; i <= LARGO_PISTA; i++)
