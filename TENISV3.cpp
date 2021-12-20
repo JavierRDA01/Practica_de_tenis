@@ -426,7 +426,12 @@ int elegirServicio()
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola, tTenista bola_jugador)
 {
 	cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
-	cout << "  - - - - - - - " << endl;
+	cout << setw(4);
+	for (int a = 1; a <= ANCHO_PISTA; a++)
+	{
+		cout << "- ";
+	}
+	cout << endl;
 	cout << setw(2);
 	if (bola_jugador == TENISTA1)
 	{
@@ -467,8 +472,12 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 	}
-	cout << "--1-2-3-4-5-6-7--" << endl;
-
+	cout << "--";
+	for (int i = 1; i <= ANCHO_PISTA; i++)
+	{
+		cout << i << "-";
+	}
+	cout << "-"<<endl;
 	if (bola_jugador == TENISTA2)
 	{
 
@@ -498,8 +507,8 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 		{
 			cout << " |o";
 		}
+		cout << endl;
 	}
-
 	else
 	{
 		for (int i = 1; i <= LARGO_PISTA; i++)
@@ -508,13 +517,19 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			{
 				cout << setw(2) << "|";
 			}
-			cout << setw(2) << "|" << endl;
+			cout << setw(2) << "|"<<endl;
 		}
 	}
+	
+	cout << setw(4);
+	for (int a = 1; a <= ANCHO_PISTA; a++)
+	{
+		cout << "- ";
+	}
 	cout << endl;
-	cout << "  - - - - - - - " << endl;
 	cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
 }
+
 void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& datos_t1, const tDatosPartido& datos_t2, tTenista servicio_para)
 {
 	if (servicio_para == TENISTA1)
