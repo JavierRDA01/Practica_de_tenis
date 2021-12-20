@@ -859,11 +859,10 @@ tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 
 tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para)
 {
-	tTenista ganadorPunto = jugarPunto(tenista1, tenista2, servicio_para);
-	tPuntosJuego puntos1 = NADA, puntos2 = NADA;
-
 	arrayReset(tenista1.datosPartido.golpes);
 	arrayReset(tenista2.datosPartido.golpes);
+	tTenista ganadorPunto = jugarPunto(tenista1, tenista2, servicio_para);
+	tPuntosJuego puntos1 = NADA, puntos2 = NADA;
 
 	while (actualizarMarcador(ganadorPunto, tenista1.datosPartido, tenista2.datosPartido) == NADIE) // Se juegan los puntos hasta que actualizarMarcador devuelva o TENISTA1 o TENISTA2
 	{
