@@ -83,6 +83,8 @@ void mostrarIniciales(const tListaTenistas& listaT); //Muestra las iniciales de 
 
 int buscarIniciales(const tListaTenistas& listaT, string ini); //Busca en la lista las iniciales y devuelve un numero con la posicion del tenista con esas iniciales o un -1 si no se han encontrado las iniciales
 
+void pintarCampo(tTenista bola_jugador, int posicionBola, tTenista jugador);
+
 void eliminarTenista(tListaTenistas& listaT); //Elimina el tenista introducido de la lista
 
 void introducirTenista(tListaTenistas& listaT); //Introduce un tenista nuevo
@@ -134,6 +136,12 @@ void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int in
 void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4); //Selecciona los 4 mejores jugadores del archivo .txt
 
 void resetearJugadoresTorneo(tListaTenistas& listaT, int jugador);//Selecciona a los jugadores que han ganado en semifinales para jugar la final
+
+void pintarLineaMedio();
+
+void pintarJugador(int posicionJugador, string nombreJugador, tTenista tenista);
+
+
 
 int main()
 {
@@ -456,81 +464,89 @@ int elegirServicio()
 
 void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJugador1, int posicionJugador2, int posicionBola, tTenista bola_jugador)
 {
-	cout << setw((posicionJugador1 * 2) + 2) << nombreJugador1 << endl;
-	cout << "  - - - - - - - " << endl;
-	cout << setw(2);
-	if (bola_jugador == TENISTA1)
+	pintarJugador(posicionJugador1, nombreJugador1, TENISTA1);
+	pintarCampo(bola_jugador, posicionBola, TENISTA1);
+	pintarLineaMedio();
+	pintarCampo(bola_jugador, posicionBola, TENISTA2);
+	pintarJugador(posicionJugador2, nombreJugador2, TENISTA2);
+}
+void pintarJugador(int posicionJugador, string nombreJugador, tTenista tenista)
+{
+	if(tenista == TENISTA1)
 	{
-		if (posicionBola == 0)
-		{
-			cout << "o| ";
-		}
-		for (int f = 1; f <= ANCHO_PISTA; f++)
-		{
-			cout << "|" << setw(2);
-			if (f == posicionBola && (f <= 7 && f >= 1))
-			{
-				cout << "o| ";
-			}
-		}
-		if (posicionBola == 8)
-		{
-			cout << " |o";
-		}
-		cout << endl;
-		for (int a = 1; a <= (LARGO_PISTA - 1); a++)
-		{
-			for (int i = 1; i <= ANCHO_PISTA; i++)
-			{
-				cout << setw(2) << "|";
-			}
-			cout << setw(2) << "|" << endl;
-		}
-	}
-	else
-	{
-		for (int i = 1; i <= LARGO_PISTA; i++)
-		{
-			for (int i = 1; i <= ANCHO_PISTA; i++)
-			{
-				cout << setw(2) << "|";
-			}
-			cout << setw(2) << "|" << endl;
-		}
-	}
-	cout << "--1-2-3-4-5-6-7--" << endl;
-
-	if (bola_jugador == TENISTA2)
-	{
-
-		for (int a = 1; a <= (LARGO_PISTA - 1); a++)
-		{
-			for (int i = 1; i <= ANCHO_PISTA; i++)
-			{
-				cout << setw(2) << "|";
-			}
-			cout << setw(2) << "|" << endl;
-		}
+		cout << setw((posicionJugador * 2) + 2) << nombreJugador << endl;
+		cout << "  - - - - - - - " << endl;
 		cout << setw(2);
-
-		if (posicionBola == 0)
+	}
+	else
+	{
+		cout << endl;
+		cout << "  - - - - - - - " << endl;
+		cout << setw(posicionJugador * 2 + 2) << nombreJugador << endl;
+	}
+}
+void pintarCampo(tTenista bola_jugador, int posicionBola, tTenista jugador)
+{
+	if (bola_jugador == jugador)
+	{
+		if (bola_jugador == TENISTA1)
 		{
-			cout << "o| ";
-		}
-		for (int f = 1; f <= ANCHO_PISTA; f++)
-		{
-			cout << "|" << setw(2);
-			if (f == posicionBola && (f <= 7 && f >= 1))
+			if (posicionBola == 0)
 			{
 				cout << "o| ";
 			}
+			for (int f = 1; f <= ANCHO_PISTA; f++)
+			{
+				cout << "|" << setw(2);
+				if (f == posicionBola && (f <= ANCHO_PISTA && f >= 1))
+				{
+					cout << "o| ";
+				}
+			}
+			if (posicionBola >= ANCHO_PISTA + 1)
+			{
+				cout << " |o";
+			}
+			cout << endl;
+			for (int a = 1; a <= (LARGO_PISTA - 1); a++)
+			{
+				for (int i = 1; i <= ANCHO_PISTA; i++)
+				{
+					cout << setw(2) << "|";
+				}
+				cout << setw(2) << "|" << endl;
+			}
 		}
-		if (posicionBola == 8)
+		else
 		{
-			cout << " |o";
+			for (int a = 1; a <= (LARGO_PISTA - 1); a++)
+			{
+				for (int i = 1; i <= ANCHO_PISTA; i++)
+				{
+					cout << setw(2) << "|";
+				}
+				cout << setw(2) << "|" << endl;
+			}
+			cout << setw(2);
+
+			if (posicionBola == 0)
+			{
+				cout << "o| ";
+			}
+			for (int f = 1; f <= ANCHO_PISTA; f++)
+			{
+				cout << "|" << setw(2);
+				if (f == posicionBola && (f <= ANCHO_PISTA && f >= 1))
+				{
+					cout << "o| ";
+				}
+			}
+			if (posicionBola >= ANCHO_PISTA + 1)
+			{
+				cout << " |o";
+			}
 		}
 	}
-
 	else
 	{
 		for (int i = 1; i <= LARGO_PISTA; i++)
@@ -542,9 +558,16 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 			cout << setw(2) << "|" << endl;
 		}
 	}
-	cout << endl;
-	cout << "  - - - - - - - " << endl;
-	cout << setw(posicionJugador2 * 2 + 2) << nombreJugador2 << endl;
+}
+
+void pintarLineaMedio()
+{
+	cout << "-";
+	for(int i = 1; i < ANCHO_PISTA + 1; i++)
+	{
+		cout << "-" << i;
+	}
+	cout << "--" << endl;
 }
 void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& datos_t1, const tDatosPartido& datos_t2, tTenista servicio_para)
 {
@@ -700,7 +723,7 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola)
 		probabilidadExito = (100.0 - ((posicionDestino - habilidad) / ((ANCHO_PISTA - 1.0) - LIM_INF_HAB) * 100.0)); // porcentaje de acierto
 		if (MODO_DEBUG == true)
 		{
-			cout << "Tiro complicado que... (probab_exito=" << probabilidadExito << " y resultado=" << acierto << endl;
+			cout << "Tiro complicado que... (probab_exito=" << probabilidadExito << " y resultado=" << acierto <<")" << endl;
 		}
 		if (acierto <= probabilidadExito)
 		{
@@ -865,6 +888,14 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 	else
 	{
 		ganadorPartido = TENISTA2;
+	}
+	if(ganadorPartido == TENISTA1)
+	{
+		tenista1.partidosGanados++;
+	}
+	else
+	{
+		tenista2.partidosGanados++;
 	}
 	return ganadorPartido;
 }
