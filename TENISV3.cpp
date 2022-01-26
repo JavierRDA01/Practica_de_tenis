@@ -141,14 +141,15 @@ void pintarLineaMedio(); //Pinta la linea del medio del campo
 
 void pintarJugador(int posicionJugador, string nombreJugador, tTenista tenista);//Pinta a los jugadores y los movimientos de estos en el campo
 
+void menuCompleto(tListaTenistas listaT, int indT1, int indT2, int indT3, int indT4);
+
+
 
 
 int main()
 {
 	tListaTenistas listaT;
-	tDatosTenista tenista1, tenista2;
-	string iniciales;
-	int opcionMenu, indT1 = 0, indT2 = 0, indT3 = 0, indT4 = 0;
+	int indT1 = 0, indT2 = 0, indT3 = 0, indT4 = 0;
 	cargar(listaT);
 	if (MODO_DEBUG == false) {
 
@@ -162,9 +163,33 @@ int main()
 	cout << setw(36) << "<|" << setw(45) << "|>" << endl;
 	cout << setw(36) << "|" << setw(44) << "|" << endl;
 	cout << setw(36) << " |" << "[---BIENVENIDO AL SIMULADOR DE TENIS V3---]" << "|" << endl << endl;
+	menuCompleto(listaT, indT1, indT2, indT3, indT4);
+	return 0;
+}
+
+
+
+int menu()
+{
+	int opcion;
+	cout << setw(6) << "<1> Ver datos tenistas" << endl;
+	cout << setw(6) << "<2> Nuevo tenista" << endl;
+	cout << setw(6) << "<3> Eliminar tenista" << endl;
+	cout << setw(6) << "<4> Jugar partido" << endl;
+	cout << setw(6) << "<5> Torneo semifinales/final" << endl;
+	cout << setw(6) << "<6> Torneo top-4" << endl;
+	cout << setw(6) << "<0> Salir" << endl;
+	cout << setw(6) << "Opcion: ";
+	cin >> opcion;
+	cout << endl;
+	return opcion;
+}
+
+void menuCompleto(tListaTenistas listaT, int indT1, int indT2 , int indT3, int indT4)
+{
+	int opcionMenu;
 	do
 	{
-		
 		cout << "Elija una opcion:" << endl << endl;
 		opcionMenu = menu();
 
@@ -200,25 +225,6 @@ int main()
 			jugarTorneo(listaT, indT1, indT2, indT3, indT4);
 		}
 	} while (opcionMenu >= 1 && opcionMenu <= 6);
-	return 0;
-}
-
-
-
-int menu()
-{
-	int opcion;
-	cout << "<1> Ver datos tenistas" << endl;
-	cout << "<2> Nuevo tenista" << endl;
-	cout << "<3> Eliminar tenista" << endl;
-	cout << "<4> Jugar partido" << endl;
-	cout << "<5> Torneo semifinales/final" << endl;
-	cout << "<6> Torneo top-4" << endl;
-	cout << "<0> Salir" << endl;
-	cout << "Opcion: ";
-	cin >> opcion;
-	cout << endl;
-	return opcion;
 }
 
 int introducirDato(string datoString)
@@ -901,12 +907,16 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 	}
 	if(ganadorPartido == TENISTA1)
 	{
+		cout << "El ganador del partido es " << tenista1.iniciales << endl <<endl;
 		tenista1.partidosGanados++;
 	}
 	else
 	{
+		cout << "El ganador del partido es " << tenista2.iniciales << endl << endl;
 		tenista2.partidosGanados++;
 	}
+	cout << setw(10) << tenista1.iniciales << setw(2) << tenista1.datosPartido.juegos << endl;
+	cout << setw(10) << tenista2.iniciales << setw(2) << tenista2.datosPartido.juegos << endl << endl;
 	return ganadorPartido;
 }
 
@@ -1066,7 +1076,7 @@ void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int in
 	}
 	else
 	{
-		partido3 = indT3;
+		partido2 = indT3;
 		cout << "El segundo finalista es: " << listaT.datos[indT3].iniciales << endl;
 	}
 	resetearJugadoresTorneo(listaT, partido1);
@@ -1083,10 +1093,12 @@ void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int in
 		partido3 = partido2;
 	}
 
-	cout << "El ganador del torneo es: " << listaT.datos[partido3].iniciales << endl;
-
-	//guardar(listaT);
+	cout << "El ganador del torneo es: " << listaT.datos[partido3].iniciales << endl << endl;
+	cout << setw(10) << listaT.datos[partido1].iniciales << setw(2) << listaT.datos[partido1].datosPartido.juegos << endl;
+	cout << setw(10) << listaT.datos[partido2].iniciales << setw(2) << listaT.datos[partido2].datosPartido.juegos << endl << endl;
+	
 }
+
 
 void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4)
 {
