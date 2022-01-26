@@ -14,7 +14,7 @@ const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
 const int LIM_SUP_VEL = 4;
 const int LIM_SUP_HAB = 5;
-const int ANCHO_PISTA = 9;
+const int ANCHO_PISTA = 10;
 const int LARGO_PISTA = 3;
 const int JUEGOS_SET = 3;
 const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
@@ -39,7 +39,7 @@ typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
 struct tDatosPartido
 {
-	int posicion = 4;
+	int posicion = (ANCHO_PISTA / 2);
 	tPuntosJuego puntos = NADA;
 	int juegos = 0;
 	int golpesGanadores = 0;
@@ -69,9 +69,9 @@ struct tListaTenistas
 
 int menu(); //Muestra las opciones que el programa puede realizar
 
-int introducirDato(string datoString);
+int introducirDato(string datoString);//Introduce un dato de tipo int
 
-string introducirNombre(tListaTenistas& listaT);
+string introducirNombre(tListaTenistas& listaT);//Como introducir dato pero con strings
 
 bool cargar(tListaTenistas& listaT); //Carga el arvhivo .txt
 
@@ -83,7 +83,7 @@ void mostrarIniciales(const tListaTenistas& listaT); //Muestra las iniciales de 
 
 int buscarIniciales(const tListaTenistas& listaT, string ini); //Busca en la lista las iniciales y devuelve un numero con la posicion del tenista con esas iniciales o un -1 si no se han encontrado las iniciales
 
-void pintarCampo(tTenista bola_jugador, int posicionBola, tTenista jugador);
+void pintarCampo(tTenista bola_jugador, int posicionBola, tTenista jugador);//Pinta el campo segun el tenista
 
 void eliminarTenista(tListaTenistas& listaT); //Elimina el tenista introducido de la lista
 
@@ -97,7 +97,7 @@ void pintarPeloteo(string nombreJugador1, string nombreJugador2, int posicionJug
 
 void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& datos_t1, const tDatosPartido& datos_t2, tTenista servicio_para); //Pinta el marcador de la situacion actual y muestra el tenista al que le pertence el servicio con un *
 
-void mostrarEstadistica(string nombreJugador, const tDatosTenista tenista);
+void mostrarEstadistica(string nombreJugador, const tDatosTenista tenista);//Muestra las estadisticas de un solo jugador
 
 void mostrarEstadisticas(string nombreJugador1, string nombreJugador2, tDatosTenista tenista1, tDatosTenista tenista2); //Muestra las estadisticas de cada punto jugado
 
@@ -137,9 +137,9 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 
 void resetearJugadoresTorneo(tListaTenistas& listaT, int jugador);//Selecciona a los jugadores que han ganado en semifinales para jugar la final
 
-void pintarLineaMedio();
+void pintarLineaMedio(); //Pinta la linea del medio del campo
 
-void pintarJugador(int posicionJugador, string nombreJugador, tTenista tenista);
+void pintarJugador(int posicionJugador, string nombreJugador, tTenista tenista);//Pinta a los jugadores y los movimientos de estos en el campo
 
 
 
@@ -811,8 +811,8 @@ tTenista lance(tTenista bola_para, tDatosTenista& tenista_golpea, tDatosTenista&
 
 tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para)
 {
-	tenista1.datosPartido.posicion = 4; tenista2.datosPartido.posicion = 4;
-	int posicionBola = 4; //Al principio de todos los puntos las posiciones son las mismas
+	tenista1.datosPartido.posicion = (ANCHO_PISTA / 2); tenista2.datosPartido.posicion = (ANCHO_PISTA / 2);
+	int posicionBola = (ANCHO_PISTA / 2); //Al principio de todos los puntos las posiciones son las mismas
 	tTenista ganaPunto = NADIE, turno = servicio_para; //Al prinicipio nadie gana el punto
 
 	pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno); //Pinta el campo inicial
