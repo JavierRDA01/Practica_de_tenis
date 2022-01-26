@@ -14,7 +14,7 @@ const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
 const int LIM_SUP_VEL = 4;
 const int LIM_SUP_HAB = 5;
-const int ANCHO_PISTA = 7;
+const int ANCHO_PISTA = 9;
 const int LARGO_PISTA = 3;
 const int JUEGOS_SET = 3;
 const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
@@ -475,13 +475,23 @@ void pintarJugador(int posicionJugador, string nombreJugador, tTenista tenista)
 	if(tenista == TENISTA1)
 	{
 		cout << setw((posicionJugador * 2) + 2) << nombreJugador << endl;
-		cout << "  - - - - - - - " << endl;
+		cout << "  ";
+		for (int i = 0; i < ANCHO_PISTA; i++)
+		{
+			cout << "- ";
+		}
+		cout << endl;
 		cout << setw(2);
 	}
 	else
 	{
 		cout << endl;
-		cout << "  - - - - - - - " << endl;
+		cout << "  ";
+		for (int i = 0; i < ANCHO_PISTA; i++)
+		{
+			cout << "- ";
+		}
+		cout << endl;
 		cout << setw(posicionJugador * 2 + 2) << nombreJugador << endl;
 	}
 }
