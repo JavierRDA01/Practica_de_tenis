@@ -191,7 +191,7 @@ int main()
 			seleccionarTop4(listaT, indT1, indT2, indT3, indT4);
 			jugarTorneo(listaT, indT1, indT2, indT3, indT4);
 		}
-	} while (opcionMenu != 0);
+	} while (opcionMenu >= 1 && opcionMenu <= 6);
 	return 0;
 }
 
