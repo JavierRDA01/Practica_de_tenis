@@ -212,17 +212,20 @@ void menuCompleto(tListaTenistas listaT, int indT1, int indT2 , int indT3, int i
 			mostrarIniciales(listaT);
 			buscar2Jug(listaT, indT1, indT2);
 			jugarPartido(listaT.datos[indT1], listaT.datos[indT2]);
+			guardar(listaT);
 		}
 		else if (opcionMenu == 5)
 		{
 			mostrarIniciales(listaT);
 			buscar4Jug(listaT, indT1, indT2, indT3, indT4);
 			jugarTorneo(listaT, indT1, indT2, indT3, indT4);
+			guardar(listaT);
 		}
 		else if (opcionMenu == 6)
 		{
 			seleccionarTop4(listaT, indT1, indT2, indT3, indT4);
 			jugarTorneo(listaT, indT1, indT2, indT3, indT4);
+			guardar(listaT);
 		}
 	} while (opcionMenu >= 1 && opcionMenu <= 6);
 }
@@ -587,16 +590,21 @@ void pintarLineaMedio()
 }
 void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& datos_t1, const tDatosPartido& datos_t2, tTenista servicio_para)
 {
-	if (servicio_para == TENISTA1)
-	{
-		cout << setw(5) << iniciales1 << setw(2) << datos_t1.juegos << " : " << puntosAstring(tPuntosJuego(datos_t1.puntos)) << "*" << endl;
-		cout << setw(5) << iniciales2 << setw(2) << datos_t2.juegos << " : " << puntosAstring(tPuntosJuego(datos_t2.puntos)) << endl;
-	}
-	else
-	{
-		cout << setw(5) << iniciales1 << setw(2) << datos_t1.juegos << " : " << puntosAstring(tPuntosJuego(datos_t1.puntos)) << endl;
-		cout << setw(5) << iniciales2 << setw(2) << datos_t2.juegos << " : " << puntosAstring(tPuntosJuego(datos_t2.puntos)) << "*" << endl;
-	}
+
+	cout << setw(5) << iniciales1 << setw(2) << datos_t1.juegos << " : " << puntosAstring(tPuntosJuego(datos_t1.puntos));
+		if (servicio_para == TENISTA1)
+		{
+			cout << "*";	
+		}
+		cout << endl;
+		cout << setw(5) << iniciales2 << setw(2) << datos_t2.juegos << " : " << puntosAstring(tPuntosJuego(datos_t2.puntos));
+		if(servicio_para == TENISTA2)
+		{
+			cout << "*";
+		}
+		cout << endl;
+		
+
 }
 
 void mostrarEstadistica(string nombreJugador, const tDatosTenista tenista)
