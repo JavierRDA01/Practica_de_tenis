@@ -141,7 +141,7 @@ void pintarLineaMedio(); //Pinta la linea del medio del campo
 
 void pintarJugador(int posicionJugador, string nombreJugador, tTenista tenista);//Pinta a los jugadores y los movimientos de estos en el campo
 
-void menuCompleto(tListaTenistas listaT, int indT1, int indT2, int indT3, int indT4);
+void menuCompleto(tListaTenistas listaT, int indT1, int indT2, int indT3, int indT4);//Condensa todo el menu en una funcion para que sea mas legible en el main
 
 
 
