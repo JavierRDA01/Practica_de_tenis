@@ -59,11 +59,11 @@ struct tDatosTenista
 	tDatosPartido datosPartido;
 };
 
-typedef tDatosTenista tArray[DIM_ARRAY_TENISTAS];
+typedef tDatosTenista tArrayTenistas[DIM_ARRAY_TENISTAS];
 
 struct tListaTenistas
 {
-	tArray datos;
+	tArrayTenistas datos;
 	int contador = 0;
 };
 
