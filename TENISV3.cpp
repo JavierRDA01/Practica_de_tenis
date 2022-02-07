@@ -14,7 +14,7 @@ const int LIM_INF_VEL = 1;
 const int LIM_INF_HAB = 1;
 const int LIM_SUP_VEL = 4;
 const int LIM_SUP_HAB = 5;
-const int ANCHO_PISTA = 10;
+const int ANCHO_PISTA = 8;
 const int LARGO_PISTA = 3;
 const int JUEGOS_SET = 3;
 const int DIM_ARRAY_GOLPES = ANCHO_PISTA + 2;
@@ -24,6 +24,7 @@ const int MINIMO_SET = 3;
 const int JUGADORES_FINAL = 2;
 bool JUEGO_ALEATORIO = true;
 bool MODO_DEBUG = true;
+bool MODO_RAPIDO = false;
 
 typedef enum 
 {
@@ -39,7 +40,7 @@ typedef int tConteoGolpes[DIM_ARRAY_GOLPES];
 
 struct tDatosPartido
 {
-	int posicion = (ANCHO_PISTA / 2);
+	int posicion = ((ANCHO_PISTA + 1) / 2);
 	tPuntosJuego puntos = NADA;
 	int juegos = 0;
 	int golpesGanadores = 0;
@@ -156,9 +157,9 @@ int main()
 		srand(0);
 	}
 	cout << endl;
-	cout << setw(36) << "<|" << setw(45) << "|>" << endl;
-	cout << setw(36) << "|" << setw(44) << "|" << endl;
-	cout << setw(36) << " |" << "[---BIENVENIDO AL SIMULADOR DE TENIS V3---]" << "|" << endl << endl;
+	cout << setw(7) << "<|" << setw(43) << "|>" << endl;
+	cout << setw(7) << " |" << setw(42) << "|" << endl;
+	cout << setw(7) << " |" << "---BIENVENIDO AL SIMULADOR DE TENIS V3---" << "|" << endl << endl;
 	menuCompleto(listaT);
 	return 0;
 }
@@ -572,6 +573,10 @@ void pintarMarcador(string iniciales1, string iniciales2, const tDatosPartido& d
 			cout << "*";
 		}
 		cout << endl;
+		if(MODO_RAPIDO)
+		{
+			cout << endl;
+		}
 		
 
 }
@@ -584,8 +589,18 @@ void mostrarEstadistica(string nombreJugador, const tDatosTenista tenista)
 	cout << setw(3) << "Golpes ganadores: " << tenista.datosPartido.golpesGanadores << endl;
 	cout << setw(3) << "Errores no forzados: " << golpesFallidos << endl;
 	cout << setw(3) << "Distribucion de los golpes en la pista:" << endl << endl;
-	cout << setw(6) << "Calle" << setw(6) << "0" << setw(6) << "1" << setw(6) << "2" << setw(6) << "3" << setw(6) << "4" << setw(6) << "5" << setw(6) << "6" << setw(6) << "7" << setw(6) << "8" << endl;
-	cout << setw(6) << "%" << setw(6) << fixed << setprecision(1) << porcentajeDeGolpeo(tenista, golpesTotales, 0) << setw(6) << fixed << setprecision(1) << porcentajeDeGolpeo(tenista, golpesTotales, 1) << setw(6) << fixed << setprecision(1) << porcentajeDeGolpeo(tenista, golpesTotales, 2) << fixed << setprecision(1) << setw(6) << porcentajeDeGolpeo(tenista, golpesTotales, 3) << fixed << setprecision(1) << setw(6) << porcentajeDeGolpeo(tenista, golpesTotales, 4) << fixed << setprecision(1) << setw(6) << porcentajeDeGolpeo(tenista, golpesTotales, 5) << fixed << setprecision(1) << setw(6) << porcentajeDeGolpeo(tenista, golpesTotales, 6) << fixed << setprecision(1) << setw(6) << porcentajeDeGolpeo(tenista, golpesTotales, 7) << fixed << setprecision(1) << setw(6) << porcentajeDeGolpeo(tenista, golpesTotales, 8) << fixed << setprecision(1) << endl << endl;
+	cout << setw(6) << "Calle";
+	for(int i = 0; i < ANCHO_PISTA +2; i++)
+	{
+		cout << setw(6) << i;
+	}
+	cout << endl;
+	cout << setw(6) << "%" << setw(6);
+	for(int i = 0; i < ANCHO_PISTA + 2; i++)
+	{
+		cout << setw(6) << fixed << setprecision(1) << porcentajeDeGolpeo(tenista, golpesTotales, i);
+	}
+	cout << fixed << setprecision(1) << endl << endl;
 }
 
 
@@ -646,7 +661,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 	diferencia = abs(posicionBola - posicionTenista);
 	if (velocidad >= diferencia)
 	{
-		if (MODO_DEBUG == true)
+		if (MODO_DEBUG == true && !MODO_RAPIDO)
 		{
 			cout << "Su rival llega a la bola" << endl;
 		}
@@ -657,7 +672,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 		if (posicionBola < posicionTenista)
 		{
 			posicionTenista = posicionTenista - velocidad;
-			if (MODO_DEBUG == true)
+			if (MODO_DEBUG == true && !MODO_RAPIDO)
 			{
 				diferenciaCasillas = posicionTenista - posicionBola;
 				cout << "Su rival no llega a la bola." << endl;
@@ -666,7 +681,7 @@ int correTenista(int posicionTenista, int velocidad, int posicionBola, string no
 		else if (posicionBola > posicionTenista)
 		{
 			posicionTenista = posicionTenista + velocidad;
-			if (MODO_DEBUG == true)
+			if (MODO_DEBUG == true && !MODO_RAPIDO)
 			{
 				diferenciaCasillas = posicionBola - posicionTenista;
 				cout << "Su rival no llega a la bola." << endl;
@@ -690,16 +705,24 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola)
 	}
 	else if (JUEGO_ALEATORIO == true) { //juego aleatorio
 		posicionDestino = rand() % ANCHO_PISTA + 1;
+		if(JUEGO_ALEATORIO)
+		{
 		system("PAUSE");
-		cout << endl;
+		}
+		if(!MODO_RAPIDO)
+		{
+			cout << endl;
+		}
 	}
-
-	cout << "Golpea " << nombreGolpeadorBola << endl << endl;
-	cout << "El jugador dispara a la calle " << posicionDestino << endl;
+	if(!MODO_RAPIDO)
+	{
+		cout << "Golpea " << nombreGolpeadorBola << endl << endl;
+		cout << "El jugador dispara a la calle " << posicionDestino << endl;
+	}
 	diferencia = abs(posicionDestino - posicion_tenista); 
 	if (diferencia <= habilidad)
 	{
-		if (MODO_DEBUG == true)
+		if (MODO_DEBUG == true && !MODO_RAPIDO)
 		{
 			cout << "Ese ha sido un tiro sencillo" << endl;
 		}
@@ -707,19 +730,22 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola)
 	else // Si la diferencia entre la posicion del tenista y la posicion de destino de la bola es mayor que la habilidad 
 	{
 		probabilidadExito = (100.0 - ((posicionDestino - habilidad) / ((ANCHO_PISTA - 1.0) - LIM_INF_HAB) * 100.0)); // porcentaje de acierto
-		if (MODO_DEBUG == true)
+		if (MODO_DEBUG == true && !MODO_RAPIDO)
 		{
 			cout << "Tiro complicado que... (probab_exito=" << probabilidadExito << " y resultado=" << acierto <<")" << endl;
 		}
 		if (acierto <= probabilidadExito)
 		{
-			cout << "LLega a su destino!" << endl;
+			if (!MODO_RAPIDO)
+			{
+				cout << "LLega a su destino!" << endl;
+			}
 		}
 		else
 		{
 			if (desvio == 0)
 			{
-				if (MODO_DEBUG == true)
+				if (MODO_DEBUG == true && !MODO_RAPIDO)
 				{
 					cout << "No ha sido preciso!" << endl;
 				}
@@ -727,7 +753,7 @@ int golpeoBola(int posicion_tenista, int habilidad, string nombreGolpeadorBola)
 			}
 			else if (desvio == 1)
 			{
-				if (MODO_DEBUG == true)
+				if (MODO_DEBUG == true && !MODO_RAPIDO)
 				{
 					cout << "No ha sido preciso!" << endl;
 				}
@@ -745,6 +771,7 @@ tTenista lance(tTenista bola_para, tDatosTenista& tenista_golpea, tDatosTenista&
 	if (bola_para == TENISTA1)
 	{
 		posicionBola = golpeoBola(tenista_golpea.datosPartido.posicion, tenista_golpea.habilidad, tenista_golpea.iniciales); //La posicion de la bola pasará a la posición dada por la función golpeo bola
+
 		if (posicionBola <= 0 || posicionBola >= ANCHO_PISTA + 1) // Si tira la bola fuera
 		{
 			ganador = TENISTA2; //Gana el otro jugador
@@ -760,7 +787,8 @@ tTenista lance(tTenista bola_para, tDatosTenista& tenista_golpea, tDatosTenista&
 			{
 				ganador = TENISTA1; //Gana el jugador que golpea
 			}
-		}
+		}	
+		actualizarGolpes(tenista_golpea, TENISTA1, posicionBola, ganador);
 	}
 	else
 	{
@@ -781,32 +809,36 @@ tTenista lance(tTenista bola_para, tDatosTenista& tenista_golpea, tDatosTenista&
 				ganador = TENISTA2; //Gana el jugador que golpea
 			}
 		}
+		actualizarGolpes(tenista_golpea, TENISTA2, posicionBola, ganador);
 	}
 	return ganador;
 }
 
 tTenista jugarPunto(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista servicio_para)
 {
-	tenista1.datosPartido.posicion = (ANCHO_PISTA / 2); tenista2.datosPartido.posicion = (ANCHO_PISTA / 2);
-	int posicionBola = (ANCHO_PISTA / 2); //Al principio de todos los puntos las posiciones son las mismas
+	tenista1.datosPartido.posicion = ((ANCHO_PISTA + 1)/ 2); tenista2.datosPartido.posicion = ((ANCHO_PISTA + 1)/ 2);
+	int posicionBola = ((ANCHO_PISTA + 1) / 2); //Al principio de todos los puntos las posiciones son las mismas
 	tTenista ganaPunto = NADIE, turno = servicio_para; //Al prinicipio nadie gana el punto
-
-	pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno); //Pinta el campo inicial
+	if(!MODO_RAPIDO)
+	{
+		pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno); //Pinta el campo inicial
+	}
 	while (ganaPunto == NADIE)//Se sigue el partido mientras que nadie gane el punto 
 	{
 		if (turno == TENISTA1) //Si saca el tenista1
 		{
 			ganaPunto = lance(turno, tenista1, tenista2, posicionBola); //Hace un lance, golpeoBola() y correTenista se ejecutan. Además, se actualizan los números de golpeos
-			actualizarGolpes(tenista1, TENISTA1, posicionBola, ganaPunto);
 			turno = TENISTA2;
 		}
 		else
 		{
 			ganaPunto = lance(turno, tenista2, tenista1, posicionBola);
-			actualizarGolpes(tenista2, TENISTA2, posicionBola, ganaPunto);
 			turno = TENISTA1;
 		}
-		pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
+		if (!MODO_RAPIDO)
+		{
+			pintarPeloteo(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido.posicion, tenista2.datosPartido.posicion, posicionBola, turno);
+		}
 	}
 	if(ganaPunto == TENISTA1)
 	{
@@ -833,6 +865,16 @@ tTenista jugarJuego(tDatosTenista& tenista1, tDatosTenista& tenista2, tTenista s
 		ganadorPunto = jugarPunto(tenista1, tenista2, servicio_para);
 	}
 	pintarMarcador(tenista1.iniciales, tenista2.iniciales, tenista1.datosPartido, tenista2.datosPartido, servicio_para);
+	cout << "El ganador del set es ";
+	if(ganadorPunto == TENISTA1)
+	{
+		cout << tenista1.iniciales;
+	}
+	else
+	{
+		cout << tenista2.iniciales;
+	}
+	cout << endl << endl;
 	mostrarEstadistica(tenista1.iniciales, tenista1); //Al final de cada juego muestra las estadísticas
 	mostrarEstadistica(tenista2.iniciales, tenista2); //Al final de cada juego muestra las estadísticas
 
@@ -855,12 +897,10 @@ tTenista jugarPartido(tDatosTenista& tenista1, tDatosTenista& tenista2)
 			if (ganadorJuego == TENISTA1)
 			{
 				puntos1++;
-				cout << "El ganador del set es " << tenista1.iniciales << endl;
 			}
 			else
 			{
 				puntos2++;
-				cout << "El ganador del set es " << tenista2.iniciales << endl;
 			}
 			if (servicio == TENISTA1)
 			{
@@ -933,24 +973,32 @@ double porcentajeDeGolpeo(const tDatosTenista tenista, double golpesTotales, int
 void buscar2Jug(tListaTenistas& listaT, int& indT1, int& indT2)
 {
 	string iniciales1, iniciales2;
-	cout << "introduce las iniciales del tenista1: ";
+	cout << "Introduce las iniciales del tenista: ";
 	cin >> iniciales1;
 	indT1 = buscarIniciales(listaT, iniciales1);
 
 	while (indT1 < 0)
 	{
-		cout << "vuelva a introducir las iniciales del tenista1: ";
+		cout << "Las iniciales no coinciden con ningun jugador de la lista, vuelva a introducir las iniciales del tenista1: ";
 		cin >> iniciales1;
 		indT1 = buscarIniciales(listaT, iniciales1);
 	}
 
-	cout << "introduce las iniciales del tenista2: ";
+	cout << "Introduce las iniciales del tenista2: ";
 	cin >> iniciales2;
 	indT2 = buscarIniciales(listaT, iniciales2);
 
 
 	while ((iniciales2 == listaT.datos[indT1].iniciales) || (indT2 < 0))
 	{
+		if(iniciales2 == listaT.datos[indT1].iniciales)
+		{
+			cout << "Ya ha escogido este jugador, ";
+		}
+		else
+		{
+			cout << "Las iniciales no coinciden con ningun jugador de la lista, ";
+		}
 		cout << "vuelva a introducir las iniciales del tenista2: ";
 		cin >> iniciales2;
 		indT2 = buscarIniciales(listaT, iniciales2);
@@ -960,43 +1008,67 @@ void buscar2Jug(tListaTenistas& listaT, int& indT1, int& indT2)
 void buscar4Jug(tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4)
 {
 	string iniciales1, iniciales2, iniciales3, iniciales4;
-	cout << "introduce las iniciales del tenista1: ";
+	cout << "Introduce las iniciales del tenista1: ";
 	cin >> iniciales1;
 	indT1 = buscarIniciales(listaT, iniciales1);
 	indT2 = buscarIniciales(listaT, iniciales2);
 	indT3 = buscarIniciales(listaT, iniciales3);
 	while (indT1 < 0)
 	{
-		cout << "vuelva a introducir las iniciales del tenista1: ";
+		cout << "Las iniciales no coinciden con ningun jugador de la lista, vuelva a introducir las iniciales del tenista1: ";
 		cin >> iniciales1;
 		indT1 = buscarIniciales(listaT, iniciales1);
 	}
 
-	cout << "introduce las iniciales del tenista2: ";
+	cout << "Introduce las iniciales del tenista2: ";
 	cin >> iniciales2;
 	indT2 = buscarIniciales(listaT, iniciales2);
 	while ((iniciales2 == listaT.datos[indT1].iniciales) || (indT2 < 0))
 	{
+		if (iniciales2 == listaT.datos[indT1].iniciales)
+		{
+			cout << "Ya ha escogido este jugador, ";
+		}
+		else
+		{
+			cout << "Las iniciales no coinciden con ningun jugador de la lista, ";
+		}
 		cout << "vuelva a introducir las iniciales del tenista2: ";
 		cin >> iniciales2;
 		indT2 = buscarIniciales(listaT, iniciales2);
 	}
 
-	cout << "introduce las iniciales del tenista3: ";
+	cout << "Introduce las iniciales del tenista3: ";
 	cin >> iniciales3;
 	indT3 = buscarIniciales(listaT, iniciales3);
 	while ((iniciales3 == listaT.datos[indT1].iniciales) || (iniciales3 == listaT.datos[indT2].iniciales) || indT3 < 0)
 	{
+		if (iniciales3 == listaT.datos[indT1].iniciales || (iniciales3 == listaT.datos[indT2].iniciales))
+		{
+			cout << "Ya ha escogido este jugador, ";
+		}
+		else
+		{
+			cout << "Las iniciales no coinciden con ningun jugador de la lista, ";
+		}
 		cout << "vuelva a introducir las iniciales del tenista3: ";
 		cin >> iniciales3;
 		indT3 = buscarIniciales(listaT, iniciales3);
 	}
 
-	cout << "introduce las iniciales del tenista4: ";
+	cout << "Introduce las iniciales del tenista4: ";
 	cin >> iniciales4;
 	indT4 = buscarIniciales(listaT, iniciales4);
 	while ((iniciales4 == listaT.datos[indT1].iniciales) || (iniciales4 == listaT.datos[indT2].iniciales) || indT4 < 0 || (iniciales4 == listaT.datos[indT3].iniciales))
 	{
+		if (iniciales4 == listaT.datos[indT1].iniciales || (iniciales4 == listaT.datos[indT2].iniciales) || (iniciales4 == listaT.datos[indT3].iniciales))
+		{
+			cout << "Ya ha escogido este jugador, ";
+		}
+		else
+		{
+			cout << "Las iniciales no coinciden con ningun jugador de la lista, ";
+		}
 		cout << "vuelva a introducir las iniciales del tenista4: ";
 		cin >> iniciales4;
 		indT4 = buscarIniciales(listaT, iniciales4);
@@ -1057,16 +1129,13 @@ void jugarTorneo(tListaTenistas& listaT, int indT1, int indT2, int indT3, int in
 		partido3 = partido2;
 	}
 
-	cout << "El ganador del torneo es: " << listaT.datos[partido3].iniciales << endl << endl;
-	cout << setw(10) << listaT.datos[partido1].iniciales << setw(2) << listaT.datos[partido1].datosPartido.juegos << endl;
-	cout << setw(10) << listaT.datos[partido2].iniciales << setw(2) << listaT.datos[partido2].datosPartido.juegos << endl << endl;
-	
+	cout << "El ganador del torneo es " << listaT.datos[partido3].iniciales << "!" << endl << endl;
 }
 
 
 void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& indT3, int& indT4)
 {
-	int  PGmayor1 = listaT.datos[0].partidosGanados, PGmayor2 = listaT.datos[0].partidosGanados, PGmayor3 = listaT.datos[0].partidosGanados, PGmayor4 = listaT.datos[0].partidosGanados;
+	int  PGmayor1 = -1, PGmayor2 = -1, PGmayor3 = -1, PGmayor4 = -1;
 	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador con mas partidos ganados
 	{
 		if (PGmayor1 < listaT.datos[i].partidosGanados) // Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganados
@@ -1076,10 +1145,6 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 		}
 	}
 	//Fin del bucle 1
-	if (indT1 == 0)
-	{
-		PGmayor2 = listaT.datos[1].partidosGanados;//El bucle empieza en el cuarto jugador en el caso de que el mayores sea el primero
-	}
 	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 2 con mas partidos ganados
 	{
 		if (PGmayor2 < listaT.datos[i].partidosGanados && i != indT1)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganados pero sin contar con jugador1
@@ -1089,14 +1154,7 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 		}
 	}
 	//Fin del bucle 2
-	if (indT1 == 0 || indT2 == 0)//Si el mayor es el primero
-	{
-		PGmayor3 = listaT.datos[1].partidosGanados;
-	}
-	else if ((indT1 == 0 && indT2 == 1) || (indT2 == 0 && indT1 == 1))//Si los mayores son los dos primeros.Son permutaciones sin repeticion por lo que las posibilidades son 2!
-	{
-		PGmayor3 = listaT.datos[2].partidosGanados;
-	}
+
 	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 3 con mas partidos ganados
 	{
 		if (PGmayor3 < listaT.datos[i].partidosGanados && i != indT1 && i != indT2)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1 y jugador2
@@ -1106,19 +1164,6 @@ void seleccionarTop4(const tListaTenistas& listaT, int& indT1, int& indT2, int& 
 		}
 	}
 	//Fin del bucle 3
-	if (indT1 == 0 || indT2 == 0 || indT3 == 0)	//Si el mayor es uno de los tres pero los siguientes no lo son
-	{
-		PGmayor4 = listaT.datos[3].partidosGanados;
-	}
-	else if ((indT1 == 0 && indT2 == 1) || indT1 == 0 && indT3 == 1 || (indT1 == 1 && indT2 == 0) || (indT1 == 1 && indT3 == 1) || (indT2 == 0 && indT3 == 1) || (indT2 == 1 && indT3 == 0))
-		//Si los mayores son solo dos. Se trataria de variaciones de 3 elementos con dos posiciones sin repeticion por lo que seria 3!/1! que son 6 posibilidades distintas
-	{
-		PGmayor4 = listaT.datos[2].partidosGanados;
-	}
-	else if ((indT1 == 0 && indT2 == 1 && indT3 == 2) || (indT1 == 0 && indT2 == 2 && indT3 == 1) || (indT1 == 1 && indT2 == 0 && indT3 == 2) || (indT1 == 1 && indT2 == 2 && indT3 == 0) || (indT1 == 2 && indT2 == 1 && indT3 == 0) || (indT1 == 2 && indT2 == 0 && indT3 == 1))// El bucle empieza en el cuarto jugador en el caso de que los tres mayores sean los tres primeros.Son permutaciones sin repeticion por lo que las posibilidades son 3!
-	{
-		PGmayor4 = listaT.datos[1].partidosGanados;
-	}
 	for (int i = 0; i < listaT.contador; i++)//Inicio del bucle del jugador 4 con mas partidos ganados
 	{
 		if (PGmayor4 < listaT.datos[i].partidosGanados && i != indT1 && i != indT2 && i != indT3)//Recorre todos los partidos ganados y se queda con el mayor numero de partidos ganadospero sin contar con jugador1, jugador2 y jugador3
